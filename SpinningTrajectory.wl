@@ -452,7 +452,7 @@ KerrSpinOrbit[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[CapitalUpsilon]
 (*Spherical*)
 
 
-CorrectionSpherical[orbitGeo_,kmax_?EvenQ]:=Module[{a,p,e,x,\[ScriptCapitalI],\[ScriptCapitalR]tfunc,\[ScriptCapitalR]\[Phi]func,\[ScriptCapitalF]\[GothicR]func,\[ScriptCapitalG]\[GothicR]func,\[ScriptCapitalG]\[Theta]func,\[ScriptCapitalH]\[GothicR]func,\[ScriptCapitalH]\[Theta]func,\[ScriptCapitalI]1\[Theta]func,\[ScriptCapitalI]2func,
+CorrectionSphericalOld[orbitGeo_,kmax_?EvenQ]:=Module[{a,p,e,x,\[ScriptCapitalI],\[ScriptCapitalR]tfunc,\[ScriptCapitalR]\[Phi]func,\[ScriptCapitalF]\[GothicR]func,\[ScriptCapitalG]\[GothicR]func,\[ScriptCapitalG]\[Theta]func,\[ScriptCapitalH]\[GothicR]func,\[ScriptCapitalH]\[Theta]func,\[ScriptCapitalI]1\[Theta]func,\[ScriptCapitalI]2func,
     \[ScriptCapitalI]3func,\[ScriptCapitalJ]func,\[ScriptCapitalQ]\[Theta]func,\[ScriptCapitalS]\[GothicR]func,\[ScriptCapitalS]\[Theta]func,\[ScriptCapitalT]\[GothicR]func,\[ScriptCapitalT]\[Theta]func,\[ScriptCapitalU]1\[Theta]func,\[ScriptCapitalU]2func,\[ScriptCapitalU]3func,\[ScriptCapitalV]func,\[ScriptCapitalK]\[GothicR]func,\[ScriptCapitalK]\[Theta]func,
     \[ScriptCapitalM]\[GothicR]func,\[ScriptCapitalM]\[Theta]func,\[ScriptCapitalN]1\[Theta]func,\[ScriptCapitalN]2func,\[ScriptCapitalN]3func,\[ScriptCapitalP]func,Ehat,Lzhat,Qhat,Khat,\[CapitalUpsilon]\[Theta]hat,zhat,dzd\[Lambda],\[CapitalDelta],\[CapitalSigma],d2rd\[Lambda]2,d2zd\[Lambda]2,R,Z,\[Chi]\[Theta]hat,\[Delta]udst,\[Delta]uds\[Phi],
     \[CapitalLambda]\[Theta]hat,steps\[Theta],ExpjkTable,\[ScriptCapitalR]tlist,\[ScriptCapitalR]tfour,\[ScriptCapitalR]\[Phi]list,\[ScriptCapitalR]\[Phi]four,\[ScriptCapitalF]\[GothicR]four,\[ScriptCapitalF]\[GothicR]list,\[ScriptCapitalG]\[GothicR]four,\[ScriptCapitalG]\[GothicR]list,\[ScriptCapitalG]\[Theta]four,\[ScriptCapitalG]\[Theta]list,
@@ -615,7 +615,170 @@ CorrectionSpherical[orbitGeo_,kmax_?EvenQ]:=Module[{a,p,e,x,\[ScriptCapitalI],\[
 ]
 
 
-KerrSpinOrbitCorrection2Spherical[a_,p_,e_?PossibleZeroQ,x_,correction_]:=Module[{\[ScriptCapitalI]=ArcCos[x],prec,\[ScriptCapitalR]\[Phi]fourIm,\[ScriptCapitalR]tfourIm,kmax,orbit,Ehat,Lzhat,Qhat,Khat,\[CapitalUpsilon]\[Theta]hat,\[CapitalUpsilon]\[Phi]hat,\[CapitalGamma]hat,
+CorrectionSpherical[orbitGeo_,kmax_?EvenQ]:=Module[{a,p,e,x,\[ScriptCapitalI],\[ScriptCapitalR]tfunc,\[ScriptCapitalR]\[Phi]func,\[ScriptCapitalF]\[GothicR]func,\[ScriptCapitalG]\[GothicR]func,\[ScriptCapitalG]\[Theta]func,\[ScriptCapitalH]\[GothicR]func,\[ScriptCapitalH]\[Theta]func,\[ScriptCapitalI]1\[Theta]func,\[ScriptCapitalI]2func,
+    \[ScriptCapitalI]3func,\[ScriptCapitalJ]func,\[ScriptCapitalQ]\[Theta]func,\[ScriptCapitalS]\[GothicR]func,\[ScriptCapitalS]\[Theta]func,\[ScriptCapitalT]\[GothicR]func,\[ScriptCapitalT]\[Theta]func,\[ScriptCapitalU]1\[Theta]func,\[ScriptCapitalU]2func,\[ScriptCapitalU]3func,\[ScriptCapitalV]func,\[ScriptCapitalK]\[GothicR]func,\[ScriptCapitalK]\[Theta]func,
+    \[ScriptCapitalM]\[GothicR]func,\[ScriptCapitalM]\[Theta]func,\[ScriptCapitalN]1\[Theta]func,\[ScriptCapitalN]2func,\[ScriptCapitalN]3func,\[ScriptCapitalP]func,Ehat,Lzhat,Qhat,Khat,\[CapitalUpsilon]\[Theta]hat,zhat,dzd\[Lambda],\[CapitalDelta],\[CapitalSigma],d2rd\[Lambda]2,d2zd\[Lambda]2,R,Z,\[Chi]\[Theta]hat,\[Delta]udst,\[Delta]uds\[Phi],
+    steps\[Theta],ExpjkTable,\[ScriptCapitalR]tlist,\[ScriptCapitalR]tfour,\[ScriptCapitalR]\[Phi]list,\[ScriptCapitalR]\[Phi]four,\[ScriptCapitalF]\[GothicR]four,\[ScriptCapitalF]\[GothicR]list,\[ScriptCapitalG]\[GothicR]four,\[ScriptCapitalG]\[GothicR]list,\[ScriptCapitalG]\[Theta]four,\[ScriptCapitalG]\[Theta]list,
+    \[ScriptCapitalH]\[GothicR]four,\[ScriptCapitalH]\[GothicR]list,\[ScriptCapitalH]\[Theta]four,\[ScriptCapitalH]\[Theta]list,\[ScriptCapitalI]1\[Theta]four,\[ScriptCapitalI]1\[Theta]list,\[ScriptCapitalI]2four,\[ScriptCapitalI]2list,\[ScriptCapitalI]3four,\[ScriptCapitalI]3list,\[ScriptCapitalJ]four,\[ScriptCapitalJ]list,\[ScriptCapitalQ]\[Theta]four,\[ScriptCapitalQ]\[Theta]list,
+    \[ScriptCapitalS]\[GothicR]four,\[ScriptCapitalS]\[GothicR]list,\[ScriptCapitalS]\[Theta]four,\[ScriptCapitalS]\[Theta]list,\[ScriptCapitalT]\[GothicR]four,\[ScriptCapitalT]\[GothicR]list,\[ScriptCapitalT]\[Theta]four,\[ScriptCapitalT]\[Theta]list,\[ScriptCapitalU]1\[Theta]four,\[ScriptCapitalU]1\[Theta]list,\[ScriptCapitalU]2four,\[ScriptCapitalU]2list,\[ScriptCapitalU]3four,
+    \[ScriptCapitalU]3list,\[ScriptCapitalV]four,\[ScriptCapitalV]list,\[ScriptCapitalK]\[GothicR]four,\[ScriptCapitalK]\[GothicR]list,\[ScriptCapitalK]\[Theta]four,\[ScriptCapitalK]\[Theta]list,\[ScriptCapitalM]\[GothicR]four,\[ScriptCapitalM]\[GothicR]list,\[ScriptCapitalM]\[Theta]four,\[ScriptCapitalM]\[Theta]list,\[ScriptCapitalN]1\[Theta]four,
+    \[ScriptCapitalN]1\[Theta]list,\[ScriptCapitalN]2four,\[ScriptCapitalN]2list,\[ScriptCapitalN]3four,\[ScriptCapitalN]3list,\[ScriptCapitalP]four,\[ScriptCapitalP]list,M1\[Theta],M1\[GothicR],M1\[CapitalUpsilon]\[Theta],M1t,M1\[Phi],M1,M2\[Theta],M2\[GothicR],M2\[CapitalUpsilon]\[Theta],M2t,M2\[Phi],M2,M3\[Theta],M3\[GothicR],M3\[CapitalUpsilon]\[Theta],M3t,M3\[Phi],M3,
+    M,c,v,\[Delta]\[Chi]\[Theta]SfourIm,\[Delta]\[GothicR]four,\[CapitalUpsilon]\[Theta]S,udt0S,ud\[Phi]0S},
+  dzd\[Lambda][qz_]:=-Sign[Pi-Mod[qz,2Pi]]*Sqrt[Qhat-zhat[qz]^2*(a^2*(1-Ehat^2)*(1-zhat[qz]^2)+Lzhat^2+Qhat)];(* geodesic polar velocity *)
+  \[CapitalDelta][r_]:=r^2-2*r+a^2;
+  \[CapitalSigma][r_,z_]:=r^2+a^2*z^2;
+  d2rd\[Lambda]2[r_]:=1/2 (-((-2+2 r) (Khat+r^2))-2 r (a^2-2 r+r^2)+4 Ehat r (-a Lzhat+Ehat (a^2+r^2)));(* second derivative of r wrt \[Lambda] *)
+  d2zd\[Lambda]2[z_]:=(2 a^2 (1-Ehat^2) z^3-2 z (Lzhat^2+Qhat+a^2 (1-Ehat^2) (1-z^2)))/2;(* second derivative of z=cos(\[Theta]) wrt \[Lambda] *)
+  R[r_]:=((r^2+a^2)*Ehat-a*Lzhat)^2-\[CapitalDelta][r]*(Khat+r^2);(* equations of motion for r,z *)
+  Z[z_]:=Qhat-z^2*(a^2*(1-Ehat^2)*(1-z^2)+Lzhat^2+Qhat);
+  \[Chi]\[Theta]hat[qz_]:=\[Chi]\[Theta]hat[qz]=If[Mod[qz,2Pi]<Pi,ArcCos[Cos[orbitGeo["Trajectory"][[3]][qz]]/Sin[\[ScriptCapitalI]]]+2Pi*Floor[qz/(2Pi)],2Pi+2Pi*Floor[qz/(2Pi)]-ArcCos[Cos[orbitGeo["Trajectory"][[3]][qz]]/Sin[\[ScriptCapitalI]]]];
+  \[Delta]udst[qz_]:=\[Delta]udst[qz]=Re[Sum[If[k==0,0,Im[\[ScriptCapitalR]tfour[[k+kmax+1]]]/(-k*\[CapitalUpsilon]\[Theta]hat)*Exp[-I*k*qz]],{k,-kmax,kmax,2}]];(* definition of \[Delta]udst summed over even k for aligned spin *)
+  \[Delta]uds\[Phi][qz_]:=\[Delta]uds\[Phi][qz]=Re[Sum[If[k==0,0,Im[\[ScriptCapitalR]\[Phi]four[[k+kmax+1]]]/(-k*\[CapitalUpsilon]\[Theta]hat)*Exp[-I*k*qz]],{k,-kmax,kmax,2}]];
+  \[ScriptCapitalR]tfunc[r_,z_,drd\[Lambda]_,dzd\[Lambda]_]:=-((2 a^2 dzd\[Lambda] r z (3 r^2 (2 Khat+r^2)-2 a^2 (3 Khat+4 r^2) z^2+a^4 z^4)+drd\[Lambda] (3 Khat r^4-9 a^2 r^2 (2 Khat+r^2) z^2+a^4 (3 Khat+14 r^2) z^4-a^6 z^6))/(Sqrt[Khat] (r^2+a^2 z^2)^4));(* functionf for t and \[Phi] equations *)
+  \[ScriptCapitalR]\[Phi]func[r_,z_,drd\[Lambda]_,dzd\[Lambda]_]:=-((a (-2 dzd\[Lambda] r (a^2+r^2) z (3 r^2 (2 Khat+r^2)-2 a^2 (3 Khat+4 r^2) z^2+a^4 z^4)+drd\[Lambda] (-1+z^2) (3 Khat r^4-9 a^2 r^2 (2 Khat+r^2) z^2+a^4 (3 Khat+14 r^2) z^4-a^6 z^6)))/(Sqrt[Khat] (r^2+a^2 z^2)^4));
+  \[ScriptCapitalF]\[GothicR]func[]:=1;
+  \[ScriptCapitalG]\[GothicR]func[r_,z_,drd\[Lambda]_]:=(-((2 (-1+r))/(a^2+(-2+r) r))-(2 r)/(r^2+a^2 z^2))*drd\[Lambda];
+  \[ScriptCapitalG]\[Theta]func[r_,z_,dzd\[Lambda]_,\[Chi]\[Theta]hat_]:=-((2 dzd\[Lambda] r (a^2+(-2+r) r) Sin[\[ScriptCapitalI]] Sin[\[Chi]\[Theta]hat])/((-1+z^2) (r^2+a^2 z^2)));
+  \[ScriptCapitalH]\[GothicR]func[r_,z_,drd\[Lambda]_,dzd\[Lambda]_]:=1/2 (1/(a^2+(-2+r) r)^2 (2 a^2 (-2 a^2 Ehat^2+4 a Ehat Lzhat+(-2+a^2) Lzhat^2)+2 r (2 a^2 (-a^2 Ehat^2-4 a Ehat Lzhat+Lzhat^2)+r (a (16 a Ehat^2+4 Ehat Lzhat-a Lzhat^2)-2 Ehat^2 r (8+2 a^2-5 r+r^2))))+(Lzhat^2 (a^4-4 a^2 r+2 a^2 r^2+r^4))/((a^2+r^2)^2 (-1+z))-(Lzhat^2 (a^4-4 a^2 r+2 a^2 r^2+r^4))/((a^2+r^2)^2 (1+z))-(8 r^3 (a (a Ehat-Lzhat)+Ehat r^2)^2)/((a^2+r^2) (r^2+a^2 z^2)^2)+(8 r (a (a Ehat-Lzhat)+Ehat r^2) (a^3 (a Ehat-Lzhat)+3 a^2 Ehat r^2+2 Ehat r^4))/((a^2+r^2)^2 (r^2+a^2 z^2)))+drd\[Lambda]^2 ((2-a^2+(-2+r) r)/(a^2+(-2+r) r)^2+(2 r^2)/(r^2+a^2 z^2)^2-1/(r^2+a^2 z^2))+(dzd\[Lambda]^2 (-a^2 r^2+r^4+a^2 (a^2+r (-4+3 r)) z^2))/((-1+z^2) (r^2+a^2 z^2)^2);
+  \[ScriptCapitalH]\[Theta]func[r_,z_,drd\[Lambda]_,dzd\[Lambda]_,\[Chi]\[Theta]hat_]:=1/((-1+z^2)^2 (r^2+a^2 z^2)^2) 2 r z (Lzhat^2 r^4+2 a^2 Lzhat^2 r^2 z^2+a^4 Lzhat^2 z^4+2 r^3 (-a Ehat-Lzhat+a Ehat z^2) (-a Ehat+Lzhat+a Ehat z^2)+2 a^2 r (-a Ehat+Lzhat+a Ehat z^2) (-a Ehat+Lzhat+(a Ehat-2 Lzhat) z^2)) Sin[\[ScriptCapitalI]] Sin[\[Chi]\[Theta]hat]-(2 a^2 drd\[Lambda]^2 r z Sin[\[ScriptCapitalI]] Sin[\[Chi]\[Theta]hat])/(r^2+a^2 z^2)^2-(2 dzd\[Lambda]^2 r (a^2+(-2+r) r) z (r^2 Cot[\[ScriptCapitalI]]^2+a^2 (1-2 z^2+z^4 Csc[\[ScriptCapitalI]]^2)) Csc[\[Chi]\[Theta]hat] Sin[\[ScriptCapitalI]])/((-1+z^2)^2 (r^2+a^2 z^2)^2);
+  \[ScriptCapitalI]1\[Theta]func[r_,z_,dzd\[Lambda]_]:=(2 dzd\[Lambda]^2 r (a^2+(-2+r) r)/\[CapitalUpsilon]\[Theta]hat)/((-1+z^2) (r^2+a^2 z^2));
+  \[ScriptCapitalI]2func[r_,z_]:=1/(a^2+(-2+r) r) 2 (a^3 (a Ehat-Lzhat)+r^2 (a (2 a Ehat+Lzhat)+Ehat (-4+r) r))-(4 r^2 (a (a Ehat-Lzhat)+Ehat r^2))/(r^2+a^2 z^2);
+  \[ScriptCapitalI]3func[r_,z_]:=(2 (Lzhat (-2+r)^2 r^3-a Ehat r^3 (-4+3 r) (-1+z^2)+a^5 Ehat z^2 (-1+z^2)+a^4 Lzhat z^2 (1+(-1+r) z^2)+a^2 Lzhat r^2 (-1+(-3+2 r) z^2)-a^3 Ehat r^2 (-1+z^4)))/((a^2+(-2+r) r) (-1+z^2) (r^2+a^2 z^2));
+  \[ScriptCapitalJ]func[r_,z_,\[Delta]udst_,\[Delta]uds\[Phi]_]:=((a^2 Ehat-a Lzhat+Ehat r^2) (-3 Khat r^4+9 a^2 r^2 (2 Khat+r^2) z^2-a^4 (3 Khat+14 r^2) z^4+a^6 z^6))/(Sqrt[Khat] (r^2+a^2 z^2)^3)+\[ScriptCapitalI]2func[r,z]*\[Delta]udst+\[ScriptCapitalI]3func[r,z]*\[Delta]uds\[Phi];
+  \[ScriptCapitalK]\[GothicR]func[r_,z_,drd\[Lambda]_]:=(2 drd\[Lambda])/((a^2+(-2+r) r) (r^2+a^2 z^2));
+  \[ScriptCapitalK]\[Theta]func[r_,z_,dzd\[Lambda]_,\[Chi]\[Theta]hat_]:=(2 dzd\[Lambda] Sin[\[ScriptCapitalI]] Sin[\[Chi]\[Theta]hat])/((-1+z^2) (r^2+a^2 z^2));
+  \[ScriptCapitalM]\[GothicR]func[r_,z_,drd\[Lambda]_,dzd\[Lambda]_]:=(2 dzd\[Lambda]^2 r)/((-1+z^2) (r^2+a^2 z^2)^2)+(2 drd\[Lambda]^2 (-r (a^2+r (-3+2 r))-a^2 (-1+r) z^2))/((a^2+(-2+r) r)^2 (r^2+a^2 z^2)^2)+1/((a^2+(-2+r) r)^2 (-1+z^2) (r^2+a^2 z^2)^2) 2 (Lzhat^2 r^5+a^4 Lzhat^2 r z^4+Ehat^2 r^6 (-1+z^2)-a^4 (-a Ehat+Lzhat)^2 z^2 (-1+z^2)-r^4 (2 (a Ehat-2 Lzhat) (a Ehat-Lzhat)+a Ehat z^2 (-3 a Ehat+6 Lzhat+a Ehat z^2))+a^2 r^2 (-(-a Ehat+Lzhat)^2-(a Ehat+Lzhat) z^2 (-3 a Ehat+3 Lzhat+2 a Ehat z^2))+2 r^3 (2 (-a Ehat+Lzhat)^2+a z^2 (-4 a Ehat^2+4 Ehat Lzhat+a Lzhat^2+2 a Ehat^2 z^2)));
+  \[ScriptCapitalM]\[Theta]func[r_,z_,drd\[Lambda]_,dzd\[Lambda]_,\[Chi]\[Theta]hat_]:=(2 a^2 drd\[Lambda]^2 z Sin[\[Chi]\[Theta]hat] Sin[\[ScriptCapitalI]])/((a^2+(-2+r) r) (r^2+a^2 z^2)^2)-1/((a^2+(-2+r) r) (-1+z^2)^2 (r^2+a^2 z^2)^2) 2 z (Lzhat^2 r^4+2 a^2 Lzhat^2 r^2 z^2+a^4 Lzhat^2 z^4+2 r^3 (-a Ehat-Lzhat+a Ehat z^2) (-a Ehat+Lzhat+a Ehat z^2)+2 a^2 r (-a Ehat+Lzhat+a Ehat z^2) (-a Ehat+Lzhat+(a Ehat-2 Lzhat) z^2)) Sin[\[Chi]\[Theta]hat] Sin[\[ScriptCapitalI]]+(2 dzd\[Lambda]^2 z (r^2 Cot[\[ScriptCapitalI]]^2+a^2 (1-2 z^2+z^4 Csc[\[ScriptCapitalI]]^2)) Sin[\[ScriptCapitalI]])/((-1+z^2)^2 (r^2+a^2 z^2)^2 Sin[\[Chi]\[Theta]hat]);
+  \[ScriptCapitalN]1\[Theta]func[r_,z_,dzd\[Lambda]_]:=-((2 dzd\[Lambda]^2/\[CapitalUpsilon]\[Theta]hat)/((-1+z^2) (r^2+a^2 z^2)));
+  \[ScriptCapitalN]2func[r_,z_]:=2 Ehat+(4 r (a (a Ehat-Lzhat)+Ehat r^2))/((a^2+(-2+r) r) (r^2+a^2 z^2));
+  \[ScriptCapitalN]3func[r_,z_]:=(-2 r (2 a Ehat-2 Lzhat+Lzhat r)-2 a (a Lzhat-2 Ehat r) z^2)/((a^2+(-2+r) r) (-1+z^2) (r^2+a^2 z^2));
+  \[ScriptCapitalP]func[r_,z_,\[Delta]udst_,\[Delta]uds\[Phi]_]:=\[ScriptCapitalN]2func[r,z]*\[Delta]udst+\[ScriptCapitalN]3func[r,z]*\[Delta]uds\[Phi];
+  \[ScriptCapitalQ]\[Theta]func[z_,\[Chi]\[Theta]hat_]:=(Sin[\[ScriptCapitalI]] Sin[\[Chi]\[Theta]hat])/Sqrt[1-z^2];(* functions for \[Theta] equation *)
+  \[ScriptCapitalS]\[GothicR]func[r_,z_,drd\[Lambda]_]:=(2 a^2 z Sqrt[1-z^2] drd\[Lambda])/((a^2+(-2+r) r) (r^2+a^2 z^2));
+  \[ScriptCapitalS]\[Theta]func[r_,z_,dzd\[Lambda]_,\[Chi]\[Theta]hat_]:=-((2 z Sqrt[1-z^2] (r^2 Cot[\[ScriptCapitalI]]^2+a^2 (1-2 z^2+z^4 Csc[\[ScriptCapitalI]]^2)) dzd\[Lambda] Sin[\[ScriptCapitalI]])/((-1+z^2)^2 (r^2+a^2 z^2) Sin[\[Chi]\[Theta]hat]));
+  \[ScriptCapitalT]\[GothicR]func[r_,z_,drd\[Lambda]_,dzd\[Lambda]_]:=1/((a^2+(-2+r) r)^2 Sqrt[1-z^2] (r^2+a^2 z^2)^2) 2 a^2 z (-Lzhat^2 r^5-a^4 Lzhat^2 r z^4-Ehat^2 r^6 (-1+z^2)+a^4 (-a Ehat+Lzhat)^2 z^2 (-1+z^2)+r^4 (2 (a Ehat-2 Lzhat) (a Ehat-Lzhat)+a Ehat z^2 (-3 a Ehat+6 Lzhat+a Ehat z^2))+a^2 r^2 ((-a Ehat+Lzhat)^2+(a Ehat+Lzhat) z^2 (-3 a Ehat+3 Lzhat+2 a Ehat z^2))+2 r^3 (-2 (-a Ehat+Lzhat)^2-a z^2 (-4 a Ehat^2+4 Ehat Lzhat+a Lzhat^2+2 a Ehat^2 z^2)))-(2 a^2 drd\[Lambda]^2 z Sqrt[1-z^2] (r (a^2+r (-3+2 r))+a^2 (-1+r) z^2))/((a^2+(-2+r) r)^2 (r^2+a^2 z^2)^2)-(2 a^2 dzd\[Lambda]^2 r z)/(Sqrt[1-z^2] (r^2+a^2 z^2)^2);
+  \[ScriptCapitalT]\[Theta]func[r_,z_,drd\[Lambda]_,dzd\[Lambda]_,d2zd\[Lambda]2_,\[Chi]\[Theta]hat_]:=1/((a^2+(-2+r) r) (1-z^2)^(5/2) (r^2+a^2 z^2)^2) (3 a^6 Lzhat^2 z^6+Lzhat^2 r^6 (1+2 z^2)+a^4 Lzhat^2 r^2 z^4 (7+2 z^2)+a^2 Lzhat^2 r^4 z^2 (5+4 z^2)+2 a^4 r z^2 (-(-a Ehat+Lzhat)^2+2 (-a Ehat+Lzhat)^2 z^2-(a^2 Ehat^2-2 a Ehat Lzhat+4 Lzhat^2) z^4)+2 a^2 r^3 ((-a Ehat+Lzhat)^2-(5 a Ehat-3 Lzhat) (a Ehat-Lzhat) z^2+(7 a^2 Ehat^2-10 a Ehat Lzhat-4 Lzhat^2) z^4+a Ehat (-3 a Ehat+4 Lzhat) z^6)-2 r^5 (-a^2 Ehat^2+Lzhat^2+2 (2 a^2 Ehat^2+Lzhat^2) z^2+a^2 Ehat^2 z^4 (-5+2 z^2))) Sin[\[ScriptCapitalI]] Sin[\[Chi]\[Theta]hat]+(a^2 drd\[Lambda]^2 (a^2 z^2+r^2 (-1+2 z^2)) Sin[\[ScriptCapitalI]] Sin[\[Chi]\[Theta]hat])/((a^2+(-2+r) r) Sqrt[1-z^2] (r^2+a^2 z^2)^2)-1/(2 (1-z^2)^(5/2) (r^2+a^2 z^2)^2) dzd\[Lambda]^2 Csc[\[ScriptCapitalI]] Csc[\[Chi]\[Theta]hat] (2 r^4 (1+2 z^2) Cos[\[ScriptCapitalI]]^2+a^2 r^2 (-4 z^6+2 z^4 (7+2 Cos[2 \[ScriptCapitalI]])+z^2 (-5+3 Cos[2 \[ScriptCapitalI]])+2 Sin[\[ScriptCapitalI]]^2)+2 a^4 z^2 (z^4 (1+2 Cos[2 \[ScriptCapitalI]])-Sin[\[ScriptCapitalI]]^2+2 z^2 Sin[\[ScriptCapitalI]]^2))+(2 z Cos[\[ScriptCapitalI]] Cot[\[ScriptCapitalI]] Csc[\[Chi]\[Theta]hat] (dzd\[Lambda]^2 z+d2zd\[Lambda]2 (-z^2+Sin[\[ScriptCapitalI]]^2)))/((1-z^2)^(3/2) (-1+2 z^2+Cos[2 \[ScriptCapitalI]]));
+  \[ScriptCapitalU]1\[Theta]func[r_,z_,dzd\[Lambda]_,d2zd\[Lambda]2_,\[Chi]\[Theta]hat_]:=-((-2 d2zd\[Lambda]2 (-1+z^2) (r^2+a^2 z^2)+2 dzd\[Lambda]^2 z (r^2+a^2 (-1+2 z^2)))/((1-z^2)^(3/2) (r^2+a^2 z^2) \[CapitalUpsilon]\[Theta]hat));
+  \[ScriptCapitalU]2func[r_,z_]:=(4 a^2 r (a^2 Ehat-a Lzhat+Ehat r^2) z Sqrt[1-z^2])/((a^2+(-2+r) r) (r^2+a^2 z^2));
+  \[ScriptCapitalU]3func[r_,z_]:=-((2 z (Lzhat (-2+r) r^3+a^4 Lzhat z^4-2 a^3 Ehat r (-1+z^2)^2+2 a^2 Lzhat r (1+(-2+r) z^2)))/((a^2+(-2+r) r) (1-z^2)^(3/2) (r^2+a^2 z^2)));
+  \[ScriptCapitalV]func[r_,z_,\[Delta]udst_,\[Delta]uds\[Phi]_]:=-((2 a r z (3 r^2 (2 Khat+r^2)-2 a^2 (3 Khat+4 r^2) z^2+a^4 z^4) (Lzhat+a Ehat (-1+z^2)))/(Sqrt[Khat] (r^2+a^2 z^2)^3))/Sqrt[1-z^2]+\[ScriptCapitalU]2func[r,z]*\[Delta]udst+\[ScriptCapitalU]3func[r,z]*\[Delta]uds\[Phi];
+  a=orbitGeo["a"];(*orbital parameters*)
+  p=orbitGeo["p"];
+  e=orbitGeo["e"];
+  x=orbitGeo["Inclination"];
+  \[ScriptCapitalI]=ArcCos[x];
+  Ehat=orbitGeo["Energy"];(* geodesic constants of motion *)
+  Lzhat=orbitGeo["AngularMomentum"];
+  Qhat=orbitGeo["CarterConstant"];
+  Khat=Qhat+(Lzhat-a*Ehat)^2;
+  \[CapitalUpsilon]\[Theta]hat=orbitGeo["PolarFrequency"];
+  zhat[qz_]:=zhat[qz]=Cos[orbitGeo["Trajectory"][[3]][qz]];
+  steps\[Theta]=4*kmax;
+  ExpjkTable=Table[N[Exp[2Pi*I*k*(j-1/2)/steps\[Theta]],Precision[{a,p,e,x}]],{j,1,steps\[Theta]},{k,-kmax,kmax}];
+  Print["Calculating t, \[Phi] equations"];
+  \[ScriptCapitalR]tlist=Table[\[ScriptCapitalR]tfunc[p,zhat[qz],0,dzd\[Lambda][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];(* list of values of \[ScriptCapitalR]t for Fourier transform *)
+  \[ScriptCapitalR]\[Phi]list=Table[\[ScriptCapitalR]\[Phi]func[p,zhat[qz],0,dzd\[Lambda][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalR]tfour=\[ScriptCapitalR]tlist . ExpjkTable/(steps\[Theta]);(* Discrete Fourier Transform of \[ScriptCapitalR]t and \[ScriptCapitalR]\[Phi] *)
+  \[ScriptCapitalR]\[Phi]four=\[ScriptCapitalR]\[Phi]list . ExpjkTable/(steps\[Theta]);
+  Print["Calculating r equation"];
+  \[ScriptCapitalF]\[GothicR]list=Table[\[ScriptCapitalF]\[GothicR]func[],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalG]\[GothicR]list=Table[\[ScriptCapitalG]\[GothicR]func[p,zhat[qz],0],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalG]\[Theta]list=Table[\[ScriptCapitalG]\[Theta]func[p,zhat[qz],dzd\[Lambda][qz],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalH]\[GothicR]list=Table[\[ScriptCapitalH]\[GothicR]func[p,zhat[qz],0,dzd\[Lambda][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalH]\[Theta]list=Table[\[ScriptCapitalH]\[Theta]func[p,zhat[qz],0,dzd\[Lambda][qz],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalI]1\[Theta]list=Table[\[ScriptCapitalI]1\[Theta]func[p,zhat[qz],dzd\[Lambda][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalI]2list=Table[\[ScriptCapitalI]2func[p,zhat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalI]3list=Table[\[ScriptCapitalI]3func[p,zhat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalJ]list=Table[\[ScriptCapitalJ]func[p,zhat[qz],\[Delta]udst[qz],\[Delta]uds\[Phi][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalF]\[GothicR]four=\[ScriptCapitalF]\[GothicR]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalG]\[GothicR]four=\[ScriptCapitalG]\[GothicR]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalG]\[Theta]four=\[ScriptCapitalG]\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalH]\[GothicR]four=\[ScriptCapitalH]\[GothicR]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalH]\[Theta]four=\[ScriptCapitalH]\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalI]1\[Theta]four=\[ScriptCapitalI]1\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalI]2four=\[ScriptCapitalI]2list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalI]3four=\[ScriptCapitalI]3list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalJ]four=\[ScriptCapitalJ]list . ExpjkTable/(steps\[Theta]);
+  Print["Calculating \[Theta] equation"];
+  \[ScriptCapitalQ]\[Theta]list=Table[\[ScriptCapitalQ]\[Theta]func[zhat[qz],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalS]\[GothicR]list=Table[\[ScriptCapitalS]\[GothicR]func[p,zhat[qz],0],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalS]\[Theta]list=Table[\[ScriptCapitalS]\[Theta]func[p,zhat[qz],dzd\[Lambda][qz],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalT]\[GothicR]list=Table[\[ScriptCapitalT]\[GothicR]func[p,zhat[qz],0,dzd\[Lambda][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalT]\[Theta]list=Table[\[ScriptCapitalT]\[Theta]func[p,zhat[qz],0,dzd\[Lambda][qz],d2zd\[Lambda]2[zhat[qz]],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalU]1\[Theta]list=Table[\[ScriptCapitalU]1\[Theta]func[p,zhat[qz],dzd\[Lambda][qz],d2zd\[Lambda]2[zhat[qz]],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalU]2list=Table[\[ScriptCapitalU]2func[p,zhat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalU]3list=Table[\[ScriptCapitalU]3func[p,zhat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalV]list=Table[\[ScriptCapitalV]func[p,zhat[qz],\[Delta]udst[qz],\[Delta]uds\[Phi][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalQ]\[Theta]four=\[ScriptCapitalQ]\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalS]\[GothicR]four=\[ScriptCapitalS]\[GothicR]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalS]\[Theta]four=\[ScriptCapitalS]\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalT]\[GothicR]four=\[ScriptCapitalT]\[GothicR]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalT]\[Theta]four=\[ScriptCapitalT]\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalU]1\[Theta]four=\[ScriptCapitalU]1\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalU]2four=\[ScriptCapitalU]2list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalU]3four=\[ScriptCapitalU]3list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalV]four=\[ScriptCapitalV]list . ExpjkTable/(steps\[Theta]);
+  Print["Calculating norm equation"];
+  \[ScriptCapitalK]\[GothicR]list=Table[\[ScriptCapitalK]\[GothicR]func[p,zhat[qz],0],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalK]\[Theta]list=Table[\[ScriptCapitalK]\[Theta]func[p,zhat[qz],dzd\[Lambda][qz],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalM]\[GothicR]list=Table[\[ScriptCapitalM]\[GothicR]func[p,zhat[qz],0,dzd\[Lambda][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalM]\[Theta]list=Table[\[ScriptCapitalM]\[Theta]func[p,zhat[qz],0,dzd\[Lambda][qz],\[Chi]\[Theta]hat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalN]1\[Theta]list=Table[\[ScriptCapitalN]1\[Theta]func[p,zhat[qz],dzd\[Lambda][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalN]2list=Table[\[ScriptCapitalN]2func[p,zhat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalN]3list=Table[\[ScriptCapitalN]3func[p,zhat[qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalP]list=Table[\[ScriptCapitalP]func[p,zhat[qz],\[Delta]udst[qz],\[Delta]uds\[Phi][qz]],{qz,2Pi/2/steps\[Theta],2Pi,2Pi/steps\[Theta]}];
+  \[ScriptCapitalK]\[GothicR]four=\[ScriptCapitalK]\[GothicR]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalK]\[Theta]four=\[ScriptCapitalK]\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalM]\[GothicR]four=\[ScriptCapitalM]\[GothicR]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalM]\[Theta]four=\[ScriptCapitalM]\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalN]1\[Theta]four=\[ScriptCapitalN]1\[Theta]list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalN]2four=\[ScriptCapitalN]2list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalN]3four=\[ScriptCapitalN]3list . ExpjkTable/(steps\[Theta]);
+  \[ScriptCapitalP]four=\[ScriptCapitalP]list . ExpjkTable/(steps\[Theta]);
+  Print["Calculating submatrices"];(* Submatrices of M *)
+  M1\[Theta]=Table[If[-kmax<=k-kk<=kmax,-I*kk*\[CapitalUpsilon]\[Theta]hat*\[ScriptCapitalG]\[Theta]four[[k-kk+kmax+1]]+\[ScriptCapitalH]\[Theta]four[[k-kk+kmax+1]],0],{k,-kmax,kmax,2},{kk,Join[Range[-kmax,-2,2],Range[2,kmax,2]]}];
+  M1\[GothicR]=Table[If[-kmax<=k-kk<=kmax,(-I*kk*\[CapitalUpsilon]\[Theta]hat)^2*\[ScriptCapitalF]\[GothicR]four[[k-kk+kmax+1]]-I*(kk*\[CapitalUpsilon]\[Theta]hat)*\[ScriptCapitalG]\[GothicR]four[[k-kk+kmax+1]]+\[ScriptCapitalH]\[GothicR]four[[k-kk+kmax+1]],0],{k,-kmax,kmax,2},{kk,Join[Range[-kmax,-2,2],Range[2,kmax,2]]}];
+  M1\[CapitalUpsilon]\[Theta]=\[ScriptCapitalI]1\[Theta]four[[1;;-1;;2]];
+  M1t=\[ScriptCapitalI]2four[[1;;-1;;2]];
+  M1\[Phi]=\[ScriptCapitalI]3four[[1;;-1;;2]];
+  M1=Transpose[Join[Transpose[-Im[M1\[Theta]]],Transpose[Re[M1\[GothicR]]],Re[{M1\[CapitalUpsilon]\[Theta],M1t,M1\[Phi]}]]];
+  M2\[Theta]=Table[If[-kmax<=k-kk<=kmax,-kk^2*\[CapitalUpsilon]\[Theta]hat^2*\[ScriptCapitalQ]\[Theta]four[[k-kk+kmax+1]]-I*kk*\[CapitalUpsilon]\[Theta]hat*\[ScriptCapitalS]\[Theta]four[[k-kk+kmax+1]]+\[ScriptCapitalT]\[Theta]four[[k-kk+kmax+1]],0],{k,-kmax+1,kmax-1,2},{kk,Join[Range[-kmax,-2,2],Range[2,kmax,2]]}];
+  M2\[GothicR]=Table[0,{k,-kmax+1,kmax-1,2},{kk,Join[Range[-kmax,-2,2],Range[2,kmax,2]]}];
+  M2\[CapitalUpsilon]\[Theta]=\[ScriptCapitalU]1\[Theta]four[[2;;-2;;2]];
+  M2t=\[ScriptCapitalU]2four[[2;;-2;;2]];
+  M2\[Phi]=\[ScriptCapitalU]3four[[2;;-2;;2]];
+  M2=Transpose[Join[Transpose[-Im@M2\[Theta]],Transpose[M2\[GothicR]],Re@{M2\[CapitalUpsilon]\[Theta],M2t,M2\[Phi]}]];
+  M3\[Theta]=Table[If[-kmax<=k-kk<=kmax,-I*kk*\[CapitalUpsilon]\[Theta]hat*\[ScriptCapitalK]\[Theta]four[[k-kk+kmax+1]]+\[ScriptCapitalM]\[Theta]four[[k-kk+kmax+1]],0],{k,-kmax,kmax,2},{kk,Join[Range[-kmax,-2,2],Range[2,kmax,2]]}];
+  M3\[GothicR]=Table[0,{k,-kmax,kmax,2},{kk,Join[Range[-kmax,-2,2],Range[2,kmax,2]]}];
+  M3\[CapitalUpsilon]\[Theta]=\[ScriptCapitalN]1\[Theta]four[[1;;-1;;2]];
+  M3t=\[ScriptCapitalN]2four[[1;;-1;;2]];
+  M3\[Phi]=\[ScriptCapitalN]3four[[1;;-1;;2]];
+  M3=Transpose[Join[Transpose[-Im@M3\[Theta]],Transpose[M3\[GothicR]],Re@{M3\[CapitalUpsilon]\[Theta],M3t,M3\[Phi]}]];
+  M=Join[M1,M2,M3];
+  c=-Re[Join[Flatten[\[ScriptCapitalJ]four[[1;;-1;;2]]],Flatten[\[ScriptCapitalV]four[[2;;-2;;2]]],Flatten[\[ScriptCapitalP]four[[1;;-1;;2]]]]];(* source term, even, odd, even k-modes for r, \[Theta], norm equations *)
+  Print["Calculating v"];
+  v=LeastSquares[M,c];
+  \[Delta]\[Chi]\[Theta]SfourIm=v[[1;;kmax]];
+  \[Delta]\[GothicR]four=v[[kmax+1;;kmax+kmax]];
+  \[CapitalUpsilon]\[Theta]S=Re[v[[-3]]];
+  udt0S=Re[v[[-2]]];
+  ud\[Phi]0S=Re[v[[-1]]];
+  <|
+    "\[ScriptCapitalR]tfourIm"->Im[\[ScriptCapitalR]tfour],
+    "\[ScriptCapitalR]\[Phi]fourIm"->Im[\[ScriptCapitalR]\[Phi]four],
+    "\[Delta]\[Chi]\[Theta]SfourIm"->\[Delta]\[Chi]\[Theta]SfourIm,
+    "\[Delta]\[GothicR]four"->\[Delta]\[GothicR]four,
+    "\[CapitalUpsilon]\[Theta]S"->\[CapitalUpsilon]\[Theta]S,
+    "udt0S"->udt0S,
+    "ud\[Phi]0S"->ud\[Phi]0S,
+    "error"->Norm[M . v-c],(* error estimate from the residual *)
+    "kmax"->kmax,
+    "orbitGeo"->orbitGeo
+  |>
+]
+
+
+KerrSpinOrbitCorrection2Spherical[correction_]:=Module[{a,p,e,x,\[ScriptCapitalI],prec,\[ScriptCapitalR]\[Phi]fourIm,\[ScriptCapitalR]tfourIm,kmax,orbit,Ehat,Lzhat,Qhat,Khat,\[CapitalUpsilon]\[Theta]hat,\[CapitalUpsilon]\[Phi]hat,\[CapitalGamma]hat,
     \[CapitalDelta]t\[Theta],\[CapitalDelta]\[Phi]\[Theta],z1,z2,kz,steps\[Theta],\[Delta]udtS,\[Delta]ud\[Phi]S,\[Delta]\[Chi]\[Theta]SfourIm,\[Delta]\[Chi]\[Theta]S,d\[Delta]\[Chi]\[Theta]S,\[Delta]\[GothicR]four,\[Delta]\[GothicR],d\[Delta]\[GothicR],\[CapitalUpsilon]\[Theta]S,\[CapitalUpsilon]\[Phi]S,\[CapitalGamma]S,
     udt0S,ud\[Phi]0S,dzd\[Lambda],d\[Theta]d\[Lambda],zhat,\[Chi]\[Theta]hat,St,Sr,Sz,S\[Phi],\[CapitalDelta],\[CapitalSigma],rS,zS,UtS,U\[Phi]S,UtSlist,U\[Phi]Slist,UtSfour,U\[Phi]Sfour,Im\[CapitalDelta]tSfour,Im\[CapitalDelta]\[Phi]Sfour,\[CapitalDelta]tS,\[CapitalDelta]\[Phi]S,Uthat,U\[Phi]hat,
     Uthatlist,U\[Phi]hatlist,Uthatfour,U\[Phi]hatfour,\[CapitalSigma]gtt,\[CapitalSigma]g\[Phi]\[Phi],\[CapitalSigma]gt\[Phi],d\[CapitalSigma]gttdr,d\[CapitalSigma]gttdz,d\[CapitalSigma]g\[Phi]\[Phi]dr,d\[CapitalSigma]g\[Phi]\[Phi]dz,d\[CapitalSigma]gt\[Phi]dr,d\[CapitalSigma]gt\[Phi]dz,Kkz,h1,h2,h3,ES,LS,OrbitCorrection,
@@ -673,8 +836,13 @@ KerrSpinOrbitCorrection2Spherical[a_,p_,e_?PossibleZeroQ,x_,correction_]:=Module
   UtS[wz_]:=((d\[CapitalSigma]gttdr[p]*rS[wz]+d\[CapitalSigma]gttdz[zhat[wz]]*zS[wz])*(-Ehat)+\[CapitalSigma]gtt[p,zhat[wz]]*(udtS[wz])+d\[CapitalSigma]gt\[Phi]dr[p]*rS[wz]*(Lzhat)+\[CapitalSigma]gt\[Phi][p]*(ud\[Phi]S[wz]));
   U\[Phi]S[wz_]:=((d\[CapitalSigma]g\[Phi]\[Phi]dr[p]*rS[wz]+d\[CapitalSigma]g\[Phi]\[Phi]dz[zhat[wz]]*zS[wz])*(Lzhat)+\[CapitalSigma]g\[Phi]\[Phi][p,zhat[wz]]*(ud\[Phi]S[wz])+d\[CapitalSigma]gt\[Phi]dr[p]*rS[wz]*(-Ehat)+\[CapitalSigma]gt\[Phi][p]*(udtS[wz]));
 (****************************************)
+  orbit=correction["orbitGeo"];
+  a=orbit["a"];
+  p=orbit["p"];
+  e=orbit["e"];
+  x=orbit["Inclination"];
+  \[ScriptCapitalI]=ArcCos[x];
   prec=Precision[{a,p,x}];
-  orbit=KerrGeodesics`KerrGeoOrbit`KerrGeoOrbit[a,p,0,x,"Parametrization"->"Phases","Method"->"Analytic"];
   {Ehat,Lzhat,Qhat}=Values[orbit["ConstantsOfMotion"]];
   Khat=Qhat+(a*Ehat-Lzhat)^2;
   \[CapitalUpsilon]\[Theta]hat=orbit["PolarFrequency"];
@@ -723,6 +891,7 @@ KerrSpinOrbitCorrection2Spherical[a_,p_,e_?PossibleZeroQ,x_,correction_]:=Module
     "p"->p,
     "e"->e,
     "\[ScriptCapitalI]"->\[ScriptCapitalI],
+    "Inlination"->x;
     "Ehat"->Ehat,
     "Lzhat"->Lzhat,
     "Khat"->Khat,
@@ -750,9 +919,9 @@ KerrSpinOrbitCorrection2Spherical[a_,p_,e_?PossibleZeroQ,x_,correction_]:=Module
 
 
 KerrSpinOrbitCorrectionSpherical[a_, p_, e_, x_, kmax_?EvenQ]:=Module[{orbit,correction},
-  orbit = KerrGeodesics`KerrGeoOrbit`KerrGeoOrbit[a, p, e, x];
+  orbit = KerrGeodesics`KerrGeoOrbit`KerrGeoOrbit[a, p, e, x, "Parametrization"->"Phases", "Method"->"Analytic"];
   correction = CorrectionSpherical[orbit, kmax];
-  KerrSpinOrbitCorrection2Spherical[a, p, e, x, correction]
+  KerrSpinOrbitCorrection2Spherical[correction]
 ]
 
 
