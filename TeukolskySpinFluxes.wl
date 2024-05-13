@@ -74,7 +74,7 @@ dfabid\[Theta][\[Zeta]_,\[Zeta]bar_,sin\[Theta]_,\[CapitalDelta]_,d\[CapitalDelt
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Circular*)
 
 
@@ -1280,7 +1280,7 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
 (*Spherical*)
 
 
-TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
+TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
     sumPlus,sumMinus,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,dK,V,dV,RInrp,dRInrp,ddRInrp,dddRInrp,RUprp,dRUprp,ddRUprp,dddRUprp,
     \[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
     dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,
@@ -1294,7 +1294,7 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,\[
   p = orbitCorrection["p"];
   e = orbitCorrection["e"];
   If[!PossibleZeroQ[e],Return[$Failed]];
-  \[ScriptCapitalI] = orbitCorrection["\[ScriptCapitalI]"];
+  x = orbitCorrection["Inclination"];
   En = orbitCorrection["Ehat"]; (* Geodesic constants of motion *)
   Lz = orbitCorrection["Lzhat"];
   Kc = orbitCorrection["Khat"];
@@ -1320,7 +1320,7 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,\[
   steps\[Theta] = Max[8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
                8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];
-  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
+  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
   rp = p;
   Ur = 0;(* Geodesic radial velocity *)
   \[CapitalDelta]  = rp^2-2rp+a^2;
@@ -1338,7 +1338,7 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,\[
   ddRUprp  = (V*RUprp+d\[CapitalDelta]*dRUprp)/\[CapitalDelta];  
   dddRUprp = 1/\[CapitalDelta] (dV*RUprp+(V+2)*dRUprp);
   For[i\[Theta] = 1, i\[Theta] <= steps\[Theta]/2, i\[Theta]++,(* integration over w\[Theta] *)
-    w\[Theta] = N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]];
+    w\[Theta] = N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]];
     zp = z[w\[Theta]];
     Uz = {1,-1}*(-1)*Sqrt[-((1-zp^2)*a*En-Lz)^2+(1-zp^2)*(Kc-a^2*zp^2)];(* Polar geodesic velocity *)
     exp\[Theta] = Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];
@@ -1463,7 +1463,7 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,\[
 ]
 
 
-TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=Module[{h1,h2,a,p,e,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,
+TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,
     SWSH,SWSHplus,SWSHminus,R,Rplus,Rminus,\[Lambda],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMinus0,sumPlus1,sumMinus1,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,
     Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,
     \[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,
@@ -1478,7 +1478,7 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
   a = orbitCorrection["a"];(* Orbital parameters *)
   p = orbitCorrection["p"];
   e = orbitCorrection["e"];
-  \[ScriptCapitalI] = orbitCorrection["\[ScriptCapitalI]"];
+  x = orbitCorrection["Inclination"];
   En = orbitCorrection["Ehat"]; (* Geodesic constants of motion *)
   Lz = orbitCorrection["Lzhat"];
   Kc = orbitCorrection["Khat"];
@@ -1515,7 +1515,7 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
   steps\[Theta] = Max[8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
                8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];
-  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
+  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
   rp = p;
   Ur = 0;(* Geodesic radial velocity *)
   \[CapitalDelta]  = rp^2-2rp+a^2;
@@ -1542,7 +1542,7 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
   ddRUprp1 = (V*RUprp1 + V1*RUprp + d\[CapitalDelta]*dRUprp1)/\[CapitalDelta];
   dddRUprp = 1/\[CapitalDelta] (dV*RUprp+(V+2)*dRUprp);
   For[i\[Theta] = 1, i\[Theta] <= steps\[Theta]/2, i\[Theta]++,(* integration over w\[Theta] *)
-    w\[Theta] = N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]];
+    w\[Theta] = N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]];
     zp = z[w\[Theta]];
     Uz = {1,-1}*(-1)*Sqrt[-((1-zp^2)*a*En-Lz)^2+(1-zp^2)*(Kc-a^2*zp^2)];(* Polar geodesic velocity *)
     exp\[Theta] = Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];
@@ -1700,7 +1700,7 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
 
 Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->30};
 
-TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{h1,h2,a,p,e,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
+TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
     correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,SWSH,dSWSHd\[Omega],R,\[Lambda],d\[Lambda]d\[Omega],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMinus0,sumPlus1,sumMinus1,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,
     Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,
     \[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,
@@ -1715,7 +1715,7 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,Teuko
   a = orbitCorrection["a"];(* Orbital parameters *)
   p = orbitCorrection["p"];
   e = orbitCorrection["e"];
-  \[ScriptCapitalI] = orbitCorrection["\[ScriptCapitalI]"];
+  x = orbitCorrection["Inclination"];
   En = orbitCorrection["Ehat"]; (* Geodesic constants of motion *)
   Lz = orbitCorrection["Lzhat"];
   Kc = orbitCorrection["Khat"];
@@ -1728,8 +1728,8 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,Teuko
   \[CapitalGamma] = orbitCorrection["MinoFrequenciesGeo"][[1]]; (* Geodesic average rate of change of BL time in Mino time and the linear correction *)
   \[CapitalGamma]1 = orbitCorrection["MinoFrequenciesCorrection"][[1]]; 
   \[Omega] = m*\[CapitalOmega]\[Phi] + k*\[CapitalOmega]\[Theta]; (* Geodesic frequency and the linear correction *)
-  \[Omega]prec = m*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[Cos[\[ScriptCapitalI]],OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Phi]\)]\)"]
-        + k*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[Cos[\[ScriptCapitalI]],OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Theta]\)]\)"];
+  \[Omega]prec = m*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[x,OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Phi]\)]\)"]
+        + k*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[x,OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Theta]\)]\)"];
   (*\[Omega]prec = SetPrecision[\[Omega],40];*)
   \[Omega]1 = m*\[CapitalOmega]\[Phi]1 + k*\[CapitalOmega]\[Theta]1;
   (*Print["Calculating angular functions"<>ToString@AbsoluteTiming[{\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega]}=angparNew[-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1];][[1]]];*)(* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
@@ -1752,7 +1752,7 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,Teuko
   steps\[Theta] = Max[8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/2]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/2]+k)]],
                8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];
-  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
+  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
   rp = p;
   Ur = 0;(* Geodesic radial velocity *)
   \[CapitalDelta]  = rp^2-2rp+a^2;
@@ -1784,7 +1784,7 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,Teuko
   ddRUprp1 = (V*RUprp1 + V1*RUprp + d\[CapitalDelta]*dRUprp1)/\[CapitalDelta];
   dddRUprp = 1/\[CapitalDelta] (dV*RUprp+(V+2)*dRUprp);
   Do[(* integration over w\[Theta] *)
-    w\[Theta]=N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]];
+    w\[Theta]=N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]];
     zp=z[w\[Theta]];(* functions of only w\[Theta] saved to lists *)
     Uz={1,-1}*(-1)*Sqrt[-((1-zp^2)*a*En-Lz)^2+(1-zp^2)*(Kc-a^2*zp^2)];(* Polar geodesic velocity *)
     exp\[Theta]=Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];
@@ -1941,7 +1941,7 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,Teuko
 Options[TeukolskySpinModeSphericalCorrectionNew] = {WorkingPrecision->30};
 
 TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivatives_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{
-    h1,h2,a,p,e,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,dEndr,dLzdr,dEndx,dLzdx,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,d\[CapitalOmega]\[Theta]dr,d\[CapitalOmega]\[Phi]dr,d\[CapitalOmega]\[Theta]dx,d\[CapitalOmega]\[Phi]dx,correction,derivatives,z,\[CapitalGamma],\[CapitalGamma]1,d\[CapitalGamma]dr,d\[CapitalGamma]dx,
+    h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,dEndr,dLzdr,dEndx,dLzdx,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,d\[CapitalOmega]\[Theta]dr,d\[CapitalOmega]\[Phi]dr,d\[CapitalOmega]\[Theta]dx,d\[CapitalOmega]\[Phi]dx,correction,derivatives,z,\[CapitalGamma],\[CapitalGamma]1,d\[CapitalGamma]dr,d\[CapitalGamma]dx,
     \[Omega],\[Omega]prec,\[Omega]1,d\[Omega]dr,d\[Omega]dx,\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega],R,\[ScriptCapitalC]2,d\[ScriptCapitalC]2d\[Omega],rplus,P,\[Epsilon],\[Alpha],d\[Alpha]d\[Omega],
     steps\[Theta],correctionp,derivativesp,sumPlus0,sumMinus0,sumPlus1,sumMinus1,dsumPlusdr,dsumMinusdr,dsumPlusdx,dsumMinusdx,i\[Theta],w\[Theta],
     rp,zp,\[Theta]p,sin\[Theta]p,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,dKd\[Omega],dKdr,d2Kdrd\[Omega],V,dVd\[Omega],dVdr,
@@ -1963,7 +1963,7 @@ TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivativ
   p = orbitCorrection["p"];
   e = orbitCorrection["e"];
   If[e!=0,Return[$Failed]];
-  \[ScriptCapitalI] = orbitCorrection["\[ScriptCapitalI]"];
+  x = orbitCorrection["Inclination"];
   En = orbitCorrection["Ehat"]; (* Geodesic constants of motion *)
   Lz = orbitCorrection["Lzhat"];
   Kc = orbitCorrection["Khat"];
@@ -1985,8 +1985,8 @@ TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivativ
   d\[CapitalGamma]dr = orbitDerivatives["dMinoFrequenciesdr"][[1]]; 
   d\[CapitalGamma]dx = orbitDerivatives["dMinoFrequenciesdx"][[1]]; 
   \[Omega] = m*\[CapitalOmega]\[Phi] + k*\[CapitalOmega]\[Theta]; (* Geodesic frequency and the linear correction and derivatives *)
-  \[Omega]prec = m*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[Cos[\[ScriptCapitalI]],OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Phi]\)]\)"]
-        + k*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[Cos[\[ScriptCapitalI]],OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Theta]\)]\)"]; (* Frequency with higher precision *)
+  \[Omega]prec = m*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[x,OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Phi]\)]\)"]
+        + k*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[x,OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Theta]\)]\)"]; (* Frequency with higher precision *)
   \[Omega]1 = m*\[CapitalOmega]\[Phi]1 + k*\[CapitalOmega]\[Theta]1;
   d\[Omega]dr = m*d\[CapitalOmega]\[Phi]dr + k*d\[CapitalOmega]\[Theta]dr;
   d\[Omega]dx = m*d\[CapitalOmega]\[Phi]dx + k*d\[CapitalOmega]\[Theta]dx;
@@ -2007,8 +2007,8 @@ TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivativ
   steps\[Theta] = Max[8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/2]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/2]+k)]],
                8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];
-  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
-  derivativesp = Table[derivatives[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{i\[Theta],1,steps\[Theta]/2}];(* derivatives of the trajectory at all points *)
+  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
+  derivativesp = Table[derivatives[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* derivatives of the trajectory at all points *)
   rp = p;
   \[CapitalDelta]  = rp^2-2rp+a^2;
   K  = (rp^2+a^2)*\[Omega]-a*m;
@@ -2027,7 +2027,7 @@ TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivativ
   d3RIndr2d\[Omega] = (V*dRInd\[Omega] + dVd\[Omega]*RIn + d\[CapitalDelta]*d2RIndrd\[Omega])/\[CapitalDelta];
   d3RUpdr2d\[Omega] = (V*dRUpd\[Omega] + dVd\[Omega]*RUp + d\[CapitalDelta]*d2RUpdrd\[Omega])/\[CapitalDelta];
   {sumPlus0, sumMinus0, sumPlus1, sumMinus1, dsumPlusdr, dsumMinusdr, dsumPlusdx, dsumMinusdx} = Sum[(* integration over w\[Theta] *)
-    w\[Theta]     = N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]];
+    w\[Theta]     = N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]];
     zp     = z[w\[Theta]];
     Uz     = {1,-1}*(-1)*Sqrt[-((1-zp^2)*a*En-Lz)^2+(1-zp^2)*(Kc-a^2*zp^2)];(* Polar geodesic velocity *)
     exp\[Theta]   = Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];
@@ -2270,7 +2270,7 @@ TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivativ
 ]
 
 
-TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_}]:=Module[{h1,h2,a,p,e,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
+TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_}]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
     correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,SWSH,SWSHS,R,\[Lambda],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMinus0,sumPlus1,sumMinus1,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,
     Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,
     \[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,
@@ -2284,7 +2284,7 @@ TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,Teuk
   a = orbitCorrection["a"];(* Orbital parameters *)
   p = orbitCorrection["p"];
   e = orbitCorrection["e"];
-  \[ScriptCapitalI] = orbitCorrection["\[ScriptCapitalI]"];
+  x = orbitCorrection["Inclination"];
   En = orbitCorrection["Ehat"]; (* Geodesic constants of motion *)
   Lz = orbitCorrection["Lzhat"];
   Kc = orbitCorrection["Khat"];
@@ -2315,7 +2315,7 @@ TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,Teuk
   steps\[Theta] = Max[8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/2]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/2]+k)]],
                8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];
-  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
+  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
   rp = p;
   Ur = 0;(* Geodesic radial velocity *)
   \[CapitalDelta]  = rp^2-2rp+a^2;
@@ -2342,7 +2342,7 @@ TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,Teuk
   ddRUprp1 = (V*RUprp1 + V1*RUprp + d\[CapitalDelta]*dRUprp1)/\[CapitalDelta];
   dddRUprp = 1/\[CapitalDelta] (dV*RUprp+(V+2)*dRUprp);
   For[i\[Theta] = 1, i\[Theta] <= steps\[Theta]/2, i\[Theta]++,(* integration over w\[Theta] *)
-    w\[Theta]=N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]];
+    w\[Theta]=N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]];
     zp=z[w\[Theta]];(* functions of only w\[Theta] saved to lists *)
     Uz={1,-1}*(-1)*Sqrt[-((1-zp^2)*a*En-Lz)^2+(1-zp^2)*(Kc-a^2*zp^2)];(* Polar geodesic velocity *)
     exp\[Theta]=Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];

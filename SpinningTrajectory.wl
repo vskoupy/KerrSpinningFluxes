@@ -666,7 +666,7 @@ KerrSpinOrbitCorrection2Spherical[correction_]:=Module[{a,p,e,x,\[ScriptCapitalI
   \[CapitalGamma]hat=orbit["Frequencies"]["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"];
   \[CapitalDelta]t\[Theta]=orbit["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"];
   \[CapitalDelta]\[Phi]\[Theta]=orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"];
-  z1=Sin[\[ScriptCapitalI]];
+  z1=Sqrt[1-x^2];
   z2=Sqrt[a^2*(1-Ehat^2)+Lzhat^2/(1-z1^2)];
   kz=a^2*(1-Ehat^2)*z1^2/z2^2;
   Kkz=EllipticK[kz];
@@ -706,8 +706,7 @@ KerrSpinOrbitCorrection2Spherical[correction_]:=Module[{a,p,e,x,\[ScriptCapitalI
     "a"->a,
     "p"->p,
     "e"->e,
-    "\[ScriptCapitalI]"->\[ScriptCapitalI],
-    "Inlination"->x;
+    "Inclination"->x,
     "Ehat"->Ehat,
     "Lzhat"->Lzhat,
     "Khat"->Khat,
@@ -749,7 +748,7 @@ KerrSpinOrbitSpherical[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[Capita
     "a"->orbitCorrection["a"],
     "p"->orbitCorrection["p"],
     "e"->orbitCorrection["e"],
-    "\[ScriptCapitalI]"->orbitCorrection["\[ScriptCapitalI]"],
+    "Inclination"->orbitCorrection["Inclination"],
     "s"->spar,
     "Ehat"->orbitCorrection["Ehat"],
     "Lzhat"->orbitCorrection["Lzhat"],
