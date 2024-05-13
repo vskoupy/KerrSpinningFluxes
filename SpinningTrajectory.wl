@@ -641,12 +641,12 @@ KerrSpinOrbitCorrection2Spherical[correction_]:=Module[{a,p,e,x,\[ScriptCapitalI
     \[Delta]\[Chi]\[Theta]Sp=(2*Sum[\[Delta]\[Chi]\[Theta]SfourIm[[k+kmax/2]]*sinkwz[[2k]],{k,1,kmax/2}]);
     \[Chi]\[Theta]hatp=\[Chi]\[Theta]hat[wz];
     <|
-      "\[CapitalDelta]tS"->2*(Sum[Im\[CapitalDelta]tSfour[[k+kmax+1]]*sinkwz[[k]],{k,1,kmax}]),
-      "rS"->2*(Sum[\[Delta]\[GothicR]four[[k+kmax/2]]*coskwz[[2k]],{k,1,kmax/2}]),
-      "zS"->-Sin[\[ScriptCapitalI]]*\[Delta]\[Chi]\[Theta]Sp*Sin[\[Chi]\[Theta]hatp],
-      "\[CapitalDelta]\[Phi]S"->2*(Sum[Im\[CapitalDelta]\[Phi]Sfour[[k+kmax+1]]*sinkwz[[k]],{k,1,kmax}]),
-      "UrS"->(-2*(Sum[(2k*\[CapitalUpsilon]\[Theta]hat)*\[Delta]\[GothicR]four[[k+kmax/2]]*sinkwz[[2k]],{k,1,kmax/2}])),
-      "UzS"->(-Sin[\[ScriptCapitalI]]*(\[Chi]\[Theta]hat'[wz]*(Cos[\[Chi]\[Theta]hatp]*\[Delta]\[Chi]\[Theta]Sp*\[CapitalUpsilon]\[Theta]hat+Sin[\[Chi]\[Theta]hatp]*\[CapitalUpsilon]\[Theta]S)+Sin[\[Chi]\[Theta]hatp]*(2*Sum[2*k*\[CapitalUpsilon]\[Theta]hat*\[Delta]\[Chi]\[Theta]SfourIm[[k+kmax/2]]*coskwz[[2k]],{k,1,kmax/2}])))
+      "\[Delta]\[CapitalDelta]t"->2*(Sum[Im\[CapitalDelta]tSfour[[k+kmax+1]]*sinkwz[[k]],{k,1,kmax}]),
+      "\[Delta]r"->2*(Sum[\[Delta]\[GothicR]four[[k+kmax/2]]*coskwz[[2k]],{k,1,kmax/2}]),
+      "\[Delta]z"->-Sin[\[ScriptCapitalI]]*\[Delta]\[Chi]\[Theta]Sp*Sin[\[Chi]\[Theta]hatp],
+      "\[Delta]\[CapitalDelta]\[Phi]"->2*(Sum[Im\[CapitalDelta]\[Phi]Sfour[[k+kmax+1]]*sinkwz[[k]],{k,1,kmax}]),
+      "\[Delta]Ur"->(-2*(Sum[(2k*\[CapitalUpsilon]\[Theta]hat)*\[Delta]\[GothicR]four[[k+kmax/2]]*sinkwz[[2k]],{k,1,kmax/2}])),
+      "\[Delta]Uz"->(-Sin[\[ScriptCapitalI]]*(\[Chi]\[Theta]hat'[wz]*(Cos[\[Chi]\[Theta]hatp]*\[Delta]\[Chi]\[Theta]Sp*\[CapitalUpsilon]\[Theta]hat+Sin[\[Chi]\[Theta]hatp]*\[CapitalUpsilon]\[Theta]S)+Sin[\[Chi]\[Theta]hatp]*(2*Sum[2*k*\[CapitalUpsilon]\[Theta]hat*\[Delta]\[Chi]\[Theta]SfourIm[[k+kmax/2]]*coskwz[[2k]],{k,1,kmax/2}])))
     |>
   ];
   UtS[wz_]:=((d\[CapitalSigma]gttdr[p]*rS[wz]+d\[CapitalSigma]gttdz[zhat[wz]]*zS[wz])*(-Ehat)+\[CapitalSigma]gtt[p,zhat[wz]]*(udtS[wz])+d\[CapitalSigma]gt\[Phi]dr[p]*rS[wz]*(Lzhat)+\[CapitalSigma]gt\[Phi][p]*(ud\[Phi]S[wz]));
@@ -707,9 +707,9 @@ KerrSpinOrbitCorrection2Spherical[correction_]:=Module[{a,p,e,x,\[ScriptCapitalI
     "p"->p,
     "e"->e,
     "Inclination"->x,
-    "Ehat"->Ehat,
-    "Lzhat"->Lzhat,
-    "Khat"->Khat,
+    "En0"->Ehat,
+    "Lz0"->Lzhat,
+    "K0"->Khat,
     "TrajectoryCorrection"->{Function[{wz},\[CapitalDelta]tS[wz]],Function[{wz},rS[wz]],Function[{wz},zS[wz]],Function[{wz},\[CapitalDelta]\[Phi]S[wz]]},
     "TrajectoryGeo"->orbit["Trajectory"],
     "MinoFrequenciesGeo"->{\[CapitalGamma]hat,\[CapitalUpsilon]\[Theta]hat,\[CapitalUpsilon]\[Phi]hat},
@@ -723,10 +723,8 @@ KerrSpinOrbitCorrection2Spherical[correction_]:=Module[{a,p,e,x,\[ScriptCapitalI
     "TrajectoryDeltas"->orbit["TrajectoryDeltas"],
     "MinoFrequenciesCorrection"->{\[CapitalGamma]S,\[CapitalUpsilon]\[Theta]S,\[CapitalUpsilon]\[Phi]S},
     "BLFrequenciesCorrection"->{\[CapitalUpsilon]\[Theta]S/\[CapitalGamma]hat-\[CapitalUpsilon]\[Theta]hat/\[CapitalGamma]hat^2*\[CapitalGamma]S,\[CapitalUpsilon]\[Phi]S/\[CapitalGamma]hat-\[CapitalUpsilon]\[Phi]hat/\[CapitalGamma]hat^2*\[CapitalGamma]S},
-    "ES"->ES,
-    "LS"->LS,
-    "\[Delta]\[Chi]\[Theta]S"->\[Delta]\[Chi]\[Theta]S,
-    "\[Delta]r"->\[Delta]\[GothicR],
+    "\[Delta]En"->ES,
+    "\[Delta]Lz"->LS,
     "OrbitCorrection"->Function[{wz},OrbitCorrection[wz]],
     "error"->correction["error"]
   |>
@@ -750,17 +748,17 @@ KerrSpinOrbitSpherical[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[Capita
     "e"->orbitCorrection["e"],
     "Inclination"->orbitCorrection["Inclination"],
     "s"->spar,
-    "Ehat"->orbitCorrection["Ehat"],
-    "Lzhat"->orbitCorrection["Lzhat"],
-    "Khat"->orbitCorrection["Khat"],
+    "En0"->orbitCorrection["En0"],
+    "Lz0"->orbitCorrection["Lz0"],
+    "K0"->orbitCorrection["K0"],
     "BLFrequencies"->{\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi]},
     "TrajectoryGeo"->orbitCorrection["TrajectoryGeo"],
     "TrajectoryDeltas"->orbitCorrection["TrajectoryDeltas"],
     "MinoFrequencies"->{\[CapitalGamma],\[CapitalUpsilon]\[Theta],\[CapitalUpsilon]\[Phi]},
     "MinoFrequenciesGeo"->orbitCorrection["MinoFrequenciesGeo"],
     "MinoFrequenciesCorrection"->orbitCorrection["MinoFrequenciesCorrection"],
-    "ES"->orbitCorrection["ES"],
-    "LS"->orbitCorrection["LS"],
+    "\[Delta]En"->orbitCorrection["\[Delta]En"],
+    "LS"->orbitCorrection["\[Delta]Lz"],
     "OrbitCorrection"->orbitCorrection["OrbitCorrection"]
   |>
 ]
