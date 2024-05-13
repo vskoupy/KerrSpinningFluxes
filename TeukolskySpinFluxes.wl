@@ -1698,7 +1698,7 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
 ]
 
 
-Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->30};
+(*Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->30};
 
 TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
     correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,SWSH,dSWSHd\[Omega],R,\[Lambda],d\[Lambda]d\[Omega],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMinus0,sumPlus1,sumMinus1,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,
@@ -1935,12 +1935,12 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,Teuko
     |>,
     "steps\[Theta]"->steps\[Theta]
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
-]
+]*)
 
 
-Options[TeukolskySpinModeSphericalCorrectionNew] = {WorkingPrecision->30};
+Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->30};
 
-TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivatives_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{
+TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{
     h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,dEndr,dLzdr,dEndx,dLzdx,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,d\[CapitalOmega]\[Theta]dr,d\[CapitalOmega]\[Phi]dr,d\[CapitalOmega]\[Theta]dx,d\[CapitalOmega]\[Phi]dx,correction,derivatives,z,\[CapitalGamma],\[CapitalGamma]1,d\[CapitalGamma]dr,d\[CapitalGamma]dx,
     \[Omega],\[Omega]prec,\[Omega]1,d\[Omega]dr,d\[Omega]dx,\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega],R,\[ScriptCapitalC]2,d\[ScriptCapitalC]2d\[Omega],rplus,P,\[Epsilon],\[Alpha],d\[Alpha]d\[Omega],
     steps\[Theta],correctionp,derivativesp,sumPlus0,sumMinus0,sumPlus1,sumMinus1,dsumPlusdr,dsumMinusdr,dsumPlusdx,dsumMinusdx,i\[Theta],w\[Theta],
@@ -2270,7 +2270,7 @@ TeukolskySpinModeSphericalCorrectionNew[l_,m_,k_,orbitCorrection_,orbitDerivativ
 ]
 
 
-TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_}]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
+(*TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_}]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
     correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,SWSH,SWSHS,R,\[Lambda],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMinus0,sumPlus1,sumMinus1,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,
     Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,
     \[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,
@@ -2495,7 +2495,7 @@ TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,Teuk
     |>,
     "steps\[Theta]"->steps\[Theta]
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
-]
+]*)
 
 
 (* ::Section::Closed:: *)
