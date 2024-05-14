@@ -1991,8 +1991,16 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
   d\[Omega]dr = m*d\[CapitalOmega]\[Phi]dr + k*d\[CapitalOmega]\[Theta]dr;
   d\[Omega]dx = m*d\[CapitalOmega]\[Phi]dx + k*d\[CapitalOmega]\[Theta]dx;
   (*Print["Calculating angular functions"<>ToString@AbsoluteTiming[{\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega]}=angparNew[-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1];][[1]]];*)(* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
-  {\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega]}=angparNew[-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1,"precODE"->OptionValue[WorkingPrecision]];(* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
-  Print["Calculating radial functions"<>ToString@AbsoluteTiming[R = TeukolskySolverHS1spin[p,-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1,\[Lambda],d\[Lambda]d\[Omega],"precODE"->OptionValue[WorkingPrecision]]][[1]]];
+  {\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega]} = angparNew[-2,l,m,
+                                     SetPrecision[a,    OptionValue[WorkingPrecision]+(5+1.5*\[Omega]+5.3*(l-Max[2,Abs[m]])+2.6*a)],
+                                     SetPrecision[\[Omega]prec,OptionValue[WorkingPrecision]+(5+1.5*\[Omega]+5.3*(l-Max[2,Abs[m]])+2.6*a)],1,
+                                           "precODE" -> OptionValue[WorkingPrecision]+(5+1.5*\[Omega]+5.3*(l-Max[2,Abs[m]])+2.6*a)];(* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
+  Print["Calculating radial functions"<>ToString@AbsoluteTiming[R = TeukolskySolverHS1spin[p,-2,l,m,
+                                                                SetPrecision[a,    OptionValue[WorkingPrecision]+5],
+                                                                SetPrecision[\[Omega]prec,OptionValue[WorkingPrecision]+5],1,
+                                                                SetPrecision[\[Lambda],    OptionValue[WorkingPrecision]+5],
+                                                                SetPrecision[d\[Lambda]d\[Omega], OptionValue[WorkingPrecision]+5],
+                                                                       "precODE" -> OptionValue[WorkingPrecision]]][[1]]];
   (*R = TeukolskySolverHS1spin[p,-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1,\[Lambda],d\[Lambda]d\[Omega]];*)
   \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (*  TS constant *)
   d\[ScriptCapitalC]2d\[Omega] = 4 \[Lambda]^3 d\[Lambda]d\[Omega]+4 \[Lambda]^2 (3 d\[Lambda]d\[Omega]+10 a (m-2 a \[Omega]))+8 \[Lambda] (d\[Lambda]d\[Omega] (1+10 a m \[Omega]-10 a^2 \[Omega]^2)+6 a (m+2 a \[Omega])) + 
