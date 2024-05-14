@@ -18,8 +18,8 @@ TeukolskySpinModeCorrection::usage = "TeukolskySpinModeCorrection[l,m,n,k,orbitC
 TeukolskySpinModeSpherical::usage = "TeukolskySpinModeSpherical[l,m,k,orbitCorrection,s] calculates Teukolsky amplitudes and fluxes from a correction to a spherical orbit and a value of the spin";
 TeukolskySpinModeSphericalCorrectionNum::usage = "TeukolskySpinModeSphericalCorrectionNum[l,m,k,orbitCorrection,\[Delta]\[Omega]] calculates linear correction to the fluxes for spherical orbit from numerical derivatives of R ans S with step \[Delta]\[Omega]";
 TeukolskySpinModeSphericalCorrection::usage = "TeukolskySpinModeSphericalCorrection[l,m,k,orbitCorrection,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes for spherical orbit using given function for the R and S derivatives";
-TeukolskySpinModeSphericalCorrectionNew::usage = "TeukolskySpinModeSphericalCorrectionNew[l,m,k,orbitCorrection,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes for spherical orbit using given function for the R and S derivatives";
-TeukolskySpinModeSphericalCorrection2::usage = "TeukolskySpinModeSphericalCorrection2[l,m,k,orbitCorrection,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes for spherical orbit using given function for the R and S derivatives";
+(*TeukolskySpinModeSphericalCorrectionNew::usage = "TeukolskySpinModeSphericalCorrectionNew[l,m,k,orbitCorrection,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes for spherical orbit using given function for the R and S derivatives";
+TeukolskySpinModeSphericalCorrection2::usage = "TeukolskySpinModeSphericalCorrection2[l,m,k,orbitCorrection,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes for spherical orbit using given function for the R and S derivatives";*)
 
 
 Begin["`Private`"];
@@ -2033,8 +2033,10 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
     exp\[Theta]   = Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];
     sin\[Theta]p  = Sqrt[1-zp^2];
     \[Theta]p     = ArcCos[zp];
-    {S,dSd\[Theta],d2Sd\[Theta]2}=SWSH[\[Theta]p];  (*  Spin-weighted spheroidal harmonics S(\[Theta](z))  *)
-    {dSd\[Omega],d2Sd\[Theta]d\[Omega],d3Sd\[Theta]2d\[Omega]}=dSWSHd\[Omega][\[Theta]p];  (*  \[Omega]-derivative of S(\[Theta](z))  *)
+    {S,dSd\[Theta](*,d2Sd\[Theta]2*)}=SWSH[\[Theta]p];  (*  Spin-weighted spheroidal harmonics S(\[Theta](z))  *)
+    d2Sd\[Theta]2 = -(zp/sin\[Theta]p)*dSd\[Theta] - (-a^2*\[Omega]^2*(1-zp^2) - (m-2*zp)^2/(1-zp^2) + 4*a*\[Omega]*zp - 2 + 2*m*a*\[Omega] + \[Lambda])*S;
+    {dSd\[Omega],d2Sd\[Theta]d\[Omega](*,d3Sd\[Theta]2d\[Omega]*)}=dSWSHd\[Omega][\[Theta]p];  (*  \[Omega]-derivative of S(\[Theta](z))  *)
+    d3Sd\[Theta]2d\[Omega] = -(zp/sin\[Theta]p)*d2Sd\[Theta]d\[Omega] - (-a^2*\[Omega]^2*(1-zp^2) - (m-2*zp)^2/(1-zp^2) + 4*a*\[Omega]*zp - 2 + 2*m*a*\[Omega] + \[Lambda])*dSd\[Omega] - (-2*a^2*\[Omega]*(1-zp^2) + 4*a*zp + 2*m*a + d\[Lambda]d\[Omega])*S;
     d3Sd\[Theta]3 = -(1/sin\[Theta]p^3)2 (-2+m zp+a zp (-1+zp^2) \[Omega]) (m+a \[Omega]-zp (2+a zp \[Omega]))*S
              -(-(a*\[Omega])^2*(1-zp^2)-(m-2*zp)^2/(1-zp^2)+4a*\[Omega]*zp-2+2*m*a*\[Omega]+\[Lambda]-1/(1-zp^2))*dSd\[Theta]-zp/sin\[Theta]p*d2Sd\[Theta]2; (*third derivative from the TE *)
     L2S    = dSd\[Theta]-(S (m-2 zp+a (-1+zp^2) \[Omega]))/sin\[Theta]p; (* Operators acting on S(\[Theta]) *)
