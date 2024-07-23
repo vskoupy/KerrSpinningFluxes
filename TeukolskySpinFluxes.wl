@@ -385,10 +385,10 @@ TeukolskySpinModeCircularCorrection[l_,m_,orbitCorrection_,orbitDerivatives_,{an
 TeukolskySpinMode[l_,m_,n_,k_,orbit_]:=Module[{a,p,e,\[ScriptCapitalI],s,En0,Lz0,Kc0,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],SWSH,\[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Theta]list,
     R,\[Lambda],W,sumPlus,sumMinus,ir,i\[Theta],wr,w\[Theta],rp,zp,sin\[Theta]p,Urp,Uzp,udtp,ud\[Phi]p,Kp,\[CapitalDelta],dK,d\[CapitalDelta],\[CapitalSigma],\[Zeta],\[Zeta]bar,fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,dfnmb0dr,
     dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,C0nn,C0nmb,C0mbmb,
-    Crnn,Crnmb,Crmbmb,C\[Theta]nn,C\[Theta]nmb,C\[Theta]mbmb,Cmnn,Cmnmb,Cmmbmb,Cdnn,Cdnmb,Cdmbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,
+    Crnn,Crnmb,Crmbmb,C\[Theta]nn,C\[Theta]nmb,C\[Theta]mbmb,Amnn,Amnmb,Ammbmb,Adnn,Adnmb,Admbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,
     A0,A1,A2,B1,B2,B3,V,dV,RInrp,dRInrp,ddRInrp,dddRInrp,RUprp,dRUprp,ddRUprp,dddRUprp,CPlus,CMinus,\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],expr,exp\[Theta],exp1,stepsr,steps\[Theta],h1,h2,h3,
     r0,z0,Ur0,Uz0,r0p,z0p,\[CapitalDelta]0,d\[CapitalDelta]0,K0,dK0,r1p,z1p,sin\[Theta]0p,\[Zeta]0,\[Zeta]0bar,Ur1p,Uz1p,correction,correctionp},
-  h1[r_,z_]:=(r (-3 a^2 r^2 z^2+a^4 z^4+Kc0 (r^2-3 a^2 z^2)))/(Sqrt[Kc0] (r^2+a^2 z^2)^3);
+  h1[r_,z_]:=(r (-3 a^2 r^2 z^2+a^4 z^4+Kc0 (r^2-3 a^2 z^2)))/(Sqrt[Kc0] (r^2+a^2 z^2)^3);(* Projections of s^\[Mu]\[Nu] to \[Xi]_\[Mu];\[Nu] in Eq. (21) in [2303.16798] *)
   h2[r_,z_] := 1/(Sqrt[Kc0] (r^2+a^2 z^2)^3) (-En0 Lz0 r^6+a^4 En0 Lz0 r^2 z^4+a^2 En0 Lz0 r^4 (-2+z^2)-a^6 En0 Lz0 z^4 (-2+z^2)+
                a^7 En0^2 z^4 (-1+z^2)+a r^3 (Lz0^2 r+Kc0 (-1+z^2)+Kc0 r (-1+2 z^2)+r^3 (z^2-En0^2 (-1+z^2)))+a^3 (-En0^2 r^4 (-1+z^2)+
                r z^2 (2 r^3+2 Kc0 r z^2-3 Kc0 (-1+z^2)-3 r^2 (-1+z^2)))+a^5 z^4 (Kc0-Lz0^2+r ( (-1+z^2)+r (2-z^2+En0^2 (-1+z^2)))));
@@ -503,9 +503,9 @@ TeukolskySpinMode[l_,m_,n_,k_,orbit_]:=Module[{a,p,e,\[ScriptCapitalI],s,En0,Lz0
       Snmb = Conjugate[Snm];
       Slmb = s*(-(\[Zeta]/Sqrt[Kc0]))*vl*vmb;
       Smmb = s*((I a zp (Kc0+rp^2))/(Sqrt[Kc0] \[CapitalSigma]));
-      Cmnn   = vn^2;
-      Cmnmb  = vn*vmb;
-      Cmmbmb = vmb^2;
+      Amnn   = vn^2;
+      Amnmb  = vn*vmb;
+      Ammbmb = vmb^2;
       rho = 1/\[Zeta]; (* Spin coefficients *)
       beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
       pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
@@ -515,30 +515,30 @@ TeukolskySpinMode[l_,m_,n_,k_,orbit_]:=Module[{a,p,e,\[ScriptCapitalI],s,En0,Lz0
       alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
       Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);(* term in the comment is indentically zero *)
       Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-      Cdnn   = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
-      Cdmbmb = (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-      Cdnmb  = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)-Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
+      Adnn   = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
+      Admbmb = (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
+      Adnmb  = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)-Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
       St\[Phi]n  = -I*Kp/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
       St\[Phi]mb = -I*Kp*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
       Srn  = \[CapitalDelta]/(2\[CapitalSigma])*Sln;
       Srmb = -Snmb+\[CapitalDelta]/(2\[CapitalSigma])*Slmb;
       S\[Theta]n  = -(Snmb*\[Zeta]+Snm*\[Zeta]bar)/(Sqrt[2]*\[CapitalSigma]);
       S\[Theta]mb = Smmb/(Sqrt[2]*\[Zeta]);
-      C0nn   = (Cmnn+Cdnn+St\[Phi]n*vn);
-      Crnn   = (Cmnn*s*r1p+Srn*vn);
-      C\[Theta]nn   = (-Cmnn*s*z1p/sin\[Theta]0p+S\[Theta]n*vn);
-      C0nmb  = (Cmnmb+Cdnmb+(St\[Phi]n*vmb+St\[Phi]mb*vn)/2);
-      Crnmb  = (Cmnmb*s*r1p+(Srn*vmb+Srmb*vn)/2);
-      C\[Theta]nmb  = (-Cmnmb*s*z1p/sin\[Theta]0p+(S\[Theta]n*vmb+S\[Theta]mb*vn)/2);
-      C0mbmb = (Cmmbmb+Cdmbmb+St\[Phi]mb*vmb);
-      Crmbmb = (Cmmbmb*s*r1p+Srmb*vmb);
-      C\[Theta]mbmb = (-Cmmbmb*s*z1p/sin\[Theta]0p+S\[Theta]mb*vmb);
-      A0 = C0nn*fnn0+Crnn*dfnn0dr+C\[Theta]nn*dfnn0d\[Theta]+C0nmb*fnmb0+Crnmb*dfnmb0dr+C\[Theta]nmb*dfnmb0d\[Theta]+C0mbmb*fmbmb0+Crmbmb*dfmbmb0dr+C\[Theta]mbmb*dfmbmb0d\[Theta];
-      A1 = C0nmb*fnmb1+Crnmb*dfnmb1dr+C\[Theta]nmb*dfnmb1d\[Theta]+C0mbmb*fmbmb1+Crmbmb*dfmbmb1dr+C\[Theta]mbmb*dfmbmb1d\[Theta];
-      A2 = C0mbmb*fmbmb2+Crmbmb*dfmbmb2dr+C\[Theta]mbmb*dfmbmb2d\[Theta];
-      B1 = -Srn*vn*fnn0-(Srn*vmb+Srmb*vn)/2*fnmb0-Srmb*vmb*fmbmb0;
-      B2 = -(Srn*vmb+Srmb*vn)/2*fnmb1-Srmb*vmb*fmbmb1;
-      B3 = -Srmb*vmb*fmbmb2;
+      C0nn   = (Amnn+Adnn+St\[Phi]n*vn);
+      Crnn   = (Amnn*s*r1p+Srn*vn);
+      C\[Theta]nn   = (-Amnn*s*z1p/sin\[Theta]0p+S\[Theta]n*vn);
+      C0nmb  = (Amnmb+Adnmb+(St\[Phi]n*vmb+St\[Phi]mb*vn)/2);
+      Crnmb  = (Amnmb*s*r1p+(Srn*vmb+Srmb*vn)/2);
+      C\[Theta]nmb  = (-Amnmb*s*z1p/sin\[Theta]0p+(S\[Theta]n*vmb+S\[Theta]mb*vn)/2);
+      C0mbmb = (Ammbmb+Admbmb+St\[Phi]mb*vmb);
+      Crmbmb = (Ammbmb*s*r1p+Srmb*vmb);
+      C\[Theta]mbmb = (-Ammbmb*s*z1p/sin\[Theta]0p+S\[Theta]mb*vmb);
+      A0 = C0nn*fnn0 + Crnn*dfnn0dr + C\[Theta]nn*dfnn0d\[Theta] + C0nmb*fnmb0 + Crnmb*dfnmb0dr + C\[Theta]nmb*dfnmb0d\[Theta] + C0mbmb*fmbmb0 + Crmbmb*dfmbmb0dr + C\[Theta]mbmb*dfmbmb0d\[Theta];
+      A1 = C0nmb*fnmb1 + Crnmb*dfnmb1dr + C\[Theta]nmb*dfnmb1d\[Theta] + C0mbmb*fmbmb1 + Crmbmb*dfmbmb1dr + C\[Theta]mbmb*dfmbmb1d\[Theta];
+      A2 = C0mbmb*fmbmb2 + Crmbmb*dfmbmb2dr + C\[Theta]mbmb*dfmbmb2d\[Theta];
+      B1 = - Srn*vn*fnn0 - (Srn*vmb+Srmb*vn)/2*fnmb0 - Srmb*vmb*fmbmb0;
+      B2 = - (Srn*vmb+Srmb*vn)/2*fnmb1 - Srmb*vmb*fmbmb1;
+      B3 = - Srmb*vmb*fmbmb2;
       sumPlus += Total[\[CapitalSigma]*((A0*(RInrp+s*r1p*dRInrp)-(A1+B1)*(dRInrp+s*r1p*ddRInrp)+(A2+B2)*(ddRInrp+s*r1p*dddRInrp)-B3*dddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}*exp1)]; (* Total over all quadrants *)
       sumMinus += Total[\[CapitalSigma]*((A0*(RUprp+s*r1p*dRUprp)-(A1+B1)*(dRUprp+s*r1p*ddRUprp)+(A2+B2)*(ddRUprp+s*r1p*dddRUprp)-B3*dddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}*exp1)];
     ];
@@ -581,7 +581,7 @@ TeukolskySpinModeFromCorrection[l_,m_,n_,k_,orbitCorrection_,s_]:=Module[{h1,h2,
     sumPlus,sumMinus,stepsr,steps\[Theta],\[Theta]list,correctionp,ir,i\[Theta],wr,w\[Theta],rp,zp,sin\[Theta]p,Ur,Uz,expr,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,dK,V,dV,RInrp,dRInrp,ddRInrp,dddRInrp,
     RUprp,dRUprp,ddRUprp,dddRUprp,\[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,
     dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,
-    Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,r1p,z1p,Ur1p,Uz1p,\[CapitalSigma]1,exp1,vn1,vmb1,
+    Amnn,Amnmb,Ammbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Adnn,Adnmb,Admbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,r1p,z1p,Ur1p,Uz1p,\[CapitalSigma]1,exp1,vn1,vmb1,
     Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,CPlus,CMinus},
   h1[r_,z_] := (r (-3 a^2 r^2 z^2+a^4 z^4+Kc0 (r^2-3 a^2 z^2)))/(Sqrt[Kc0] (r^2+a^2 z^2)^3);(* Projections of s^\[Mu]\[Nu] to \[Xi]_\[Mu];\[Nu] in Eq. (21) in [2303.16798] *)
   h2[r_,z_] := 1/(Sqrt[Kc0] (r^2+a^2 z^2)^3) (-En0 Lz0 r^6+a^4 En0 Lz0 r^2 z^4+a^2 En0 Lz0 r^4 (-2+z^2)-a^6 En0 Lz0 z^4 (-2+z^2)+
@@ -677,9 +677,9 @@ TeukolskySpinModeFromCorrection[l_,m_,n_,k_,orbitCorrection_,s_]:=Module[{h1,h2,
       Snmb = Conjugate[Snm];
       Slmb = (-(\[Zeta]/Sqrt[Kc0]))*vl*vmb;
       Smmb = ((I a zp (Kc0+rp^2))/(Sqrt[Kc0] \[CapitalSigma]));
-      Cmnn   = vn^2; (* Monopole terms *)
-      Cmnmb  = vn*vmb;
-      Cmmbmb = vmb^2;
+      Amnn   = vn^2; (* Monopole terms *)
+      Amnmb  = vn*vmb;
+      Ammbmb = vmb^2;
       rho = 1/\[Zeta]; (* Spin coefficients (with opposite gign than in Teukolsky paper) *)
       beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
       pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
@@ -689,9 +689,9 @@ TeukolskySpinModeFromCorrection[l_,m_,n_,k_,orbitCorrection_,s_]:=Module[{h1,h2,
       alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
       Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
       Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-      Cdnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]); (* Dipole terms *)
-      Cdmbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-      Cdnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
+      Adnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]); (* Dipole terms *)
+      Admbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
+      Adnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
         -Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
       St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm); (* Functions from Eq. (B3) in [2303.16798] *)
       St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
@@ -710,15 +710,15 @@ TeukolskySpinModeFromCorrection[l_,m_,n_,k_,orbitCorrection_,s_]:=Module[{h1,h2,
                ((rp^2+a^2)*(En1-h1[rp,zp]) - a*(Lz1+h2[rp,zp]+h3[rp,zp]*Ur*Uz) + Ur1p))/(2*\[CapitalSigma]);(* Linear parts of the four-velocity in Kinnersley tetrad *)
       vmb1 = ( (-I*(-2*a*zp*z1p*En0)) - (-I*(a*sin\[Theta]p^2*En0 - Lz0) + Uz)*(-zp*z1p/sin\[Theta]p^2 + (r1p-I*a*z1p)/\[Zeta]) + 
                (-I*(a*sin\[Theta]p^2*(En1-h1[rp,zp]) - (Lz1+h2[rp,zp]+h3[rp,zp]*Ur*Uz)) + Uz1p))/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-      Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Cdnn;
+      Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Adnn;
       Annt\[Phi]S = (St\[Phi]n + exp1*vn)*vn;
       AnnrS  = (Srn + r1p*vn)*vn;
       Ann\[Theta]S  = (S\[Theta]n - z1p/sin\[Theta]p*vn)*vn;
-      Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Cdnmb);
+      Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Adnmb);
       Anmbt\[Phi]S = ((St\[Phi]n*vmb + St\[Phi]mb*vn)/2 + exp1*vn*vmb);
       AnmbrS  = ((Srn*vmb + Srmb*vn)/2 + r1p*vn*vmb);
       Anmb\[Theta]S  = ((S\[Theta]n*vmb + S\[Theta]mb*vn)/2 - z1p/sin\[Theta]p*vn*vmb);
-      Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Cdmbmb;
+      Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Admbmb;
       Ambmbt\[Phi]S = (St\[Phi]mb + exp1*vmb)*vmb;
       AmbmbrS  = (Srmb + r1p*vmb)*vmb;
       Ambmb\[Theta]S  = (S\[Theta]mb - z1p/sin\[Theta]p*vmb)*vmb;
@@ -729,7 +729,7 @@ TeukolskySpinModeFromCorrection[l_,m_,n_,k_,orbitCorrection_,s_]:=Module[{h1,h2,
         ((Ambmb0S + Ambmbt\[Phi]S)*  RInrp*fmbmb0 + AmbmbrS*(  dRInrp*fmbmb0 +   RInrp*dfmbmb0dr) + Ambmb\[Theta]S*  RInrp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRInrp*fmbmb1 + AmbmbrS*( ddRInrp*fmbmb1 +  dRInrp*dfmbmb1dr) + Ambmb\[Theta]S* dRInrp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRInrp*fmbmb2 + AmbmbrS*(dddRInrp*fmbmb2 + ddRInrp*dfmbmb2dr) + Ambmb\[Theta]S*ddRInrp*dfmbmb2d\[Theta]))*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RInrp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRInrp + (Cmmbmb*fmbmb2)*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})];  (* Total over all quadrants *)
+        \[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RInrp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRInrp + (Ammbmb*fmbmb2)*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})];  (* Total over all quadrants *)
       sumMinus += Total[s*\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RUprp*fnn0 + AnnrS*(dRUprp*fnn0 + RUprp*dfnn0dr) + Ann\[Theta]S*RUprp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RUprp*fnmb0 + AnmbrS*( RUprp*dfnmb0dr +  dRUprp*fnmb0) + Anmb\[Theta]S* RUprp*dfnmb0d\[Theta]) - 
@@ -737,7 +737,7 @@ TeukolskySpinModeFromCorrection[l_,m_,n_,k_,orbitCorrection_,s_]:=Module[{h1,h2,
         ((Ambmb0S + Ambmbt\[Phi]S)*  RUprp*fmbmb0 + AmbmbrS*(  dRUprp*fmbmb0 +   RUprp*dfmbmb0dr) + Ambmb\[Theta]S*  RUprp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRUprp*fmbmb1 + AmbmbrS*( ddRUprp*fmbmb1 +  dRUprp*dfmbmb1dr) + Ambmb\[Theta]S* dRUprp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRUprp*fmbmb2 + AmbmbrS*(dddRUprp*fmbmb2 + ddRUprp*dfmbmb2dr) + Ambmb\[Theta]S*ddRUprp*dfmbmb2d\[Theta]))*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUprp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUprp + (Cmmbmb*fmbmb2)*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})];
+        \[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RUprp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRUprp + (Ammbmb*fmbmb2)*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})];
     ];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
@@ -783,8 +783,8 @@ TeukolskySpinModeCorrectionNum[l_,m_,n_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=
     correctionp,lists,ir,i\[Theta],wr,w\[Theta],rp,zp,sin\[Theta]p,Ur,Uz,expr,expr1,exp\[Theta],exp\[Theta]1,\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,
     RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,\[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,fmbmb01,fmbmb11,fmbmb21,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
-    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,
-    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
+    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Amnn,Amnmb,Ammbmb,rho,beta,pi,alpha,mu,gamma,tau,
+    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Adnn,Adnmb,Admbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
     AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,CPlus0,CMinus0,CPlus1,CMinus1},
   h1[r_,z_]:=(r (-3 a^2 r^2 z^2+a^4 z^4+Kc (r^2-3 a^2 z^2)))/(Sqrt[Kc] (r^2+a^2 z^2)^3);
   h2[r_,z_]:=1/(Sqrt[Kc] (r^2+a^2 z^2)^3) (-En Lz r^6+a^4 En Lz r^2 z^4+a^2 En Lz r^4 (-2+z^2)-a^6 En Lz z^4 (-2+z^2)+a^7 En^2 z^4 (-1+z^2)+a r^3 (Lz^2 r+Kc (-1+z^2)+Kc r (-1+2 z^2)+r^3 (z^2-En^2 (-1+z^2)))+a^3 (-En^2 r^4 (-1+z^2)+r z^2 (2 r^3+2 Kc r z^2-3 Kc (-1+z^2)-3 r^2 (-1+z^2)))+a^5 z^4 (Kc-Lz^2+r ( (-1+z^2)+r (2-z^2+En^2 (-1+z^2)))));
@@ -905,9 +905,9 @@ TeukolskySpinModeCorrectionNum[l_,m_,n_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=
       Snmb = Conjugate[Snm];
       Slmb = (-(\[Zeta]/Sqrt[Kc]))*vl*vmb;
       Smmb = ((I a zp (Kc+rp^2))/(Sqrt[Kc] \[CapitalSigma]));
-      Cmnn   = vn^2;
-      Cmnmb  = vn*vmb;
-      Cmmbmb = vmb^2;
+      Amnn   = vn^2;
+      Amnmb  = vn*vmb;
+      Ammbmb = vmb^2;
       rho = 1/\[Zeta]; (* Spin coefficients *)
       beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
       pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
@@ -917,9 +917,9 @@ TeukolskySpinModeCorrectionNum[l_,m_,n_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=
       alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
       Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
       Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-      Cdnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
-      Cdmbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-      Cdnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
+      Adnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
+      Admbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
+      Adnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
         -Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
       St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
       St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
@@ -940,20 +940,20 @@ TeukolskySpinModeCorrectionNum[l_,m_,n_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=
                (rp^2+a^2)*(En1-h1[rp,zp]) - a*(Lz1+h2[rp,zp]+h3[rp,zp]*Ur*Uz) + Urp1)/(2*\[CapitalSigma]);(* Linear parts of the four-velocity in Kinnersley tetrad *)
       vmb1 = ( I*2*a*zp*zp1*En - (-I*(a*sin\[Theta]p^2*En - Lz) + Uz)*(-zp*zp1/sin\[Theta]p^2 + (rp1-I*a*zp1)/\[Zeta]) + 
                -I*(a*sin\[Theta]p^2*(En1-h1[rp,zp]) - (Lz1+h2[rp,zp]+h3[rp,zp]*Ur*Uz)) + Uzp1)/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-      Ann0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn + 2*vn1)*vn + Cdnn;
+      Ann0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn + 2*vn1)*vn + Adnn;
       Annt\[Phi]S = (St\[Phi]n + exp1*vn)*vn;
       AnnrS  = (Srn + rp1*vn)*vn;
       Ann\[Theta]S  = (S\[Theta]n - zp1/sin\[Theta]p*vn)*vn;
-      Anmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn*vmb + vn1*vmb + vn*vmb1 + Cdnmb);
+      Anmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn*vmb + vn1*vmb + vn*vmb1 + Adnmb);
       Anmbt\[Phi]S = ((St\[Phi]n*vmb + St\[Phi]mb*vn)/2 + exp1*vn*vmb);
       AnmbrS  = ((Srn*vmb + Srmb*vn)/2 + rp1*vn*vmb);
       Anmb\[Theta]S  = ((S\[Theta]n*vmb + S\[Theta]mb*vn)/2 - zp1/sin\[Theta]p*vn*vmb);
-      Ambmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vmb + 2*vmb1)*vmb + Cdmbmb;
+      Ambmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vmb + 2*vmb1)*vmb + Admbmb;
       Ambmbt\[Phi]S = (St\[Phi]mb + exp1*vmb)*vmb;
       AmbmbrS  = (Srmb + rp1*vmb)*vmb;
       Ambmb\[Theta]S  = (S\[Theta]mb - zp1/sin\[Theta]p*vmb)*vmb;
-      sumPlus0  += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RInrp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRInrp + Cmmbmb*fmbmb2*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Totral of all quadrants *)
-      sumMinus0 += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUprp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUprp + Cmmbmb*fmbmb2*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
+      sumPlus0  += Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RInrp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRInrp + Ammbmb*fmbmb2*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Totral of all quadrants *)
+      sumMinus0 += Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RUprp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRUprp + Ammbmb*fmbmb2*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
       sumPlus1  += Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RInrp*fnn0 + AnnrS*(dRInrp*fnn0 + RInrp*dfnn0dr) + Ann\[Theta]S*RInrp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RInrp*fnmb0 + AnmbrS*( RInrp*dfnmb0dr +  dRInrp*fnmb0) + Anmb\[Theta]S* RInrp*dfnmb0d\[Theta]) - 
@@ -961,8 +961,8 @@ TeukolskySpinModeCorrectionNum[l_,m_,n_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=
         ((Ambmb0S + Ambmbt\[Phi]S)*  RInrp*fmbmb0 + AmbmbrS*(  dRInrp*fmbmb0 +   RInrp*dfmbmb0dr) + Ambmb\[Theta]S*  RInrp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRInrp*fmbmb1 + AmbmbrS*( ddRInrp*fmbmb1 +  dRInrp*dfmbmb1dr) + Ambmb\[Theta]S* dRInrp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRInrp*fmbmb2 + AmbmbrS*(dddRInrp*fmbmb2 + ddRInrp*dfmbmb2dr) + Ambmb\[Theta]S*ddRInrp*dfmbmb2d\[Theta]))*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RInrp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRInrp1 + Cmmbmb*fmbmb2*ddRInrp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RInrp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRInrp + Cmmbmb*fmbmb21*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Total over all quadrants *)
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*RInrp1 - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*dRInrp1 + Ammbmb*fmbmb2*ddRInrp1
+          + (Amnn*fnn01 + Amnmb*fnmb01 + Ammbmb*fmbmb01)*RInrp - (Amnmb*fnmb11 + Ammbmb*fmbmb11)*dRInrp + Ammbmb*fmbmb21*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Total over all quadrants *)
       sumMinus1 += Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RUprp*fnn0 + AnnrS*(dRUprp*fnn0 + RUprp*dfnn0dr) + Ann\[Theta]S*RUprp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RUprp*fnmb0 + AnmbrS*( RUprp*dfnmb0dr +  dRUprp*fnmb0) + Anmb\[Theta]S* RUprp*dfnmb0d\[Theta]) - 
@@ -970,8 +970,8 @@ TeukolskySpinModeCorrectionNum[l_,m_,n_,k_,orbitCorrection_,\[Delta]\[Omega]_]:=
         ((Ambmb0S + Ambmbt\[Phi]S)*  RUprp*fmbmb0 + AmbmbrS*(  dRUprp*fmbmb0 +   RUprp*dfmbmb0dr) + Ambmb\[Theta]S*  RUprp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRUprp*fmbmb1 + AmbmbrS*( ddRUprp*fmbmb1 +  dRUprp*dfmbmb1dr) + Ambmb\[Theta]S* dRUprp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRUprp*fmbmb2 + AmbmbrS*(dddRUprp*fmbmb2 + ddRUprp*dfmbmb2dr) + Ambmb\[Theta]S*ddRUprp*dfmbmb2d\[Theta]))*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RUprp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRUprp1 + Cmmbmb*fmbmb2*ddRUprp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RUprp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRUprp + Cmmbmb*fmbmb21*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*RUprp1 - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*dRUprp1 + Ammbmb*fmbmb2*ddRUprp1
+          + (Amnn*fnn01 + Amnmb*fnmb01 + Ammbmb*fmbmb01)*RUprp - (Amnmb*fnmb11 + Ammbmb*fmbmb11)*dRUprp + Ammbmb*fmbmb21*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
     ];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
@@ -1033,8 +1033,8 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
     correctionp,lists,ir,i\[Theta],wr,w\[Theta],rp,zp,sin\[Theta]p,Ur,Uz,expr,expr1,exp\[Theta],exp\[Theta]1,\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,
     RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,\[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,fmbmb01,fmbmb11,fmbmb21,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
-    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,
-    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
+    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Amnn,Amnmb,Ammbmb,rho,beta,pi,alpha,mu,gamma,tau,
+    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Adnn,Adnmb,Admbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
     AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,CPlus0,CMinus0,CPlus1,CMinus1,\[Psi],d\[Lambda]d\[Omega]},
   h1[r_,z_]:=(r (-3 a^2 r^2 z^2+a^4 z^4+Kc (r^2-3 a^2 z^2)))/(Sqrt[Kc] (r^2+a^2 z^2)^3);
   h2[r_,z_]:=1/(Sqrt[Kc] (r^2+a^2 z^2)^3) (-En Lz r^6+a^4 En Lz r^2 z^4+a^2 En Lz r^4 (-2+z^2)-a^6 En Lz z^4 (-2+z^2)+a^7 En^2 z^4 (-1+z^2)
@@ -1151,9 +1151,9 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
       Snmb = Conjugate[Snm];
       Slmb = (-(\[Zeta]/Sqrt[Kc]))*vl*vmb;
       Smmb = ((I a zp (Kc+rp^2))/(Sqrt[Kc] \[CapitalSigma]));
-      Cmnn   = vn^2;
-      Cmnmb  = vn*vmb;
-      Cmmbmb = vmb^2;
+      Amnn   = vn^2;
+      Amnmb  = vn*vmb;
+      Ammbmb = vmb^2;
       rho = 1/\[Zeta]; (* Spin coefficients *)
       beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
       pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
@@ -1163,9 +1163,9 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
       alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
       Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
       Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-      Cdnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
-      Cdmbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-      Cdnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
+      Adnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
+      Admbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
+      Adnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
         -Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
       St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
       St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
@@ -1186,20 +1186,20 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
                (rp^2+a^2)*(En1-h1[rp,zp]) - a*(Lz1+h2[rp,zp]+h3[rp,zp]*Ur*Uz) + Urp1)/(2*\[CapitalSigma]);(* Linear parts of the four-velocity in Kinnersley tetrad *)
       vmb1 = ( I*2*a*zp*zp1*En - (-I*(a*sin\[Theta]p^2*En - Lz) + Uz)*(-zp*zp1/sin\[Theta]p^2 + (rp1-I*a*zp1)/\[Zeta]) + 
                -I*(a*sin\[Theta]p^2*(En1-h1[rp,zp]) - (Lz1+h2[rp,zp]+h3[rp,zp]*Ur*Uz)) + Uzp1)/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-      Ann0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn + 2*vn1)*vn + Cdnn;
+      Ann0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn + 2*vn1)*vn + Adnn;
       Annt\[Phi]S = (St\[Phi]n + exp1*vn)*vn;
       AnnrS  = (Srn + rp1*vn)*vn;
       Ann\[Theta]S  = (S\[Theta]n - zp1/sin\[Theta]p*vn)*vn;
-      Anmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn*vmb + vn1*vmb + vn*vmb1 + Cdnmb);
+      Anmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vn*vmb + vn1*vmb + vn*vmb1 + Adnmb);
       Anmbt\[Phi]S = ((St\[Phi]n*vmb + St\[Phi]mb*vn)/2 + exp1*vn*vmb);
       AnmbrS  = ((Srn*vmb + Srmb*vn)/2 + rp1*vn*vmb);
       Anmb\[Theta]S  = ((S\[Theta]n*vmb + S\[Theta]mb*vn)/2 - zp1/sin\[Theta]p*vn*vmb);
-      Ambmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vmb + 2*vmb1)*vmb + Cdmbmb;
+      Ambmb0S  = ((\[CapitalSigma]1/\[CapitalSigma])*vmb + 2*vmb1)*vmb + Admbmb;
       Ambmbt\[Phi]S = (St\[Phi]mb + exp1*vmb)*vmb;
       AmbmbrS  = (Srmb + rp1*vmb)*vmb;
       Ambmb\[Theta]S  = (S\[Theta]mb - zp1/sin\[Theta]p*vmb)*vmb;
-      sumPlus0  += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RInrp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRInrp + Cmmbmb*fmbmb2*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Totral of all quadrants *)
-      sumMinus0 += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUprp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUprp + Cmmbmb*fmbmb2*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
+      sumPlus0  += Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RInrp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRInrp + Ammbmb*fmbmb2*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Totral of all quadrants *)
+      sumMinus0 += Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RUprp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRUprp + Ammbmb*fmbmb2*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
       sumPlus1  += Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RInrp*fnn0 + AnnrS*(dRInrp*fnn0 + RInrp*dfnn0dr) + Ann\[Theta]S*RInrp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RInrp*fnmb0 + AnmbrS*( RInrp*dfnmb0dr +  dRInrp*fnmb0) + Anmb\[Theta]S* RInrp*dfnmb0d\[Theta]) - 
@@ -1207,8 +1207,8 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
         ((Ambmb0S + Ambmbt\[Phi]S)*  RInrp*fmbmb0 + AmbmbrS*(  dRInrp*fmbmb0 +   RInrp*dfmbmb0dr) + Ambmb\[Theta]S*  RInrp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRInrp*fmbmb1 + AmbmbrS*( ddRInrp*fmbmb1 +  dRInrp*dfmbmb1dr) + Ambmb\[Theta]S* dRInrp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRInrp*fmbmb2 + AmbmbrS*(dddRInrp*fmbmb2 + ddRInrp*dfmbmb2dr) + Ambmb\[Theta]S*ddRInrp*dfmbmb2d\[Theta]))*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RInrp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRInrp1 + Cmmbmb*fmbmb2*ddRInrp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RInrp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRInrp + Cmmbmb*fmbmb21*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Total over all quadrants *)
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*RInrp1 - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*dRInrp1 + Ammbmb*fmbmb2*ddRInrp1
+          + (Amnn*fnn01 + Amnmb*fnmb01 + Ammbmb*fmbmb01)*RInrp - (Amnmb*fnmb11 + Ammbmb*fmbmb11)*dRInrp + Ammbmb*fmbmb21*ddRInrp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; (* Total over all quadrants *)
       sumMinus1 += Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RUprp*fnn0 + AnnrS*(dRUprp*fnn0 + RUprp*dfnn0dr) + Ann\[Theta]S*RUprp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RUprp*fnmb0 + AnmbrS*( RUprp*dfnmb0dr +  dRUprp*fnmb0) + Anmb\[Theta]S* RUprp*dfnmb0d\[Theta]) - 
@@ -1216,8 +1216,8 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
         ((Ambmb0S + Ambmbt\[Phi]S)*  RUprp*fmbmb0 + AmbmbrS*(  dRUprp*fmbmb0 +   RUprp*dfmbmb0dr) + Ambmb\[Theta]S*  RUprp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRUprp*fmbmb1 + AmbmbrS*( ddRUprp*fmbmb1 +  dRUprp*dfmbmb1dr) + Ambmb\[Theta]S* dRUprp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRUprp*fmbmb2 + AmbmbrS*(dddRUprp*fmbmb2 + ddRUprp*dfmbmb2dr) + Ambmb\[Theta]S*ddRUprp*dfmbmb2d\[Theta]))*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RUprp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRUprp1 + Cmmbmb*fmbmb2*ddRUprp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RUprp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRUprp + Cmmbmb*fmbmb21*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*RUprp1 - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*dRUprp1 + Ammbmb*fmbmb2*ddRUprp1
+          + (Amnn*fnn01 + Amnmb*fnmb01 + Ammbmb*fmbmb01)*RUprp - (Amnmb*fnmb11 + Ammbmb*fmbmb11)*dRUprp + Ammbmb*fmbmb21*ddRUprp)*expr^{1,-1,1,-1}*exp\[Theta]^{1,1,-1,-1})]; 
     ];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
@@ -1281,8 +1281,8 @@ TeukolskySpinModeCorrection[l_,m_,n_,k_,orbitCorrection_,{angparNew_,RCorrection
 TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
     sumPlus,sumMinus,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,dK,V,dV,RInrp,dRInrp,ddRInrp,dddRInrp,RUprp,dRUprp,ddRUprp,dddRUprp,
     \[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
-    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,
-    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
+    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Amnn,Amnmb,Ammbmb,rho,beta,pi,alpha,mu,gamma,tau,
+    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Adnn,Adnmb,Admbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
     AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,CPlus,CMinus},
   h1[r_,z_] := (r (-3 a^2 r^2 z^2+a^4 z^4+Kc (r^2-3 a^2 z^2)))/(Sqrt[Kc] (r^2+a^2 z^2)^3);
   h2[r_,z_] := 1/(Sqrt[Kc] (r^2+a^2 z^2)^3) (-En Lz r^6+a^4 En Lz r^2 z^4+a^2 En Lz r^4 (-2+z^2)-a^6 En Lz z^4 (-2+z^2)+
@@ -1366,9 +1366,9 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,x,
     Snmb = Conjugate[Snm];
     Slmb = (-(\[Zeta]/Sqrt[Kc]))*vl*vmb;
     Smmb = ((I a zp (Kc+rp^2))/(Sqrt[Kc] \[CapitalSigma]));
-    Cmnn   = vn^2;
-    Cmnmb  = vn*vmb;
-    Cmmbmb = vmb^2;
+    Amnn   = vn^2;
+    Amnmb  = vn*vmb;
+    Ammbmb = vmb^2;
     rho = 1/\[Zeta]; (* Spin coefficients *)
     beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
     pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
@@ -1378,9 +1378,9 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,x,
     alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
     Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
     Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-    Cdnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
-    Cdmbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-    Cdnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
+    Adnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
+    Admbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
+    Adnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
       -Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
     St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
     St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
@@ -1399,15 +1399,15 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,x,
              ((rp^2+a^2)*(En1-h1[rp,zp]) - a*(Lz1+h2[rp,zp]) + Urp1))/(2*\[CapitalSigma]);(* Linear parts of the four-velocity in Kinnersley tetrad *)
     vmb1 = ( (-I*(-2*a*zp*zp1*En)) - (-I*(a*sin\[Theta]p^2*En - Lz) + Uz)*(-zp*zp1/sin\[Theta]p^2 + (rp1-I*a*zp1)/\[Zeta]) + 
              (-I*(a*sin\[Theta]p^2*(En1-h1[rp,zp]) - (Lz1+h2[rp,zp])) + Uzp1))/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Cdnn;
+    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Adnn;
     Annt\[Phi]S = (St\[Phi]n + exp1*vn)*vn;
     AnnrS  = (Srn + rp1*vn)*vn;
     Ann\[Theta]S  = (S\[Theta]n - zp1/sin\[Theta]p*vn)*vn;
-    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Cdnmb);
+    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Adnmb);
     Anmbt\[Phi]S = ((St\[Phi]n*vmb + St\[Phi]mb*vn)/2 + exp1*vn*vmb);
     AnmbrS  = ((Srn*vmb + Srmb*vn)/2 + rp1*vn*vmb);
     Anmb\[Theta]S  = ((S\[Theta]n*vmb + S\[Theta]mb*vn)/2 - zp1/sin\[Theta]p*vn*vmb);
-    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Cdmbmb;
+    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Admbmb;
     Ambmbt\[Phi]S = (St\[Phi]mb + exp1*vmb)*vmb;
     AmbmbrS  = (Srmb + rp1*vmb)*vmb;
     Ambmb\[Theta]S  = (S\[Theta]mb - zp1/sin\[Theta]p*vmb)*vmb;
@@ -1418,7 +1418,7 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,x,
       ((Ambmb0S + Ambmbt\[Phi]S)*  RInrp*fmbmb0 + AmbmbrS*(  dRInrp*fmbmb0 +   RInrp*dfmbmb0dr) + Ambmb\[Theta]S*  RInrp*dfmbmb0d\[Theta]) -
       ((Ambmb0S + Ambmbt\[Phi]S)* dRInrp*fmbmb1 + AmbmbrS*( ddRInrp*fmbmb1 +  dRInrp*dfmbmb1dr) + Ambmb\[Theta]S* dRInrp*dfmbmb1d\[Theta]) +
       ((Ambmb0S + Ambmbt\[Phi]S)*ddRInrp*fmbmb2 + AmbmbrS*(dddRInrp*fmbmb2 + ddRInrp*dfmbmb2dr) + Ambmb\[Theta]S*ddRInrp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-      \[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RInrp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRInrp + (Cmmbmb*fmbmb2)*ddRInrp)*exp\[Theta]^{1,-1})]; 
+      \[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RInrp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRInrp + (Ammbmb*fmbmb2)*ddRInrp)*exp\[Theta]^{1,-1})]; 
     sumMinus += Total[s*\[CapitalSigma]*((
       ((Ann0S + Annt\[Phi]S)*RUprp*fnn0 + AnnrS*(dRUprp*fnn0 + RUprp*dfnn0dr) + Ann\[Theta]S*RUprp*dfnn0d\[Theta]) +
       ((Anmb0S + Anmbt\[Phi]S)* RUprp*fnmb0 + AnmbrS*( RUprp*dfnmb0dr +  dRUprp*fnmb0) + Anmb\[Theta]S* RUprp*dfnmb0d\[Theta]) - 
@@ -1426,7 +1426,7 @@ TeukolskySpinModeSpherical[l_,m_,k_,orbitCorrection_,s_]:=Module[{h1,h2,a,p,e,x,
       ((Ambmb0S + Ambmbt\[Phi]S)*  RUprp*fmbmb0 + AmbmbrS*(  dRUprp*fmbmb0 +   RUprp*dfmbmb0dr) + Ambmb\[Theta]S*  RUprp*dfmbmb0d\[Theta]) -
       ((Ambmb0S + Ambmbt\[Phi]S)* dRUprp*fmbmb1 + AmbmbrS*( ddRUprp*fmbmb1 +  dRUprp*dfmbmb1dr) + Ambmb\[Theta]S* dRUprp*dfmbmb1d\[Theta]) +
       ((Ambmb0S + Ambmbt\[Phi]S)*ddRUprp*fmbmb2 + AmbmbrS*(dddRUprp*fmbmb2 + ddRUprp*dfmbmb2dr) + Ambmb\[Theta]S*ddRUprp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-      \[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUprp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUprp + (Cmmbmb*fmbmb2)*ddRUprp)*exp\[Theta]^{1,-1})];
+      \[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RUprp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRUprp + (Ammbmb*fmbmb2)*ddRUprp)*exp\[Theta]^{1,-1})];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
   CPlus  = 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumPlus/(\[CapitalGamma]*W*steps\[Theta]); (* Amplitudes *)
@@ -1466,8 +1466,8 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
     Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,
     \[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,
     fmbmb01,fmbmb11,fmbmb21,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
-    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,
-    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
+    dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,Amnn,Amnmb,Ammbmb,rho,beta,pi,alpha,mu,gamma,tau,
+    Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Adnn,Adnmb,Admbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,\[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,
     AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,CPlus0,CMinus0,CPlus1,CMinus1},
   h1[r_,z_] := (r (-3 a^2 r^2 z^2+a^4 z^4+Kc (r^2-3 a^2 z^2)))/(Sqrt[Kc] (r^2+a^2 z^2)^3);
   h2[r_,z_] := 1/(Sqrt[Kc] (r^2+a^2 z^2)^3) (-En Lz r^6+a^4 En Lz r^2 z^4+a^2 En Lz r^4 (-2+z^2)-a^6 En Lz z^4 (-2+z^2)+
@@ -1577,9 +1577,9 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
     Snmb = Conjugate[Snm];
     Slmb = (-(\[Zeta]/Sqrt[Kc]))*vl*vmb;
     Smmb = ((I a zp (Kc+rp^2))/(Sqrt[Kc] \[CapitalSigma]));
-    Cmnn   = vn^2;
-    Cmnmb  = vn*vmb;
-    Cmmbmb = vmb^2;
+    Amnn   = vn^2;
+    Amnmb  = vn*vmb;
+    Ammbmb = vmb^2;
     rho = 1/\[Zeta]; (* Spin coefficients *)
     beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
     pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
@@ -1589,9 +1589,9 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
     alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
     Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
     Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-    Cdnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
-    Cdmbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-    Cdnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
+    Adnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
+    Admbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
+    Adnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
       -Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
     St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
     St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
@@ -1610,20 +1610,20 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
              ((rp^2+a^2)*(En1-h1[rp,zp]) - a*(Lz1+h2[rp,zp]) + Urp1))/(2*\[CapitalSigma]);(* Linear parts of the four-velocity in Kinnersley tetrad *)
     vmb1 = ( (-I*(-2*a*zp*zp1*En)) - (-I*(a*sin\[Theta]p^2*En - Lz) + Uz)*(-zp*zp1/sin\[Theta]p^2 + (rp1-I*a*zp1)/\[Zeta]) + 
              (-I*(a*sin\[Theta]p^2*(En1-h1[rp,zp]) - (Lz1+h2[rp,zp])) + Uzp1))/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Cdnn;
+    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Adnn;
     Annt\[Phi]S = (St\[Phi]n + exp1*vn)*vn;
     AnnrS  = (Srn + rp1*vn)*vn;
     Ann\[Theta]S  = (S\[Theta]n - zp1/sin\[Theta]p*vn)*vn;
-    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Cdnmb);
+    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Adnmb);
     Anmbt\[Phi]S = ((St\[Phi]n*vmb + St\[Phi]mb*vn)/2 + exp1*vn*vmb);
     AnmbrS  = ((Srn*vmb + Srmb*vn)/2 + rp1*vn*vmb);
     Anmb\[Theta]S  = ((S\[Theta]n*vmb + S\[Theta]mb*vn)/2 - zp1/sin\[Theta]p*vn*vmb);
-    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Cdmbmb;
+    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Admbmb;
     Ambmbt\[Phi]S = (St\[Phi]mb + exp1*vmb)*vmb;
     AmbmbrS  = (Srmb + rp1*vmb)*vmb;
     Ambmb\[Theta]S  = (S\[Theta]mb - zp1/sin\[Theta]p*vmb)*vmb;
-      sumPlus0  += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RInrp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRInrp + Cmmbmb*fmbmb2*ddRInrp)*exp\[Theta]^{1,-1})]; (* Totral of all quadrants *)
-      sumMinus0 += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUprp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUprp + Cmmbmb*fmbmb2*ddRUprp)*exp\[Theta]^{1,-1})]; 
+      sumPlus0  += Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RInrp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRInrp + Ammbmb*fmbmb2*ddRInrp)*exp\[Theta]^{1,-1})]; (* Totral of all quadrants *)
+      sumMinus0 += Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RUprp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRUprp + Ammbmb*fmbmb2*ddRUprp)*exp\[Theta]^{1,-1})]; 
       sumPlus1  += Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RInrp*fnn0 + AnnrS*(dRInrp*fnn0 + RInrp*dfnn0dr) + Ann\[Theta]S*RInrp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RInrp*fnmb0 + AnmbrS*( RInrp*dfnmb0dr +  dRInrp*fnmb0) + Anmb\[Theta]S* RInrp*dfnmb0d\[Theta]) - 
@@ -1631,8 +1631,8 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
         ((Ambmb0S + Ambmbt\[Phi]S)*  RInrp*fmbmb0 + AmbmbrS*(  dRInrp*fmbmb0 +   RInrp*dfmbmb0dr) + Ambmb\[Theta]S*  RInrp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRInrp*fmbmb1 + AmbmbrS*( ddRInrp*fmbmb1 +  dRInrp*dfmbmb1dr) + Ambmb\[Theta]S* dRInrp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRInrp*fmbmb2 + AmbmbrS*(dddRInrp*fmbmb2 + ddRInrp*dfmbmb2dr) + Ambmb\[Theta]S*ddRInrp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RInrp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRInrp1 + Cmmbmb*fmbmb2*ddRInrp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RInrp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRInrp + Cmmbmb*fmbmb21*ddRInrp)*exp\[Theta]^{1,-1})]; 
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*RInrp1 - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*dRInrp1 + Ammbmb*fmbmb2*ddRInrp1
+          + (Amnn*fnn01 + Amnmb*fnmb01 + Ammbmb*fmbmb01)*RInrp - (Amnmb*fnmb11 + Ammbmb*fmbmb11)*dRInrp + Ammbmb*fmbmb21*ddRInrp)*exp\[Theta]^{1,-1})]; 
       sumMinus1 += Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RUprp*fnn0 + AnnrS*(dRUprp*fnn0 + RUprp*dfnn0dr) + Ann\[Theta]S*RUprp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RUprp*fnmb0 + AnmbrS*( RUprp*dfnmb0dr +  dRUprp*fnmb0) + Anmb\[Theta]S* RUprp*dfnmb0d\[Theta]) - 
@@ -1640,8 +1640,8 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
         ((Ambmb0S + Ambmbt\[Phi]S)*  RUprp*fmbmb0 + AmbmbrS*(  dRUprp*fmbmb0 +   RUprp*dfmbmb0dr) + Ambmb\[Theta]S*  RUprp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRUprp*fmbmb1 + AmbmbrS*( ddRUprp*fmbmb1 +  dRUprp*dfmbmb1dr) + Ambmb\[Theta]S* dRUprp*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*ddRUprp*fmbmb2 + AmbmbrS*(dddRUprp*fmbmb2 + ddRUprp*dfmbmb2dr) + Ambmb\[Theta]S*ddRUprp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RUprp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRUprp1 + Cmmbmb*fmbmb2*ddRUprp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RUprp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRUprp + Cmmbmb*fmbmb21*ddRUprp)*exp\[Theta]^{1,-1})]; 
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*RUprp1 - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*dRUprp1 + Ammbmb*fmbmb2*ddRUprp1
+          + (Amnn*fnn01 + Amnmb*fnmb01 + Ammbmb*fmbmb01)*RUprp - (Amnmb*fnmb11 + Ammbmb*fmbmb11)*dRUprp + Ammbmb*fmbmb21*ddRUprp)*exp\[Theta]^{1,-1})]; 
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
   W1 = (RInrp1*dRUprp + RInrp*dRUprp1 - dRInrp1*RUprp - dRInrp*RUprp1)/\[CapitalDelta]; (* Linear part of the invariant Wronskian *)
@@ -1947,7 +1947,7 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
     \[Theta]2,S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dSd\[Omega],d2Sd\[Theta]d\[Omega],d3Sd\[Theta]2d\[Omega],L2S,dL2Sd\[Theta],dL2Sd\[Omega],L1L2S,dL1L2Sd\[Theta],dL1L2Sd\[Omega],
     \[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0d\[Omega],dfnmb0d\[Omega],dfnmb1d\[Omega],dfmbmb0d\[Omega],dfmbmb1d\[Omega],dfmbmb2d\[Omega],dfnn0dr,
     dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],
-    ul,un,um,umb,Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,
+    ul,un,um,umb,Sln,Slmb,Snm,Snmb,Smmb,Amnn,Amnmb,Ammbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Adnn,Adnmb,Admbmb,
     St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,
     rp1,zp1,dzpdr,d\[Theta]pdr,dzpdx,d\[Theta]pdx,Urp1,Uzp1,dUzpdr,dUzpdx,\[CapitalSigma]1,d\[CapitalSigma]dr,d\[CapitalSigma]dx,exp1,dexpdr,dexpdx,un1,dundr,dundx,umb1,dumbdr,dumbdx,
     Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,W,dWd\[Omega],
@@ -2070,9 +2070,9 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
     Snmb = Conjugate[Snm];
     Slmb = (-(\[Zeta]/Sqrt[Kc]))*ul*umb;
     Smmb = ((I a zp (Kc+rp^2))/(Sqrt[Kc] \[CapitalSigma]));
-    Cmnn   = un^2;
-    Cmnmb  = un*umb;
-    Cmmbmb = umb^2;
+    Amnn   = un^2;
+    Amnmb  = un*umb;
+    Ammbmb = umb^2;
     rho = 1/\[Zeta]; (* Spin coefficients *)
     beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
     pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
@@ -2082,9 +2082,9 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
     alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
     Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
     Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-    Cdnn  = (Scd\[Gamma]ndc*un-Sln*2*Re[gamma]*un-2*Re[Snmb*((Conjugate[alpha]+beta)*un-mu*um)]);
-    Cdmbmb= (Scd\[Gamma]mbdc*umb-Snmb*(-pi*ul)-Slmb*(Conjugate[tau]*un-(Conjugate[gamma]-gamma)*umb)+Smmb*(-(-alpha+Conjugate[beta])*umb));
-    Cdnmb = (Scd\[Gamma]ndc*umb+Scd\[Gamma]mbdc*un-Sln*(Conjugate[tau]*un-(Conjugate[gamma]-gamma)*umb)-Snmb*(Conjugate[rho]*un-mu*ul-(Conjugate[alpha]-beta)*umb)
+    Adnn  = (Scd\[Gamma]ndc*un-Sln*2*Re[gamma]*un-2*Re[Snmb*((Conjugate[alpha]+beta)*un-mu*um)]);
+    Admbmb= (Scd\[Gamma]mbdc*umb-Snmb*(-pi*ul)-Slmb*(Conjugate[tau]*un-(Conjugate[gamma]-gamma)*umb)+Smmb*(-(-alpha+Conjugate[beta])*umb));
+    Adnmb = (Scd\[Gamma]ndc*umb+Scd\[Gamma]mbdc*un-Sln*(Conjugate[tau]*un-(Conjugate[gamma]-gamma)*umb)-Snmb*(Conjugate[rho]*un-mu*ul-(Conjugate[alpha]-beta)*umb)
       -Snm*(-(-alpha+Conjugate[beta])*umb)-Snmb*(-Conjugate[pi]*umb-pi*um)-Slmb*(2*Re[gamma]*un)+Smmb*((alpha+Conjugate[beta])*un-Conjugate[mu]*umb))/2;
     St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
     St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
@@ -2124,20 +2124,20 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
              (-I*(a*sin\[Theta]p^2*dEndr - dLzdr) + dUzpdr))/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
     dumbdx = ( (-I*(-2*a*zp*dzpdx*En)) - (-I*(a*sin\[Theta]p^2*En - Lz) + Uz)*(-zp*dzpdx/sin\[Theta]p^2 + (-I*a*dzpdx)/\[Zeta]) + 
              (-I*(a*sin\[Theta]p^2*dEndx - dLzdx) + dUzpdx))/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*un + 2*un1)*un + Cdnn; (* Source term *)
+    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*un + 2*un1)*un + Adnn; (* Source term *)
     Annt\[Phi]S = (St\[Phi]n + exp1*un)*un;
     AnnrS  = (Srn + rp1*un)*un;
     Ann\[Theta]S  = (S\[Theta]n - zp1/sin\[Theta]p*un)*un;
-    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*un*umb + un1*umb + un*umb1 + Cdnmb);
+    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*un*umb + un1*umb + un*umb1 + Adnmb);
     Anmbt\[Phi]S = ((St\[Phi]n*umb + St\[Phi]mb*un)/2 + exp1*un*umb);
     AnmbrS  = ((Srn*umb + Srmb*un)/2 + rp1*un*umb);
     Anmb\[Theta]S  = ((S\[Theta]n*umb + S\[Theta]mb*un)/2 - zp1/sin\[Theta]p*un*umb);
-    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*umb + 2*umb1)*umb + Cdmbmb;
+    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*umb + 2*umb1)*umb + Admbmb;
     Ambmbt\[Phi]S = (St\[Phi]mb + exp1*umb)*umb;
     AmbmbrS  = (Srmb + rp1*umb)*umb;
     Ambmb\[Theta]S  = (S\[Theta]mb - zp1/sin\[Theta]p*umb)*umb;
-      {Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RIn - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRIndr + Cmmbmb*fmbmb2*d2RIndr2)*exp\[Theta]^{1,-1})], (* Totral of all quadrants *)
-       Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUpdr + Cmmbmb*fmbmb2*d2RUpdr2)*exp\[Theta]^{1,-1})], 
+      {Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RIn - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRIndr + Ammbmb*fmbmb2*d2RIndr2)*exp\[Theta]^{1,-1})], (* Totral of all quadrants *)
+       Total[\[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RUp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRUpdr + Ammbmb*fmbmb2*d2RUpdr2)*exp\[Theta]^{1,-1})], 
        Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RIn*fnn0 + AnnrS*(dRIndr*fnn0 + RIn*dfnn0dr) + Ann\[Theta]S*RIn*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RIn*fnmb0 + AnmbrS*( RIn*dfnmb0dr +  dRIndr*fnmb0) + Anmb\[Theta]S* RIn*dfnmb0d\[Theta]) - 
@@ -2145,8 +2145,8 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
         ((Ambmb0S + Ambmbt\[Phi]S)*  RIn*fmbmb0 + AmbmbrS*(  dRIndr*fmbmb0 +   RIn*dfmbmb0dr) + Ambmb\[Theta]S*  RIn*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRIndr*fmbmb1 + AmbmbrS*( d2RIndr2*fmbmb1 +  dRIndr*dfmbmb1dr) + Ambmb\[Theta]S* dRIndr*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*d2RIndr2*fmbmb2 + AmbmbrS*(d3RIndr3*fmbmb2 + d2RIndr2*dfmbmb2dr) + Ambmb\[Theta]S*d2RIndr2*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*dRInd\[Omega] - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*d2RIndrd\[Omega] + Cmmbmb*fmbmb2*d3RIndr2d\[Omega]
-          + (Cmnn*dfnn0d\[Omega] + Cmnmb*dfnmb0d\[Omega] + Cmmbmb*dfmbmb0d\[Omega])*RIn - (Cmnmb*dfnmb1d\[Omega] + Cmmbmb*dfmbmb1d\[Omega])*dRIndr + Cmmbmb*dfmbmb2d\[Omega]*d2RIndr2)*\[Omega]1*exp\[Theta]^{1,-1})], 
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*dRInd\[Omega] - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*d2RIndrd\[Omega] + Ammbmb*fmbmb2*d3RIndr2d\[Omega]
+          + (Amnn*dfnn0d\[Omega] + Amnmb*dfnmb0d\[Omega] + Ammbmb*dfmbmb0d\[Omega])*RIn - (Amnmb*dfnmb1d\[Omega] + Ammbmb*dfmbmb1d\[Omega])*dRIndr + Ammbmb*dfmbmb2d\[Omega]*d2RIndr2)*\[Omega]1*exp\[Theta]^{1,-1})], 
        Total[\[CapitalSigma]*((
         ((Ann0S + Annt\[Phi]S)*RUp*fnn0 + AnnrS*(dRUpdr*fnn0 + RUp*dfnn0dr) + Ann\[Theta]S*RUp*dfnn0d\[Theta]) +
         ((Anmb0S + Anmbt\[Phi]S)* RUp*fnmb0 + AnmbrS*( RUp*dfnmb0dr +  dRUpdr*fnmb0) + Anmb\[Theta]S* RUp*dfnmb0d\[Theta]) - 
@@ -2154,41 +2154,41 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
         ((Ambmb0S + Ambmbt\[Phi]S)*  RUp*fmbmb0 + AmbmbrS*(  dRUpdr*fmbmb0 +   RUp*dfmbmb0dr) + Ambmb\[Theta]S*  RUp*dfmbmb0d\[Theta]) -
         ((Ambmb0S + Ambmbt\[Phi]S)* dRUpdr*fmbmb1 + AmbmbrS*( d2RUpdr2*fmbmb1 +  dRUpdr*dfmbmb1dr) + Ambmb\[Theta]S* dRUpdr*dfmbmb1d\[Theta]) +
         ((Ambmb0S + Ambmbt\[Phi]S)*d2RUpdr2*fmbmb2 + AmbmbrS*(d3RUpdr3*fmbmb2 + d2RUpdr2*dfmbmb2dr) + Ambmb\[Theta]S*d2RUpdr2*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*dRUpd\[Omega] - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*d2RUpdrd\[Omega] + Cmmbmb*fmbmb2*d3RUpdr2d\[Omega]
-          + (Cmnn*dfnn0d\[Omega] + Cmnmb*dfnmb0d\[Omega] + Cmmbmb*dfmbmb0d\[Omega])*RUp - (Cmnmb*dfnmb1d\[Omega] + Cmmbmb*dfmbmb1d\[Omega])*dRUpdr + Cmmbmb*dfmbmb2d\[Omega]*d2RUpdr2)*\[Omega]1*exp\[Theta]^{1,-1})], 
-      Total[\[CapitalSigma]*((d\[CapitalSigma]dr/\[CapitalSigma] + dexpdr)*((Cmnn*fnn0*RIn + Cmnmb*(fnmb0*RIn - fnmb1*dRIndr) + Cmmbmb*(fmbmb0*RIn - fmbmb1*dRIndr + fmbmb2*d2RIndr2))) +
+        \[CapitalSigma]*(((Amnn*fnn0 + Amnmb*fnmb0 + Ammbmb*fmbmb0)*dRUpd\[Omega] - (Amnmb*fnmb1 + Ammbmb*fmbmb1)*d2RUpdrd\[Omega] + Ammbmb*fmbmb2*d3RUpdr2d\[Omega]
+          + (Amnn*dfnn0d\[Omega] + Amnmb*dfnmb0d\[Omega] + Ammbmb*dfmbmb0d\[Omega])*RUp - (Amnmb*dfnmb1d\[Omega] + Ammbmb*dfmbmb1d\[Omega])*dRUpdr + Ammbmb*dfmbmb2d\[Omega]*d2RUpdr2)*\[Omega]1*exp\[Theta]^{1,-1})], 
+      Total[\[CapitalSigma]*((d\[CapitalSigma]dr/\[CapitalSigma] + dexpdr)*((Amnn*fnn0*RIn + Amnmb*(fnmb0*RIn - fnmb1*dRIndr) + Ammbmb*(fmbmb0*RIn - fmbmb1*dRIndr + fmbmb2*d2RIndr2))) +
               ((2*un*dundr*fnn0*RIn + (un*dumbdr+dundr*umb)*(fnmb0*RIn - fnmb1*dRIndr) + 2*umb*dumbdr*(fmbmb0*RIn - fmbmb1*dRIndr + fmbmb2*d2RIndr2))) + 
-              ((Cmnn*((dfnn0dr + dfnn0d\[Theta]*d\[Theta]pdr + dfnn0d\[Omega]*d\[Omega]dr)*RIn + fnn0*(dRIndr + dRInd\[Omega]*d\[Omega]dr)) + 
-               Cmnmb*((dfnmb0dr + dfnmb0d\[Theta]*d\[Theta]pdr + dfnmb0d\[Omega]*d\[Omega]dr)*RIn + fnmb0*(dRIndr + dRInd\[Omega]*d\[Omega]dr)
+              ((Amnn*((dfnn0dr + dfnn0d\[Theta]*d\[Theta]pdr + dfnn0d\[Omega]*d\[Omega]dr)*RIn + fnn0*(dRIndr + dRInd\[Omega]*d\[Omega]dr)) + 
+               Amnmb*((dfnmb0dr + dfnmb0d\[Theta]*d\[Theta]pdr + dfnmb0d\[Omega]*d\[Omega]dr)*RIn + fnmb0*(dRIndr + dRInd\[Omega]*d\[Omega]dr)
                     - (dfnmb1dr + dfnmb1d\[Theta]*d\[Theta]pdr + dfnmb1d\[Omega]*d\[Omega]dr)*dRIndr - fnmb1*(d2RIndr2 + d2RIndrd\[Omega]*d\[Omega]dr)) + 
-              Cmmbmb*((dfmbmb0dr + dfmbmb0d\[Theta]*d\[Theta]pdr + dfmbmb0d\[Omega]*d\[Omega]dr)*RIn + fmbmb0*(dRIndr + dRInd\[Omega]*d\[Omega]dr)
+              Ammbmb*((dfmbmb0dr + dfmbmb0d\[Theta]*d\[Theta]pdr + dfmbmb0d\[Omega]*d\[Omega]dr)*RIn + fmbmb0*(dRIndr + dRInd\[Omega]*d\[Omega]dr)
                     - (dfmbmb1dr + dfmbmb1d\[Theta]*d\[Theta]pdr + dfmbmb1d\[Omega]*d\[Omega]dr)*dRIndr - fmbmb1*(d2RIndr2 + d2RIndrd\[Omega]*d\[Omega]dr) + 
                       (dfmbmb2dr + dfmbmb2d\[Theta]*d\[Theta]pdr + dfmbmb2d\[Omega]*d\[Omega]dr)*d2RIndr2 + fmbmb2*(d3RIndr3 + d3RIndr2d\[Omega]*d\[Omega]dr)))) 
               )*exp\[Theta]^{1,-1}], 
-       Total[\[CapitalSigma]*((d\[CapitalSigma]dr/\[CapitalSigma] + dexpdr)*((Cmnn*fnn0*RUp + Cmnmb*(fnmb0*RUp - fnmb1*dRUpdr) + Cmmbmb*(fmbmb0*RUp - fmbmb1*dRUpdr + fmbmb2*d2RUpdr2))) +
+       Total[\[CapitalSigma]*((d\[CapitalSigma]dr/\[CapitalSigma] + dexpdr)*((Amnn*fnn0*RUp + Amnmb*(fnmb0*RUp - fnmb1*dRUpdr) + Ammbmb*(fmbmb0*RUp - fmbmb1*dRUpdr + fmbmb2*d2RUpdr2))) +
               ((2*un*dundr*fnn0*RUp + (un*dumbdr+dundr*umb)*(fnmb0*RUp - fnmb1*dRUpdr) + 2*umb*dumbdr*(fmbmb0*RUp - fmbmb1*dRUpdr + fmbmb2*d2RUpdr2))) + 
-              ((Cmnn*((dfnn0dr + dfnn0d\[Theta]*d\[Theta]pdr + dfnn0d\[Omega]*d\[Omega]dr)*RUp + fnn0*(dRUpdr + dRUpd\[Omega]*d\[Omega]dr)) + 
-               Cmnmb*((dfnmb0dr + dfnmb0d\[Theta]*d\[Theta]pdr + dfnmb0d\[Omega]*d\[Omega]dr)*RUp + fnmb0*(dRUpdr + dRUpd\[Omega]*d\[Omega]dr)
+              ((Amnn*((dfnn0dr + dfnn0d\[Theta]*d\[Theta]pdr + dfnn0d\[Omega]*d\[Omega]dr)*RUp + fnn0*(dRUpdr + dRUpd\[Omega]*d\[Omega]dr)) + 
+               Amnmb*((dfnmb0dr + dfnmb0d\[Theta]*d\[Theta]pdr + dfnmb0d\[Omega]*d\[Omega]dr)*RUp + fnmb0*(dRUpdr + dRUpd\[Omega]*d\[Omega]dr)
                     - (dfnmb1dr + dfnmb1d\[Theta]*d\[Theta]pdr + dfnmb1d\[Omega]*d\[Omega]dr)*dRUpdr - fnmb1*(d2RUpdr2 + d2RUpdrd\[Omega]*d\[Omega]dr)) + 
-              Cmmbmb*((dfmbmb0dr + dfmbmb0d\[Theta]*d\[Theta]pdr + dfmbmb0d\[Omega]*d\[Omega]dr)*RUp + fmbmb0*(dRUpdr + dRUpd\[Omega]*d\[Omega]dr)
+              Ammbmb*((dfmbmb0dr + dfmbmb0d\[Theta]*d\[Theta]pdr + dfmbmb0d\[Omega]*d\[Omega]dr)*RUp + fmbmb0*(dRUpdr + dRUpd\[Omega]*d\[Omega]dr)
                     - (dfmbmb1dr + dfmbmb1d\[Theta]*d\[Theta]pdr + dfmbmb1d\[Omega]*d\[Omega]dr)*dRUpdr - fmbmb1*(d2RUpdr2 + d2RUpdrd\[Omega]*d\[Omega]dr) + 
                       (dfmbmb2dr + dfmbmb2d\[Theta]*d\[Theta]pdr + dfmbmb2d\[Omega]*d\[Omega]dr)*d2RUpdr2 + fmbmb2*(d3RUpdr3 + d3RUpdr2d\[Omega]*d\[Omega]dr)))) 
               )*exp\[Theta]^{1,-1}], 
-      Total[\[CapitalSigma]*((d\[CapitalSigma]dx/\[CapitalSigma] + dexpdx)*((Cmnn*fnn0*RIn + Cmnmb*(fnmb0*RIn - fnmb1*dRIndr) + Cmmbmb*(fmbmb0*RIn - fmbmb1*dRIndr + fmbmb2*d2RIndr2))) +
+      Total[\[CapitalSigma]*((d\[CapitalSigma]dx/\[CapitalSigma] + dexpdx)*((Amnn*fnn0*RIn + Amnmb*(fnmb0*RIn - fnmb1*dRIndr) + Ammbmb*(fmbmb0*RIn - fmbmb1*dRIndr + fmbmb2*d2RIndr2))) +
               ((2*un*dundx*fnn0*RIn + (un*dumbdx+dundx*umb)*(fnmb0*RIn - fnmb1*dRIndr) + 2*umb*dumbdx*(fmbmb0*RIn - fmbmb1*dRIndr + fmbmb2*d2RIndr2))) + 
-              ((Cmnn*((dfnn0d\[Theta]*d\[Theta]pdx + dfnn0d\[Omega]*d\[Omega]dx)*RIn + fnn0*(dRInd\[Omega]*d\[Omega]dx)) + 
-               Cmnmb*((dfnmb0d\[Theta]*d\[Theta]pdx + dfnmb0d\[Omega]*d\[Omega]dx)*RIn + fnmb0*(dRInd\[Omega]*d\[Omega]dx)
+              ((Amnn*((dfnn0d\[Theta]*d\[Theta]pdx + dfnn0d\[Omega]*d\[Omega]dx)*RIn + fnn0*(dRInd\[Omega]*d\[Omega]dx)) + 
+               Amnmb*((dfnmb0d\[Theta]*d\[Theta]pdx + dfnmb0d\[Omega]*d\[Omega]dx)*RIn + fnmb0*(dRInd\[Omega]*d\[Omega]dx)
                     - (dfnmb1d\[Theta]*d\[Theta]pdx + dfnmb1d\[Omega]*d\[Omega]dx)*dRIndr - fnmb1*(d2RIndrd\[Omega]*d\[Omega]dx)) + 
-              Cmmbmb*((dfmbmb0d\[Theta]*d\[Theta]pdx + dfmbmb0d\[Omega]*d\[Omega]dx)*RIn + fmbmb0*(dRInd\[Omega]*d\[Omega]dx)
+              Ammbmb*((dfmbmb0d\[Theta]*d\[Theta]pdx + dfmbmb0d\[Omega]*d\[Omega]dx)*RIn + fmbmb0*(dRInd\[Omega]*d\[Omega]dx)
                     - (dfmbmb1d\[Theta]*d\[Theta]pdx + dfmbmb1d\[Omega]*d\[Omega]dx)*dRIndr - fmbmb1*(d2RIndrd\[Omega]*d\[Omega]dx) + 
                       (dfmbmb2d\[Theta]*d\[Theta]pdx + dfmbmb2d\[Omega]*d\[Omega]dx)*d2RIndr2 + fmbmb2*(d3RIndr2d\[Omega]*d\[Omega]dx)))) 
               )*exp\[Theta]^{1,-1}], 
-       Total[\[CapitalSigma]*((d\[CapitalSigma]dx/\[CapitalSigma] + dexpdx)*((Cmnn*fnn0*RUp + Cmnmb*(fnmb0*RUp - fnmb1*dRUpdr) + Cmmbmb*(fmbmb0*RUp - fmbmb1*dRUpdr + fmbmb2*d2RUpdr2))) +
+       Total[\[CapitalSigma]*((d\[CapitalSigma]dx/\[CapitalSigma] + dexpdx)*((Amnn*fnn0*RUp + Amnmb*(fnmb0*RUp - fnmb1*dRUpdr) + Ammbmb*(fmbmb0*RUp - fmbmb1*dRUpdr + fmbmb2*d2RUpdr2))) +
               ((2*un*dundx*fnn0*RUp + (un*dumbdx+dundx*umb)*(fnmb0*RUp - fnmb1*dRUpdr) + 2*umb*dumbdx*(fmbmb0*RUp - fmbmb1*dRUpdr + fmbmb2*d2RUpdr2))) + 
-              ((Cmnn*((dfnn0d\[Theta]*d\[Theta]pdx + dfnn0d\[Omega]*d\[Omega]dx)*RUp + fnn0*(dRUpd\[Omega]*d\[Omega]dx)) + 
-               Cmnmb*((dfnmb0d\[Theta]*d\[Theta]pdx + dfnmb0d\[Omega]*d\[Omega]dx)*RUp + fnmb0*(dRUpd\[Omega]*d\[Omega]dx)
+              ((Amnn*((dfnn0d\[Theta]*d\[Theta]pdx + dfnn0d\[Omega]*d\[Omega]dx)*RUp + fnn0*(dRUpd\[Omega]*d\[Omega]dx)) + 
+               Amnmb*((dfnmb0d\[Theta]*d\[Theta]pdx + dfnmb0d\[Omega]*d\[Omega]dx)*RUp + fnmb0*(dRUpd\[Omega]*d\[Omega]dx)
                     - (dfnmb1d\[Theta]*d\[Theta]pdx + dfnmb1d\[Omega]*d\[Omega]dx)*dRUpdr - fnmb1*(d2RUpdrd\[Omega]*d\[Omega]dx)) + 
-              Cmmbmb*((dfmbmb0d\[Theta]*d\[Theta]pdx + dfmbmb0d\[Omega]*d\[Omega]dx)*RUp + fmbmb0*(dRUpd\[Omega]*d\[Omega]dx)
+              Ammbmb*((dfmbmb0d\[Theta]*d\[Theta]pdx + dfmbmb0d\[Omega]*d\[Omega]dx)*RUp + fmbmb0*(dRUpd\[Omega]*d\[Omega]dx)
                     - (dfmbmb1d\[Theta]*d\[Theta]pdx + dfmbmb1d\[Omega]*d\[Omega]dx)*dRUpdr - fmbmb1*(d2RUpdrd\[Omega]*d\[Omega]dx) + 
                       (dfmbmb2d\[Theta]*d\[Theta]pdx + dfmbmb2d\[Omega]*d\[Omega]dx)*d2RUpdr2 + fmbmb2*(d3RUpdr2d\[Omega]*d\[Omega]dx)))) 
               )*exp\[Theta]^{1,-1}]
