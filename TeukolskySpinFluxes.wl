@@ -23,7 +23,7 @@ TeukolskySpinModeSphericalCorrection::usage = "TeukolskySpinModeSphericalCorrect
 Begin["`Private`"];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Spinning fluxes*)
 
 
@@ -1655,6 +1655,7 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
     "k"->k,
     "n"->0,
     "\[Omega]"->\[Omega],
+    "\[Omega]Correction"->\[Omega]1,
     "Amplitudes"->
     <|
       "\[ScriptCapitalI]"->CPlus0,
@@ -1666,6 +1667,7 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
       "\[ScriptCapitalH]"->CMinus1
     |>,
     "\[Alpha]"->\[Alpha],
+    "\[Alpha]Correction"->\[Alpha]1,
     "S"->SWSH[Pi/2,0],
     "Fluxes"->
     <|
@@ -1691,6 +1693,8 @@ TeukolskySpinModeSphericalCorrectionNum[l_,m_,k_,orbitCorrection_,\[Delta]\[Omeg
         "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 3*Abs[CMinus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
       |>
     |>,
+    "\[Lambda]"->\[Lambda],
+    "\[Lambda]Correction"->\[Lambda]1,
     "steps\[Theta]"->steps\[Theta]
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
 ]
@@ -2211,6 +2215,11 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
     "k" -> k,
     "n" -> 0,
     "\[Omega]" -> \[Omega],
+    "\[Omega]Correction" -> \[Omega]1,
+    "\[Omega]Derivatives" -> <|
+      "r" -> d\[Omega]dr,
+      "x" -> d\[Omega]dx
+    |>,
     "Amplitudes" -> <|
       "\[ScriptCapitalI]" -> CPlus0,
       "\[ScriptCapitalH]" -> CMinus0
@@ -2230,6 +2239,7 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
       |>
     |>,
     "\[Alpha]" -> \[Alpha],
+    "d\[Alpha]d\[Omega]" -> d\[Alpha]d\[Omega],
     "S" -> N[SWSH[Pi/2,0][[1]]],
     "Fluxes" -> <|
       "Energy" -> <|
@@ -2273,6 +2283,8 @@ TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,orbitDerivatives_
         |>
       |>
     |>,
+    "\[Lambda]" -> \[Lambda],
+    "d\[Lambda]d\[Omega]" -> d\[Lambda]d\[Omega],
     "steps\[Theta]" -> steps\[Theta]
   |>
 ]
