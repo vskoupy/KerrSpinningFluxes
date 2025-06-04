@@ -485,7 +485,8 @@ ProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzsq,
 	\[Tau][q\[Tau]_,qr_,qz_]:=q\[Tau]+\[CapitalDelta]\[Tau]r[qr]+\[CapitalDelta]\[Tau]z[qz];
 	<|
 		"ProperTimeFrequency"->\[CapitalUpsilon]\[Tau],
-		"ProperTime"->Function[{q\[Tau],qr,qz},\[Tau][q\[Tau],qr,qz]]
+		"ProperTime"->Function[{q\[Tau],qr,qz},\[Tau][q\[Tau],qr,qz]],
+		"\[CapitalUpsilon]\[Tau]z" -> \[CapitalUpsilon]\[Tau]z
 	|>
 ]
 
@@ -514,7 +515,7 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_]:=Module[{constants,En,Jz,K,sqrtK,
 	\[Delta]En,\[Delta]Jz,\[Delta]K,EnTilde,JzTilde,KTilde,dr1dEn,dr1dLz,dr1dK,dr2dEn,dr2dLz,
 	dr2dK,dz1dEn,dz1dLz,dz1dK,r1,r2,z1,\[Delta]r1,\[Delta]r2,\[Delta]z1,xTilde,r,pTilde,eTilde,
 	orbitTilde,\[Tau]Tilde,frequencies,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalDelta]tr,\[CapitalDelta]tz,rTilde,zTilde,
-	UrTilde,UzTilde,Trajectoryg,\[Delta]x},
+	UrTilde,UzTilde,Trajectoryg,\[Delta]x,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z},
 	constants = KerrGeodesics`ConstantsOfMotion`KerrGeoConstantsOfMotion[a,p,e,x];
 	En = constants["\[ScriptCapitalE]"];
 	Jz = constants["\[ScriptCapitalL]"];
@@ -541,6 +542,8 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_]:=Module[{constants,En,Jz,K,sqrtK,
 	\[CapitalUpsilon]z = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Theta]\)]\)"];
 	\[CapitalUpsilon]\[Phi] = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"];
 	\[CapitalUpsilon]t = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTimeFrequency"];
+	\[CapitalUpsilon]tz = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequencyt\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] + a*JzTilde - 3*spar/(2*sqrtK)*\[Tau]Tilde["\[CapitalUpsilon]\[Tau]z"];
+	\[CapitalUpsilon]\[Phi]z = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequency\[Phi]\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] - a*EnTilde;
 	\[CapitalDelta]tr = Function[qr, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]tr"][qr] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,qr,0]];
 	\[CapitalDelta]tz = Function[qz, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][qz] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,0,qz]];
 	rTilde = orbitTilde["Trajectory"][[2]];
@@ -572,6 +575,7 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_]:=Module[{constants,En,Jz,K,sqrtK,
 			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"->\[CapitalUpsilon]\[Phi],
 			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"->\[CapitalUpsilon]t
 		|>,
+		"ProperTimeFrequency"->\[Tau]Tilde["ProperTimeFrequency"],
 		"BLFrequencies"->{\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi]}/\[CapitalUpsilon]t,
 		"TrajectoryDeltas"-><|
 			"\[CapitalDelta]tr"->\[CapitalDelta]tr,
@@ -582,7 +586,9 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_]:=Module[{constants,En,Jz,K,sqrtK,
 		"Trajectoryg"->Trajectoryg,
 		"\[Delta]x"->\[Delta]x,
 		"FourVelocitiesg"->{Function[qr,UrTilde[qr]],Function[qz,UzTilde[qz]]},
-		"rootsTilde"->{r2+\[Delta]r2,r1+\[Delta]r1}
+		"rootsTilde"->{r2+\[Delta]r2,r1+\[Delta]r1},
+		"\[CapitalUpsilon]tz"->\[CapitalUpsilon]tz,
+		"\[CapitalUpsilon]\[Phi]z"->\[CapitalUpsilon]\[Phi]z
 	|>
 ]
 
