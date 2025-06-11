@@ -12,6 +12,7 @@ BeginPackage["TeukolskySpinFluxes`",
 
 
 TeukolskySpinModeEquatorialCorrectionAnalytical::usage = "TeukolskySpinModeEquatorialCorrectionAnalytical[l,m,n,orbit,{angparNew,RCorrection}]"
+TeukolskySpinModeEquatorialCorrectionAnalyticalNew::usage = "TeukolskySpinModeEquatorialCorrectionAnalyticalNew[l,m,n,orbit,{angparNew,RCorrection}]"
 
 TeukolskySpinMode::usage = "TeukolskySpinMode[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from a spinning orbit";
 TeukolskySpinModeFromCorrection::usage = "TeukolskySpinModeFromCorrection[l,m,n,k,orbitCorrection,s] calculates Teukolsky amplitudes and fluxes from a linear correction to an orbit and a value of the spin";
@@ -19,11 +20,11 @@ TeukolskySpinModeFromCorrectionNew::usage = "TeukolskySpinModeFromCorrectionNew[
 
 TeukolskySpinModeAnalytical::usage = "TeukolskySpinModeFromCorrectionAalytical[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from analytical orbit";
 TeukolskySpinModeAnalyticalNew::usage = "TeukolskySpinModeFromCorrectionAalyticalNew[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from analytical orbit"
-TeukolskySpinModeAnalyticalNew2::usage = "TeukolskySpinModeFromCorrectionAalyticalNew2[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from analytical orbit";
 
 TeukolskySpinModeCorrectionNum::usage = "TeukolskySpinModeCorrectionNum[l,m,n,k,orbitCorrection,\[Delta]\[Omega]] calculates linear correction to the fluxes from numerical derivatives of R ans S with step \[Delta]\[Omega]";
 TeukolskySpinModeCorrection::usage = "TeukolskySpinModeCorrection[l,m,n,k,orbitCorrection,{angparNew,RCorrection}] calculates linear correction to the fluxes using given function for the R and S derivatives";
 TeukolskySpinModeCorrectionAnalytical::usage = "TeukolskySpinModeCorrectionAnalytical[l,m,n,k,orbit,{angparNew,RCorrection}]"
+TeukolskySpinModeCorrectionAnalyticalNew::usage = "TeukolskySpinModeCorrectionAnalyticalNew[l,m,n,k,orbit,{angparNew,RCorrection}]"
 
 TeukolskySpinModeSpherical::usage = "TeukolskySpinModeSpherical[l,m,k,orbitCorrection,s] calculates Teukolsky amplitudes and fluxes from a correction to a spherical orbit and a value of the spin";
 TeukolskySpinModeSphericalCorrectionNum::usage = "TeukolskySpinModeSphericalCorrectionNum[l,m,k,orbitCorrection,\[Delta]\[Omega]] calculates linear correction to the fluxes for spherical orbit from numerical derivatives of R ans S with step \[Delta]\[Omega]";
@@ -85,10 +86,14 @@ dfabid\[Theta][\[Zeta]_,\[Zeta]bar_,sin\[Theta]_,\[CapitalDelta]_,d\[CapitalDelt
 Fab[\[Zeta]_,\[Zeta]bar_,a_,sin\[Theta]p_,RIn_,DRIn_,DDRIn_,S_,L2S_,L1L2S_] := {-\[Zeta]/(2*\[Zeta]bar)*(L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*RIn,
                                                              (sin\[Theta]p \[Zeta])/\[Zeta]bar*L2S*DRIn - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*L2S*RIn + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*DRIn,
                                                              -\[Zeta]/(2 \[Zeta]bar)*S*sin\[Theta]p^2*(DDRIn - 2/\[Zeta]*DRIn),
-                                                             1/(2 \[Zeta]bar^2) (L1L2S RIn \[Zeta]-L1L2S (RIn+DRIn \[Zeta]) \[Zeta]bar-2 I a L2S sin\[Theta]p (RIn-DRIn \[Zeta]bar)),
-                                                             1/(2 \[Zeta]bar^2) sin\[Theta]p (L2S (2 DRIn-DDRIn \[Zeta]) \[Zeta]bar-I a S sin\[Theta]p (-2 DRIn+DDRIn (\[Zeta]+\[Zeta]bar))),
-                                                             (sin\[Theta]p (I a S sin\[Theta]p (\[Zeta]-\[Zeta]bar)+L2S \[Zeta] \[Zeta]bar) (-2 DRIn+DDRIn (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2),
-                                                             ((2 I a L2S sin\[Theta]p - L1L2S (\[Zeta]-\[Zeta]bar)) (DRIn \[Zeta] \[Zeta]bar-RIn (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2)};
+                                                             1/2 I DRIn (a L2S sin\[Theta]p+I L1L2S \[Zeta]),
+                                                             -(1/2) L2S sin\[Theta]p (DRIn-DDRIn \[Zeta])};
+
+FabEq[r_,a_,RIn_,DRIn_,DDRIn_,S_,L2S_,L1L2S_] := {-1/2*(L1L2S - 2*I*a*L2S/r)*RIn,
+                                                             L2S*DRIn - 2/r*L2S*RIn,
+                                                             -1/2*S*(DDRIn - 2/r*DRIn),
+                                                             1/2 I DRIn (a L2S+I L1L2S r),
+                                                             -(1/2) L2S (DRIn-DDRIn r)};
 
 dFabd\[Omega][\[Zeta]_,\[Zeta]bar_,a_,sin\[Theta]p_,RIn_,DRIn_,DDRIn_,dRInd\[Omega]_,dDRInd\[Omega]_,dDDRInd\[Omega]_,S_,L2S_,L1L2S_,dSd\[Omega]_,dL2Sd\[Omega]_,dL1L2Sd\[Omega]_] := {
     -\[Zeta]/(2*\[Zeta]bar)*((dL1L2Sd\[Omega] - 2*I*a*sin\[Theta]p*dL2Sd\[Omega]/\[Zeta])*RIn + (L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*dRInd\[Omega]),
@@ -96,6 +101,10 @@ dFabd\[Omega][\[Zeta]_,\[Zeta]bar_,a_,sin\[Theta]p_,RIn_,DRIn_,DDRIn_,dRInd\[Ome
       + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*dSd\[Omega]*DRIn + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*dDRInd\[Omega]),
     -\[Zeta]/(2 \[Zeta]bar)*sin\[Theta]p^2*(dSd\[Omega]*(DDRIn - 2/\[Zeta]*DRIn) + S*(dDDRInd\[Omega] - 2/\[Zeta]*dDRInd\[Omega]))};
 
+dFabd\[Omega]Eq[r_,a_,RIn_,DRIn_,DDRIn_,dRInd\[Omega]_,dDRInd\[Omega]_,dDDRInd\[Omega]_,S_,L2S_,L1L2S_,dSd\[Omega]_,dL2Sd\[Omega]_,dL1L2Sd\[Omega]_] := {
+    (-r (dRInd\[Omega] L1L2S+dL1L2Sd\[Omega] RIn)+2 I a (dRInd\[Omega] L2S+dL2Sd\[Omega] RIn))/(2 r),
+    (-2 dRInd\[Omega] L2S+dL2Sd\[Omega] DRIn r+dDRInd\[Omega] L2S r-2 dL2Sd\[Omega] RIn)/r,
+    -((-2 DRIn dSd\[Omega]+DDRIn dSd\[Omega] r-2 dDRInd\[Omega] S+dDDRInd\[Omega] r S)/(2 r))}
 
 
 (* ::Subsection::Closed:: *)
@@ -417,8 +426,8 @@ TeukolskySpinModeEquatorialCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?Integ
     zp,\[Theta]p,sin\[Theta]p,K\[Theta],dK\[Theta]d\[Omega],S,dSd\[Theta],d2Sd\[Theta]2,dSd\[Omega],d2Sd\[Theta]d\[Omega],d3Sd\[Theta]2d\[Omega],
     L2S,dL2Sd\[Theta],L1L2S,dL2Sd\[Omega],d2L2Sd\[Theta]d\[Omega],dL1L2Sd\[Omega],
     \[Zeta],\[Zeta]bar,vn,vmb,
-    FnnIn,FnmbIn,FmbmbIn,DFnnIn,L0FmbmbIn,DFnmbIn,LFnmbIn,dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega],
-    FnnUp,FnmbUp,FmbmbUp,DFnnUp,L0FmbmbUp,DFnmbUp,LFnmbUp,dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega],
+    FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn,dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega],
+    FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp,dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega],
     CPlus0,CPlus1,CMinus0,CMinus1},
   If[l < 2 || Abs[m] > l, Return[$Failed]];
   a = orbit["a"];(* Orbital parameters *)
@@ -526,38 +535,20 @@ TeukolskySpinModeEquatorialCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?Integ
     vn = -((rp^2+a^2)*En0 - a*Lz0 + Urp)/\[CapitalDelta]; (* Four-velocity in rotated Kinnersley tetrad *)
     vmb = (-I*(a*sin\[Theta]p^2*En0 - Lz0))/sin\[Theta]p^2;
     (* In solution *)
-    FnnIn     = -\[Zeta]/(2*\[Zeta]bar)*(L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*RIn;(* F_ab functions *)
-    FnmbIn    = (sin\[Theta]p \[Zeta])/\[Zeta]bar*L2S*DRIn - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*L2S*RIn + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*DRIn;
-    FmbmbIn   = -\[Zeta]/(2 \[Zeta]bar)*S*sin\[Theta]p^2*(DDRIn - 2/\[Zeta]*DRIn);
-    DFnnIn    = 1/(2 \[Zeta]bar^2) (L1L2S RIn \[Zeta]-L1L2S (RIn+DRIn \[Zeta]) \[Zeta]bar-2 I a L2S sin\[Theta]p (RIn-DRIn \[Zeta]bar));(* Operators acting on F_ab *)
-    L0FmbmbIn = 1/(2 \[Zeta]bar^2) sin\[Theta]p (L2S (2 DRIn-DDRIn \[Zeta]) \[Zeta]bar-I a S sin\[Theta]p (-2 DRIn+DDRIn (\[Zeta]+\[Zeta]bar)));
-    DFnmbIn   = (sin\[Theta]p (I a S sin\[Theta]p (\[Zeta]-\[Zeta]bar)+L2S \[Zeta] \[Zeta]bar) (-2 DRIn+DDRIn (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
-    LFnmbIn   = ((2 I a L2S sin\[Theta]p - L1L2S (\[Zeta]-\[Zeta]bar)) (DRIn \[Zeta] \[Zeta]bar-RIn (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
-    dFnnInd\[Omega]   = -\[Zeta]/(2*\[Zeta]bar)*((dL1L2Sd\[Omega] - 2*I*a*sin\[Theta]p*dL2Sd\[Omega]/\[Zeta])*RIn + (L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*dRInd\[Omega]);(* \[Omega]-derivatives of F_ab *)
-    dFnmbInd\[Omega]  = (sin\[Theta]p \[Zeta])/\[Zeta]bar*dL2Sd\[Omega]*DRIn + (sin\[Theta]p \[Zeta])/\[Zeta]bar*L2S*dDRInd\[Omega] - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*dL2Sd\[Omega]*RIn - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*L2S*dRInd\[Omega] 
-                 + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*dSd\[Omega]*DRIn + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*dDRInd\[Omega];
-    dFmbmbInd\[Omega] = -\[Zeta]/(2 \[Zeta]bar)*sin\[Theta]p^2*(dSd\[Omega]*(DDRIn - 2/\[Zeta]*DRIn) + S*(dDDRInd\[Omega] - 2/\[Zeta]*dDRInd\[Omega]));
+    {FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn} = FabEq[rp,a,RIn,DRIn,DDRIn,S,L2S,L1L2S];(* F_ab functions *)
+    {dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega]}   = dFabd\[Omega]Eq[rp,a,RIn,DRIn,DDRIn,dRInd\[Omega],dDRInd\[Omega],dDDRInd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
     (* Up solution *)
-    FnnUp     = -\[Zeta]/(2*\[Zeta]bar)*(L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*RUp;(* F_ab functions *)
-    FnmbUp    = (sin\[Theta]p \[Zeta])/\[Zeta]bar*L2S*DRUp - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*L2S*RUp + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*DRUp;
-    FmbmbUp   = -\[Zeta]/(2 \[Zeta]bar)*S*sin\[Theta]p^2*(DDRUp - 2/\[Zeta]*DRUp);
-    DFnnUp    = 1/(2 \[Zeta]bar^2) (L1L2S RUp \[Zeta]-L1L2S (RUp+DRUp \[Zeta]) \[Zeta]bar-2 I a L2S sin\[Theta]p (RUp-DRUp \[Zeta]bar));(* Operators acting on F_ab *)
-    L0FmbmbUp = 1/(2 \[Zeta]bar^2) sin\[Theta]p (L2S (2 DRUp-DDRUp \[Zeta]) \[Zeta]bar-I a S sin\[Theta]p (-2 DRUp+DDRUp (\[Zeta]+\[Zeta]bar)));
-    DFnmbUp   = (sin\[Theta]p (I a S sin\[Theta]p (\[Zeta]-\[Zeta]bar)+L2S \[Zeta] \[Zeta]bar) (-2 DRUp+DDRUp (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
-    LFnmbUp   = ((2 I a L2S sin\[Theta]p - L1L2S (\[Zeta]-\[Zeta]bar)) (DRUp \[Zeta] \[Zeta]bar-RUp (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
-    dFnnUpd\[Omega]   = -\[Zeta]/(2*\[Zeta]bar)*((dL1L2Sd\[Omega] - 2*I*a*sin\[Theta]p*dL2Sd\[Omega]/\[Zeta])*RUp + (L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*dRUpd\[Omega]);(* \[Omega]-derivatives of F_ab *)
-    dFnmbUpd\[Omega]  = (sin\[Theta]p \[Zeta])/\[Zeta]bar*dL2Sd\[Omega]*DRUp + (sin\[Theta]p \[Zeta])/\[Zeta]bar*L2S*dDRUpd\[Omega] - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*dL2Sd\[Omega]*RUp - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*L2S*dRUpd\[Omega] 
-                 + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*dSd\[Omega]*DRUp + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*dDRUpd\[Omega];
-    dFmbmbUpd\[Omega] = -\[Zeta]/(2 \[Zeta]bar)*sin\[Theta]p^2*(dSd\[Omega]*(DDRUp - 2/\[Zeta]*DRUp) + S*(dDDRUpd\[Omega] - 2/\[Zeta]*dDRUpd\[Omega]));
+    {FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp} = FabEq[rp,a,RUp,DRUp,DDRUp,S,L2S,L1L2S];(* F_ab functions *)
+    {dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega]}   = dFabd\[Omega]Eq[rp,a,RUp,DRUp,DDRUp,dRUpd\[Omega],dDRUpd\[Omega],dDDRUpd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
     {Total[(vn*vn*FnnIn + vn*vmb*FnmbIn + vmb*vmb*FmbmbIn)*expr^{1,-1}],
     Total[(
-        (vn*( rp*DFnnIn - LFnmbIn/2) + vmb*( DFnmbIn/2 - I*a*zp*L0FmbmbIn ))/Sqrt[K0] +
+        (vn*( GnIn ) + vmb*( GmbIn ))/Sqrt[K0] +
         (vn*vn*FnnIn + vn*vmb*FnmbIn + vmb*vmb*FmbmbIn)*expr1 +
         (vn*vn*dFnnInd\[Omega] + vn*vmb*dFnmbInd\[Omega] + vmb*vmb*dFmbmbInd\[Omega])*\[Omega]1
      )*expr^{1,-1}],
      Total[(vn*vn*FnnUp + vn*vmb*FnmbUp + vmb*vmb*FmbmbUp)*expr^{1,-1}],
      Total[(
-        (vn*( rp*DFnnUp - LFnmbUp/2) + vmb*( DFnmbUp/2 - I*a*zp*L0FmbmbUp ))/Sqrt[K0] +
+        (vn*( GnUp ) + vmb*( GmbUp ))/Sqrt[K0] +
         (vn*vn*FnnUp + vn*vmb*FnmbUp + vmb*vmb*FmbmbUp)*expr1 +
         (vn*vn*dFnnUpd\[Omega] + vn*vmb*dFnmbUpd\[Omega] + vmb*vmb*dFmbmbUpd\[Omega])*\[Omega]1
        )*expr^{1,-1}]},
@@ -565,6 +556,203 @@ TeukolskySpinModeEquatorialCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?Integ
   ];
   W = (RIn*dRUpdr - dRIndr*RUp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
   W1 = (dRInd\[Omega]*dRUpdr + RIn*d2RUpdrd\[Omega] - d2RIndrd\[Omega]*RUp - dRIndr*dRUpd\[Omega])/(rp^2-2*rp+a^2)*\[Omega]1; (* Invariant Wronskian *)
+  CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr); (* Amplitudes *)
+  CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr);
+  CPlus1  = 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1 = 2*Pi*sumMinus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
+  <|
+    "l"->l,
+    "m"->m,
+    "k"->0,
+    "n"->n,
+    "\[Omega]"->\[Omega],
+    "\[Omega]Correction"->\[Omega]1,
+    "Amplitudes"->
+    <|
+      "\[ScriptCapitalI]"->CPlus0,
+      "\[ScriptCapitalH]"->CMinus0
+    |>,
+    "AmplitudesCorrection"->
+    <|
+      "\[ScriptCapitalI]"->CPlus1,
+      "\[ScriptCapitalH]"->CMinus1
+    |>,
+    "\[Alpha]"->\[Alpha],
+    "S"->SWSH[Pi/2,0],
+    "Fluxes"->
+    <|
+      "Energy"-><|
+        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
+        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMinus0]^2/(4Pi*\[Omega]^2)
+      |>,
+      "AngularMomentum"->
+      <|
+        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
+        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMinus0]^2*m/(4Pi*\[Omega]^3)
+      |>
+    |>,
+    "FluxesCorrection"->
+    <|
+      "Energy"-><|
+        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
+        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 2*Abs[CMinus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
+      |>,
+      "AngularMomentum"->
+      <|
+        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
+        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 3*Abs[CMinus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
+      |>
+    |>,
+    "stepsr"->stepsr
+  |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
+]
+
+
+Options[TeukolskySpinModeEquatorialCorrectionAnalyticalNew] = {WorkingPrecision->30};
+TeukolskySpinModeEquatorialCorrectionAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,orbit_,{angparNew_,RCorrection_},OptionsPattern[]]:=Module[{a,p,e,x,
+    En0,Lz0,K0,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]t1,\[Omega],\[Omega]1,SWSH,dSWSHd\[Omega],R,Rp,\[Lambda],d\[Lambda]d\[Omega],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumPlus1,sumMinus0,sumMinus1,stepsr,wr,
+    rp,Urp,expr,expr1,\[CapitalDelta],d\[CapitalDelta],K,dKdr,dKd\[Omega],d2Kdrd\[Omega],V,dVd\[Omega],
+    RIn,dRIndr,d2RIndr2,dRInd\[Omega],d2RIndrd\[Omega],d3RIndr2d\[Omega],RUp,dRUpdr,d2RUpdr2,dRUpd\[Omega],d2RUpdrd\[Omega],d3RUpdr2d\[Omega],
+    DRIn,dDRIndr,DDRIn,DRUp,dDRUpdr,DDRUp,dDRInd\[Omega],d2DRIndrd\[Omega],dDDRInd\[Omega],dDRUpd\[Omega],d2DRUpdrd\[Omega],dDDRUpd\[Omega],
+    \[Theta]p,K\[Theta],dK\[Theta]d\[Omega],S,dSd\[Theta],d2Sd\[Theta]2,dSd\[Omega],d2Sd\[Theta]d\[Omega],d3Sd\[Theta]2d\[Omega],
+    L2S,dL2Sd\[Theta],L1L2S,dL2Sd\[Omega],d2L2Sd\[Theta]d\[Omega],dL1L2Sd\[Omega],
+    vnplus,vnminus,vmb,
+    FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn,dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega],
+    FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp,dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega],
+    CPlus0,CPlus1,CMinus0,CMinus1},
+  If[l < 2 || Abs[m] > l, Return[$Failed]];
+  a = orbit["a"];(* Orbital parameters *)
+  p = orbit["p"];
+  e = orbit["e"];
+  x = orbit["Inclination"];
+  If[x!=1,Return[$Failed]];
+  En0 = orbit["Energy"]; (* Shifted constants of motion *)
+  Lz0 = orbit["AngularMomentum"];
+  K0 = orbit["CarterConstant"] + (Lz0-a*En0)^2;
+  {\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t} = Values[orbit["Frequencies"]];
+  {\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi]} = {\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi]}/\[CapitalUpsilon]t; (* BL frequencies *)
+  r = orbit["Trajectory"][[2]]; (* Geodesic coordinates r and z=cos(\[Theta]) *)
+  \[CapitalUpsilon]\[Tau] = orbit["ProperTimeFrequency"];
+  \[CapitalUpsilon]t1 = -3*\[CapitalUpsilon]\[Tau]/(2*Sqrt[K0]);
+  \[Omega] = m*\[CapitalOmega]\[Phi] + n*\[CapitalOmega]r; (* Frequency of mode *)
+  \[Omega]1 = 3*\[CapitalUpsilon]\[Tau]*\[Omega]/(2*Sqrt[K0]*\[CapitalUpsilon]t);
+  If[!(\[Omega]\[Element]Reals), Return[$Failed]];
+  {\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega]}=angparNew[-2,l,m,
+                                     SetPrecision[a, OptionValue[WorkingPrecision]+(5+1.5*\[Omega]+5.3*(l-Max[2,Abs[m]])+2.6*a)],
+                                     SetPrecision[\[Omega], OptionValue[WorkingPrecision]+(5+1.5*\[Omega]+5.3*(l-Max[2,Abs[m]])+2.6*a)],1,
+                                         "precODE" -> OptionValue[WorkingPrecision]+(5+1.5*\[Omega]+5.3*(l-Max[2,Abs[m]])+2.6*a)]; (* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
+  Print[ToString[AbsoluteTiming[
+    R = RCorrection[-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],
+                         SetPrecision[\[Omega],OptionValue[WorkingPrecision]+5],1,
+                         SetPrecision[\[Lambda],OptionValue[WorkingPrecision]+5],
+                         SetPrecision[d\[Lambda]d\[Omega],OptionValue[WorkingPrecision]+5],e,p,"precODE"->OptionValue[WorkingPrecision]]
+                         ][[1]]]];
+  \[Lambda]1 = d\[Lambda]d\[Omega]*\[Omega]1;
+  \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (*  TS constant *)
+  \[ScriptCapitalC]21 = 4 \[Lambda]^3 \[Lambda]1+4 \[Lambda]^2 (3 \[Lambda]1+10 a (m-2 a \[Omega]) \[Omega]1)+8 \[Lambda] (\[Lambda]1 (1+10 a m \[Omega]-10 a^2 \[Omega]^2)+6 a (m+2 a \[Omega]) \[Omega]1) + 
+        48 \[Omega] (a m \[Lambda]1+6 \[Omega]1-18 a^3 m \[Omega] \[Omega]1+12 a^4 \[Omega]^2 \[Omega]1+a^2 (\[Lambda]1 \[Omega]+6 m^2 \[Omega]1));  (* linear part of the TS constant *)
+  rplus = 1+Sqrt[1-a^2];  (*  horizon r_+  *)
+  P = \[Omega]-m*a/(2*rplus); (* frequency at the horizon *)
+  \[Epsilon] = Sqrt[1^2-a^2]/(4*rplus);
+  \[Alpha] = 256*(2*rplus)^5*P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2; (* constant for horizon fluxes *)
+  \[Alpha]1 = -256*(2*rplus)^5*P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2^2*\[ScriptCapitalC]21 + 256*(2*rplus)^5*(\[Omega]1*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3 +
+       P*(2*P*\[Omega]1)*(P^2+16*\[Epsilon]^2)*\[Omega]^3 + P*(P^2+4*\[Epsilon]^2)*(2*P*\[Omega]1)*\[Omega]^3 + P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*3*\[Omega]^2*\[Omega]1)/\[ScriptCapitalC]2; (* linear part of the constant for horizon fluxes *)
+  \[Theta]p = N[Pi/2,Precision[{a,p,e}]];
+  K\[Theta] = a*\[Omega] - m;
+  dK\[Theta]d\[Omega] = a;
+  (* Spin-weighted spheroidal harmonics and their \[Theta]-derivatives *)
+  {S,dSd\[Theta]}=SWSH[\[Theta]p]; 
+  d2Sd\[Theta]2 = - (-a^2*\[Omega]^2 - m^2 - 2 + 2*m*a*\[Omega] + \[Lambda])*S;
+  (* \[Omega]-derivatives of S *)
+  {dSd\[Omega],d2Sd\[Theta]d\[Omega]}=dSWSHd\[Omega][\[Theta]p];  (*  \[Omega]-derivative of S(\[Theta](z))  *)
+  d3Sd\[Theta]2d\[Omega] = - (-a^2*\[Omega]^2 - m^2 - 2 + 2*m*a*\[Omega] + \[Lambda])*dSd\[Omega] - (-2*a^2*\[Omega] + 2*m*a + d\[Lambda]d\[Omega])*S;
+  (* Operators L and their \[Omega]-derivatives *)
+  L2S = dSd\[Theta] + K\[Theta]*S;(* Operators acting on S(\[Theta]) and derivatives of these operators *)
+  dL2Sd\[Theta] = d2Sd\[Theta]2 + K\[Theta]*dSd\[Theta] -2*S;
+  L1L2S = dL2Sd\[Theta] + K\[Theta]*L2S; 
+  dL2Sd\[Omega] = d2Sd\[Theta]d\[Omega] + K\[Theta]*dSd\[Omega] + dK\[Theta]d\[Omega]*S;(* Operators acting on S(\[Theta]) and derivatives of these operators *)
+  d2L2Sd\[Theta]d\[Omega] = d3Sd\[Theta]2d\[Omega] + K\[Theta]*d2Sd\[Theta]d\[Omega] + dK\[Theta]d\[Omega]*dSd\[Theta] -2*dSd\[Omega];
+  dL1L2Sd\[Omega] = d2L2Sd\[Theta]d\[Omega] + K\[Theta]*dL2Sd\[Omega] + dK\[Theta]d\[Omega]*L2S;
+  (* numbers of steps for wr and wz integration *)
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  Print[ToString[stepsr]<>" steps in wr"];
+    wr = N[Range[Pi/stepsr,(stepsr-1)*Pi/stepsr,2Pi/stepsr],Precision[{a,p,e}]];
+    rp = r[wr];
+    Urp = Sqrt[((rp^2+a^2)*En0-a*Lz0)^2-(rp^2-2rp+a^2)*(rp^2+K0)];(* Geodesic radial velocity at each quadrant (positive and negative radial and polar velocity) *)
+    expr = Exp[I*(\[Omega]*(orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"][wr])-m*(orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"][wr])+n*wr)];(* Exponential term with geodesic \[CapitalDelta]tr and \[CapitalDelta]\[Phi]r *)
+    expr1 = I*(\[Omega]1*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"][wr] + \[Omega]*(-3/(2*Sqrt[K0]))*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Tau]r"][wr]);(* Linear part of the exponential term *)
+    \[CapitalDelta]  = rp^2-2rp+a^2;
+    K  = (rp^2+a^2)*\[Omega]-a*m;
+    dKdr = 2*rp*\[Omega];
+    dKd\[Omega]  = (rp^2+a^2);
+    d2Kdrd\[Omega] = 2*rp;
+    d\[CapitalDelta] = 2*(rp-1);
+    V  = -(K^2 + 4I*(rp-1)*K)/\[CapitalDelta] + 8*I*\[Omega]*rp + \[Lambda]; (* Potential in radial Teukolsky equation *)
+    dVd\[Omega]  = -(2*K*dKd\[Omega] + 4I*(rp-1)*dKd\[Omega])/\[CapitalDelta] + 8*I*rp + d\[Lambda]d\[Omega]; (* \[Omega]-derivative of the potential in radial Teukolsky equation *)
+    (* In solutions of the radial equation and their r and \[Omega] derivatives *)
+    Rp = R[rp];
+    RIn    = Rp["R0"]["In"]["R"]; 
+    dRIndr   = Rp["R0"]["In"]["dR"];
+    d2RIndr2  = (V*RIn + d\[CapitalDelta]*dRIndr)/\[CapitalDelta];  (* second derivative of radial function from Teukolsky equation *)
+    dRInd\[Omega]   = Rp["R1"]["In"]["R"]; (* \[Omega]-derivatives of the radial function *)
+    d2RIndrd\[Omega]  = Rp["R1"]["In"]["dR"];
+    d3RIndr2d\[Omega] = (V*dRInd\[Omega] + dVd\[Omega]*RIn + d\[CapitalDelta]*d2RIndrd\[Omega])/\[CapitalDelta];
+    (* Operators D and their r and \[Omega] derivatives *)
+    DRIn = dRIndr - I*K/\[CapitalDelta]*RIn;
+    dDRInd\[Omega] = d2RIndrd\[Omega] - I*K/\[CapitalDelta]*dRInd\[Omega] - I*dKd\[Omega]/\[CapitalDelta]*RIn;
+    dDRIndr = d2RIndr2 - I*K/\[CapitalDelta]*dRIndr - I*( dKdr*\[CapitalDelta] - K*d\[CapitalDelta])/\[CapitalDelta]^2*RIn;
+    d2DRIndrd\[Omega] = d3RIndr2d\[Omega] - I*K/\[CapitalDelta]*d2RIndrd\[Omega] - I*dKd\[Omega]/\[CapitalDelta]*dRIndr - I*( dKdr*\[CapitalDelta] - K*d\[CapitalDelta])/\[CapitalDelta]^2*dRInd\[Omega] - I*( d2Kdrd\[Omega]*\[CapitalDelta] - dKd\[Omega]*d\[CapitalDelta])/\[CapitalDelta]^2*RIn;
+    DDRIn = dDRIndr - I*K/\[CapitalDelta]*DRIn;
+    dDDRInd\[Omega] = d2DRIndrd\[Omega] - I*K/\[CapitalDelta]*dDRInd\[Omega] - I*dKd\[Omega]/\[CapitalDelta]*DRIn;
+    (* Up solutions of the radial equation and their r and \[Omega] derivatives *)
+    RUp    = Rp["R0"]["Up"]["R"]; 
+    dRUpdr   = Rp["R0"]["Up"]["dR"];
+    d2RUpdr2  = (V*RUp + d\[CapitalDelta]*dRUpdr)/\[CapitalDelta];  (* second derivative of radial function from Teukolsky equation *)
+    dRUpd\[Omega]   = Rp["R1"]["Up"]["R"]; (* \[Omega]-derivative of the radial function *)
+    d2RUpdrd\[Omega]  = Rp["R1"]["Up"]["dR"];
+    d3RUpdr2d\[Omega] = (V*dRUpd\[Omega] + dVd\[Omega]*RUp + d\[CapitalDelta]*d2RUpdrd\[Omega])/\[CapitalDelta];
+    (* Operators D and their r and \[Omega] derivatives *)
+    DRUp = dRUpdr - I*K/\[CapitalDelta]*RUp;
+    dDRUpd\[Omega] = d2RUpdrd\[Omega] - I*K/\[CapitalDelta]*dRUpd\[Omega] - I*dKd\[Omega]/\[CapitalDelta]*RUp;
+    dDRUpdr = d2RUpdr2 - I*K/\[CapitalDelta]*dRUpdr - I*( dKdr*\[CapitalDelta] - K*d\[CapitalDelta])/\[CapitalDelta]^2*RUp;
+    d2DRUpdrd\[Omega] = d3RUpdr2d\[Omega] - I*K/\[CapitalDelta]*d2RUpdrd\[Omega] - I*dKd\[Omega]/\[CapitalDelta]*dRUpdr - I*( dKdr*\[CapitalDelta] - K*d\[CapitalDelta])/\[CapitalDelta]^2*dRUpd\[Omega] - I*( d2Kdrd\[Omega]*\[CapitalDelta] - dKd\[Omega]*d\[CapitalDelta])/\[CapitalDelta]^2*RUp;
+    DDRUp = dDRUpdr - I*K/\[CapitalDelta]*DRUp;
+    dDDRUpd\[Omega] = d2DRUpdrd\[Omega] - I*K/\[CapitalDelta]*dDRUpd\[Omega] - I*dKd\[Omega]/\[CapitalDelta]*DRUp;
+    (* Integration f functions of r and \[Theta] *)
+    vnplus = -((rp^2+a^2)*En0 - a*Lz0 + Urp)/\[CapitalDelta]; (* Four-velocity in rotated Kinnersley tetrad *)
+    vnminus = -((rp^2+a^2)*En0 - a*Lz0 - Urp)/\[CapitalDelta]; (* Four-velocity in rotated Kinnersley tetrad *)
+    vmb = (-I*(a*En0 - Lz0));
+    (* In solution *)
+    {FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn} = FabEq[rp,a,RIn,DRIn,DDRIn,S,L2S,L1L2S];(* F_ab functions *)
+    {dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega]}   = dFabd\[Omega]Eq[rp,a,RIn,DRIn,DDRIn,dRInd\[Omega],dDRInd\[Omega],dDDRInd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
+    (* Up solution *)
+    {FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp} = FabEq[rp,a,RUp,DRUp,DDRUp,S,L2S,L1L2S];(* F_ab functions *)
+    {dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega]}   = dFabd\[Omega]Eq[rp,a,RUp,DRUp,DDRUp,dRUpd\[Omega],dDRUpd\[Omega],dDDRUpd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
+    sumPlus0 = Total[(vnplus*vnplus*FnnIn + vnplus*vmb*FnmbIn + vmb*vmb*FmbmbIn)*expr + (vnminus*vnminus*FnnIn + vnminus*vmb*FnmbIn + vmb*vmb*FmbmbIn)/expr];
+    sumPlus1 = Total[(
+        (vnplus*( GnIn ) + vmb*( GmbIn ))/Sqrt[K0] +
+        (vnplus*vnplus*FnnIn + vnplus*vmb*FnmbIn + vmb*vmb*FmbmbIn)*expr1 +
+        (vnplus*vnplus*dFnnInd\[Omega] + vnplus*vmb*dFnmbInd\[Omega] + vmb*vmb*dFmbmbInd\[Omega])*\[Omega]1
+     )*expr + 
+     (
+        (vnminus*( GnIn ) + vmb*( GmbIn ))/Sqrt[K0] +
+        (vnminus*vnminus*FnnIn + vnminus*vmb*FnmbIn + vmb*vmb*FmbmbIn)*(-expr1) +
+        (vnminus*vnminus*dFnnInd\[Omega] + vnminus*vmb*dFnmbInd\[Omega] + vmb*vmb*dFmbmbInd\[Omega])*\[Omega]1
+     )/expr];
+    sumMinus0 = Total[(vnplus*vnplus*FnnUp + vnplus*vmb*FnmbUp + vmb*vmb*FmbmbUp)*expr + (vnminus*vnminus*FnnUp + vnminus*vmb*FnmbUp + vmb*vmb*FmbmbUp)/expr];
+    sumMinus1 = Total[(
+        (vnplus*( GnUp ) + vmb*( GmbUp ))/Sqrt[K0] +
+        (vnplus*vnplus*FnnUp + vnplus*vmb*FnmbUp + vmb*vmb*FmbmbUp)*expr1 +
+        (vnplus*vnplus*dFnnUpd\[Omega] + vnplus*vmb*dFnmbUpd\[Omega] + vmb*vmb*dFmbmbUpd\[Omega])*\[Omega]1
+     )*expr + 
+     (
+        (vnminus*( GnUp ) + vmb*( GmbUp ))/Sqrt[K0] +
+        (vnminus*vnminus*FnnUp + vnminus*vmb*FnmbUp + vmb*vmb*FmbmbUp)*(-expr1) +
+        (vnminus*vnminus*dFnnUpd\[Omega] + vnminus*vmb*dFnmbUpd\[Omega] + vmb*vmb*dFmbmbUpd\[Omega])*\[Omega]1
+     )/expr];
+  W = (RIn[[1]]*dRUpdr[[1]] - dRIndr[[1]]*RUp[[1]])/(rp[[1]]^2-2*rp[[1]]+a^2); (* Invariant Wronskian *)
+  W1 = (dRInd\[Omega][[1]]*dRUpdr[[1]] + RIn[[1]]*d2RUpdrd\[Omega][[1]] - d2RIndrd\[Omega][[1]]*RUp[[1]] - dRIndr[[1]]*dRUpd\[Omega][[1]])/(rp[[1]]^2-2*rp[[1]]+a^2)*\[Omega]1; (* Invariant Wronskian *)
   CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr); (* Amplitudes *)
   CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr);
   CPlus1  = 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
@@ -666,10 +854,10 @@ TeukolskySpinMode[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Modul
   sumPlus = 0; (* Results of the integration are stored in these variables *)
   sumMinus = 0;
   (* numbers of steps for wr and w\[Theta] integration *)
-  stepsr = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
-  steps\[Theta] = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  steps\[Theta] = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[stepsr]<>" steps in wr, "<>ToString[steps\[Theta]]<>" steps in w\[Theta]"];
   \[Theta]list = {};(* List for functions of \[Theta] *)
   correctionp = Table[correction[N[(ir-1/2)*2Pi/stepsr,Precision[{a,p,e,\[ScriptCapitalI]}]],N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{ir,1,stepsr/2},{i\[Theta],1,steps\[Theta]/2}];(* Corrections to the trajectory *)
@@ -1115,10 +1303,10 @@ TeukolskySpinModeFromCorrectionNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?Intege
   sumPlus  = 0; (* Results of the integration are stored in these variables *)
   sumMinus = 0;
   (* numbers of steps for wr and w\[Theta] integration *)
-  stepsr = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
-  steps\[Theta] = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  steps\[Theta] = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[stepsr]<>" steps in wr, "<>ToString[steps\[Theta]]<>" steps in w\[Theta]"];
   \[Theta]list = {};(* List for functions of \[Theta] *)
   correctionp = Table[correction[N[(ir-1/2)*2Pi/stepsr,Precision[{a,p,e,\[ScriptCapitalI]}]],N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{ir,1,stepsr/2},{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
@@ -1331,10 +1519,10 @@ TeukolskySpinModeAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbi
   sumPlus  = 0; (* Results of the integration are stored in these variables *)
   sumMinus = 0;
   (* numbers of steps for wr and w\[Theta] integration *)
-  stepsr = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
-  stepsz = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[0   ]+k)]],32];
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  stepsz = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[0   ]+k)]],32];
   Print[ToString[stepsr]<>" steps in wr, "<>ToString[stepsz]<>" steps in wz"];
   zlist = {};(* List for functions of \[Theta] *)
   For[ir = 1, ir <= stepsr/2, ir++,(* Integration over wr *)
@@ -1510,10 +1698,10 @@ TeukolskySpinModeAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,o
   sumPlus  = 0; (* Results of the integration are stored in these variables *)
   sumMinus = 0;
   (* numbers of steps for wr and wz integration *)
-  stepsr = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
-  stepsz = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[0   ]+k)]],32];
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  stepsz = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[0   ]+k)]],32];
   Print[ToString[stepsr]<>" steps in wr, "<>ToString[stepsz]<>" steps in wz"];
   zlist = {};(* List for functions of \[Theta] *)
   For[ir = 1, ir <= stepsr/2, ir++,(* Integration over wr *)
@@ -1633,8 +1821,8 @@ TeukolskySpinModeAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,o
 TeukolskySpinModeAnalyticalNew2[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Module[{a,p,e,x,spar,
     En0,Lz0,K0,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,z,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,sumPlus,sumMinus,stepsr,stepsz,zlist,ir,iz,wr,wz,rp,zp,sin\[Theta]p,K\[Theta],
     Urp,Uzp,expr,expz,\[CapitalDelta],d\[CapitalDelta],K,dK,V,RInrp,dRInrp,ddRInrp,RUprp,dRUprp,ddRUprp,DRIn,dDRIndr,DDRIn,DRUp,dDRUpdr,DDRUp,
-    \[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,dL2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],vn,vmb,CPlus,CMinus,FnnIn,FnmbIn,FmbmbIn,(*dFnnIndr,dFnmbIndr,dFnmbInd\[Theta],dFmbmbInd\[Theta],*)
-    FnnUp,FnmbUp,FmbmbUp,(*dFnnUpdr,dFnmbUpdr,dFnmbUpd\[Theta],dFmbmbUpd\[Theta],*)DFnnIn,DFnnUp,L0FmbmbUp,L0FmbmbIn,DFnmbIn,DFnmbUp,LFnmbIn,LFnmbUp,
+    \[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,dL2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],vn,vmb,CPlus,CMinus,FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn,(*dFnnIndr,dFnmbIndr,dFnmbInd\[Theta],dFmbmbInd\[Theta],*)
+    FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp,(*dFnnUpdr,dFnmbUpdr,dFnmbUpd\[Theta],dFmbmbUpd\[Theta],*)(*DFnnIn,*)(*DFnnUp,L0FmbmbUp,*)(*L0FmbmbIn,DFnmbIn,*)(*DFnmbUp,*)(*LFnmbIn,*)(*LFnmbUp,*)
     \[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z},
   If[l < 2 || Abs[m] > l, Return[$Failed]];
   a = orbit["a"];(* Orbital parameters *)
@@ -1668,10 +1856,10 @@ TeukolskySpinModeAnalyticalNew2[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,
   sumPlus  = 0; (* Results of the integration are stored in these variables *)
   sumMinus = 0;
   (* numbers of steps for wr and wz integration *)
-  stepsr = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
-  stepsz = Max[16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[0   ]+k)]],32];
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  stepsz = Max[32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[Pi/4]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbit["TrajectoryDeltas"]["\[CapitalDelta]tz"]'[0   ]-m*orbit["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]z"]'[0   ]+k)]],32];
   Print[ToString[stepsr]<>" steps in wr, "<>ToString[stepsz]<>" steps in wz"];
   zlist = {};(* List for functions of \[Theta] *)
   For[ir = 1, ir <= stepsr/2, ir++,(* Integration over wr *)
@@ -1718,39 +1906,13 @@ TeukolskySpinModeAnalyticalNew2[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,
       \[CapitalSigma] = rp^2+a^2*zp^2;
       vn = -((rp^2+a^2)*En0 - a*Lz0 + Urp)/\[CapitalDelta]; (* Four-velocity in Kinnersley tetrad *)
       vmb = (-I*(a*sin\[Theta]p^2*En0 - Lz0) + Uzp)/sin\[Theta]p^2;
-      FnnIn = -\[Zeta]/(2*\[Zeta]bar)*(L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*RInrp;
-      FnmbIn = (sin\[Theta]p \[Zeta])/\[Zeta]bar*L2S*DRIn - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*L2S*RInrp + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*DRIn;
-      FmbmbIn = -\[Zeta]/(2 \[Zeta]bar)*S*sin\[Theta]p^2*(DDRIn - 2/\[Zeta]*DRIn);
-      (*dFnnIndr = (L1L2S RInrp (\[Zeta]-\[Zeta]bar)-dRInrp L1L2S \[Zeta] \[Zeta]bar-2 I a L2S sin\[Theta]p (RInrp-dRInrp \[Zeta]bar))/(2 \[Zeta]bar^2);
-      dFnmbIndr = (sin\[Theta]p (2 L2S RInrp \[Zeta]+I a S sin\[Theta]p (\[Zeta]-\[Zeta]bar) (-2 DRIn+dDRIndr \[Zeta]bar)+L2S \[Zeta]bar (dDRIndr \[Zeta] \[Zeta]bar+DRIn (-\[Zeta]+\[Zeta]bar)-dRInrp (\[Zeta]+\[Zeta]bar))))/\[Zeta]bar^3;
-      dFnmbInd\[Theta] = -(1/\[Zeta]bar^3)(2 a^2 DRIn S sin\[Theta]p^3 \[Zeta]+(dL2Sd\[Theta] sin\[Theta]p+L2S zp) \[Zeta]bar (-DRIn \[Zeta] \[Zeta]bar+RInrp (\[Zeta]+\[Zeta]bar))+I a sin\[Theta]p (-DRIn (dSd\[Theta] sin\[Theta]p+2 S zp) (\[Zeta]-\[Zeta]bar) \[Zeta]bar+L2S sin\[Theta]p (\[Zeta]+\[Zeta]bar) (2 RInrp-DRIn \[Zeta]bar)));
-      dFmbmbInd\[Theta] = (sin\[Theta]p (dSd\[Theta] sin\[Theta]p+2 S zp) (2 DRIn-DDRIn \[Zeta]) \[Zeta]bar+I a S sin\[Theta]p^3 (2 DRIn-DDRIn (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);*)
-      DFnnIn = 1/(2 \[Zeta]bar^2) (L1L2S RInrp \[Zeta]-L1L2S (RInrp+DRIn \[Zeta]) \[Zeta]bar-2 I a L2S sin\[Theta]p (RInrp-DRIn \[Zeta]bar));
-      L0FmbmbIn = 1/(2 \[Zeta]bar^2) sin\[Theta]p (L2S (2 DRIn-DDRIn \[Zeta]) \[Zeta]bar-I a S sin\[Theta]p (-2 DRIn+DDRIn (\[Zeta]+\[Zeta]bar)));
-      DFnmbIn = (sin\[Theta]p (I a S sin\[Theta]p (\[Zeta]-\[Zeta]bar)+L2S \[Zeta] \[Zeta]bar) (-2 DRIn+DDRIn (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
-      LFnmbIn = ((2 I a L2S sin\[Theta]p - L1L2S (\[Zeta]-\[Zeta]bar)) (DRIn \[Zeta] \[Zeta]bar-RInrp (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
+      {FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RInrp,DRIn,DDRIn,S,L2S,L1L2S];(* F_ab functions *)
       sumPlus  += Total[(
-          vn*(  vn*FnnIn   + spar/Sqrt[K0]*    rp*( DFnnIn    ) ) + 
-          vn*( vmb*FnmbIn  - spar/Sqrt[K0]*       ( LFnmbIn   ) )/2 + 
-         vmb*(  vn*FnmbIn  + spar/Sqrt[K0]*       ( DFnmbIn   ) )/2 + 
-         vmb*( vmb*FmbmbIn - spar/Sqrt[K0]*I*a*zp*( L0FmbmbIn ) ) 
+          vn*vn*FnnIn + vn*vmb*FnmbIn + vmb*vmb*FmbmbIn + spar/Sqrt[K0]*( vn*GnIn + vmb*GmbIn )
          )*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}];  (* Total over all quadrants *)
-      FnnUp = -\[Zeta]/(2*\[Zeta]bar)*(L1L2S - 2*I*a*sin\[Theta]p*L2S/\[Zeta])*RUprp;
-      FnmbUp = (sin\[Theta]p \[Zeta])/\[Zeta]bar*L2S*DRUp - (sin\[Theta]p (\[Zeta]+\[Zeta]bar))/\[Zeta]bar^2*L2S*RUprp + (I a sin\[Theta]p^2 (\[Zeta]-\[Zeta]bar))/\[Zeta]bar^2*S*DRUp;
-      FmbmbUp = -\[Zeta]/(2 \[Zeta]bar)*S*sin\[Theta]p^2*(DDRUp - 2/\[Zeta]*DRUp);
-      (*dFnnUpdr = (L1L2S RUprp (\[Zeta]-\[Zeta]bar)-dRUprp L1L2S \[Zeta] \[Zeta]bar-2 I a L2S sin\[Theta]p (RUprp-dRUprp \[Zeta]bar))/(2 \[Zeta]bar^2);
-      dFnmbUpdr = (sin\[Theta]p (2 L2S RUprp \[Zeta]+I a S sin\[Theta]p (\[Zeta]-\[Zeta]bar) (-2 DRUp+dDRUpdr \[Zeta]bar)+L2S \[Zeta]bar (dDRUpdr \[Zeta] \[Zeta]bar+DRUp (-\[Zeta]+\[Zeta]bar)-dRUprp (\[Zeta]+\[Zeta]bar))))/\[Zeta]bar^3;
-      dFnmbUpd\[Theta] = -(1/\[Zeta]bar^3)(2 a^2 DRUp S sin\[Theta]p^3 \[Zeta]+(dL2Sd\[Theta] sin\[Theta]p+L2S zp) \[Zeta]bar (-DRUp \[Zeta] \[Zeta]bar+RUprp (\[Zeta]+\[Zeta]bar))+I a sin\[Theta]p (-DRUp (dSd\[Theta] sin\[Theta]p+2 S zp) (\[Zeta]-\[Zeta]bar) \[Zeta]bar+L2S sin\[Theta]p (\[Zeta]+\[Zeta]bar) (2 RUprp-DRUp \[Zeta]bar)));
-      dFmbmbUpd\[Theta] = (sin\[Theta]p (dSd\[Theta] sin\[Theta]p+2 S zp) (2 DRUp-DDRUp \[Zeta]) \[Zeta]bar+I a S sin\[Theta]p^3 (2 DRUp-DDRUp (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);*)
-      DFnnUp = 1/(2 \[Zeta]bar^2) (L1L2S RUprp \[Zeta]-L1L2S (RUprp+DRUp \[Zeta]) \[Zeta]bar-2 I a L2S sin\[Theta]p (RUprp-DRUp \[Zeta]bar));
-      L0FmbmbUp = 1/(2 \[Zeta]bar^2) sin\[Theta]p (L2S (2 DRUp-DDRUp \[Zeta]) \[Zeta]bar-I a S sin\[Theta]p (-2 DRUp+DDRUp (\[Zeta]+\[Zeta]bar)));
-      DFnmbUp = (sin\[Theta]p (I a S sin\[Theta]p (\[Zeta]-\[Zeta]bar)+L2S \[Zeta] \[Zeta]bar) (-2 DRUp+DDRUp (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
-      LFnmbUp = ((2 I a L2S sin\[Theta]p - L1L2S (\[Zeta]-\[Zeta]bar)) (DRUp \[Zeta] \[Zeta]bar-RUprp (\[Zeta]+\[Zeta]bar)))/(2 \[Zeta]bar^2);
+      {FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RUprp,DRUp,DDRUp,S,L2S,L1L2S];(* F_ab functions *)
       sumMinus += Total[(
-          vn*(  vn*FnnUp   + spar/Sqrt[K0]*    rp*( DFnnUp    ) ) + 
-          vn*( vmb*FnmbUp  - spar/Sqrt[K0]*       ( LFnmbUp   ) )/2 + 
-         vmb*(  vn*FnmbUp  + spar/Sqrt[K0]*       ( DFnmbUp   ) )/2 + 
-         vmb*( vmb*FmbmbUp - spar/Sqrt[K0]*I*a*zp*( L0FmbmbUp ) ) 
+          vn*vn*FnnUp + vn*vmb*FnmbUp + vmb*vmb*FmbmbUp + spar/Sqrt[K0]*( vn*GnUp + vmb*GmbUp )
          )*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}];
     ];
   ];
@@ -1848,10 +2010,10 @@ TeukolskySpinModeCorrectionNum[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,o
   sumPlus0 = sumPlus1 = 0; (* Results of the integration are stored in these variables *)
   sumMinus0 = sumMinus1 = 0;
   (* numbers of steps for wr and w\[Theta] integration *)
-  stepsr = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
-  steps\[Theta] = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  steps\[Theta] = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[stepsr]<>" steps in wr, "<>ToString[steps\[Theta]]<>" steps in w\[Theta]"];
   \[Theta]list = {};(* List for functions of \[Theta] *)
   correctionp = Table[correction[N[(ir-1/2)*2Pi/stepsr,Precision[{a,p,e,\[ScriptCapitalI]}]],N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{ir,1,stepsr/2},{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points in one quadrant in w_r and w_\[Theta] *)
@@ -2104,10 +2266,10 @@ TeukolskySpinModeCorrection[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbi
   sumPlus0 = sumPlus1 = 0; (* Results of the integration are stored in these variables *)
   sumMinus0 = sumMinus1 = 0;
   (* numbers of steps for wr and w\[Theta] integration *)
-  stepsr = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
-  steps\[Theta] = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
+  stepsr = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[Pi  ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[Pi  ]+n)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]tr"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"]'[0   ]+n)]],32];
+  steps\[Theta] = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   Print[ToString[stepsr]<>" steps in wr, "<>ToString[steps\[Theta]]<>" steps in w\[Theta]"];
   \[Theta]list = {};(* List for functions of \[Theta] *)
   correctionp = Table[correction[N[(ir-1/2)*2Pi/stepsr,Precision[{a,p,e,\[ScriptCapitalI]}]],N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,\[ScriptCapitalI]}]]],{ir,1,stepsr/2},{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points in one quadrant in w_r and w_\[Theta] *)
@@ -2315,8 +2477,8 @@ TeukolskySpinModeCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?Int
     zp,\[Theta]p,Uzp,expz,expz1,sin\[Theta]p,K\[Theta],dK\[Theta]d\[Omega],S,dSd\[Theta],d2Sd\[Theta]2,dSd\[Omega],d2Sd\[Theta]d\[Omega],d3Sd\[Theta]2d\[Omega],
     L2S,dL2Sd\[Theta],L1L2S,dL2Sd\[Omega],d2L2Sd\[Theta]d\[Omega],dL1L2Sd\[Omega],
     \[Zeta],\[Zeta]bar,vn,vmb,
-    FnnIn,FnmbIn,FmbmbIn,DFnnIn,L0FmbmbIn,DFnmbIn,LFnmbIn,dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega],
-    FnnUp,FnmbUp,FmbmbUp,DFnnUp,L0FmbmbUp,DFnmbUp,LFnmbUp,dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega],
+    FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn,dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega],
+    FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp,dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega],
     W,W1,CPlus0,CPlus1,CMinus0,CMinus1},
   If[l < 2 || Abs[m] > l, Return[$Failed]];
   a = orbit["a"];(* Orbital parameters *)
@@ -2442,24 +2604,24 @@ TeukolskySpinModeCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?Int
       vn = -((rp^2+a^2)*En0 - a*Lz0 + Urp)/\[CapitalDelta]; (* Four-velocity in rotated Kinnersley tetrad *)
       vmb = (-I*(a*sin\[Theta]p^2*En0 - Lz0) + Uzp)/sin\[Theta]p^2;
       (* In solution *)
-      {FnnIn,FnmbIn,FmbmbIn,DFnnIn,L0FmbmbIn,DFnmbIn,LFnmbIn} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RIn,DRIn,DDRIn,S,L2S,L1L2S];(* F_ab functions *)
+      {FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RIn,DRIn,DDRIn,S,L2S,L1L2S];(* F_ab functions *)
       {dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega]}   = dFabd\[Omega][\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RIn,DRIn,DDRIn,dRInd\[Omega],dDRInd\[Omega],dDDRInd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
       (* Summing the geodesic ampltude over all quadrants *)
       sumPlus0  += Total[(vn*vn*FnnIn + vn*vmb*FnmbIn + vmb*vmb*FmbmbIn)*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}];
       (* Summing the linear part of the ampltude over all quadrants *)
       sumPlus1  += Total[(
-          (vn*( rp*DFnnIn - LFnmbIn/2) + vmb*( DFnmbIn/2 - I*a*zp*L0FmbmbIn ))/Sqrt[K0] +
+          (vn*( GnIn ) + vmb*( GmbIn ))/Sqrt[K0] +
           (vn*vn*FnnIn + vn*vmb*FnmbIn + vmb*vmb*FmbmbIn)*(expr1 + expz1) +
           (vn*vn*dFnnInd\[Omega] + vn*vmb*dFnmbInd\[Omega] + vmb*vmb*dFmbmbInd\[Omega])*\[Omega]1
          )*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}]; 
       (* Up solution *)
-      {FnnUp,FnmbUp,FmbmbUp,DFnnUp,L0FmbmbUp,DFnmbUp,LFnmbUp} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RUp,DRUp,DDRUp,S,L2S,L1L2S];(* F_ab functions *)
+      {FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RUp,DRUp,DDRUp,S,L2S,L1L2S];(* F_ab functions *)
       {dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega]}   = dFabd\[Omega][\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RUp,DRUp,DDRUp,dRUpd\[Omega],dDRUpd\[Omega],dDDRUpd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
       (* Summing the geodesic ampltude over all quadrants *)
       sumMinus0  += Total[(vn*vn*FnnUp + vn*vmb*FnmbUp + vmb*vmb*FmbmbUp)*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}];
       (* Summing the linear part of the ampltude over all quadrants *)
       sumMinus1  += Total[(
-          (vn*( rp*DFnnUp - LFnmbUp/2) + vmb*( DFnmbUp/2 - I*a*zp*L0FmbmbUp ))/Sqrt[K0] +
+          (vn*( GnUp ) + vmb*( GmbUp ))/Sqrt[K0] +
           (vn*vn*FnnUp + vn*vmb*FnmbUp + vmb*vmb*FmbmbUp)*(expr1 + expz1) +
           (vn*vn*dFnnUpd\[Omega] + vn*vmb*dFnmbUpd\[Omega] + vmb*vmb*dFmbmbUpd\[Omega])*\[Omega]1
          )*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}]; 
@@ -2541,8 +2703,8 @@ TeukolskySpinModeCorrectionAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?
     zp,\[Theta]p,Uzp,expz,expz1,sin\[Theta]p,K\[Theta],dK\[Theta]d\[Omega],S,dSd\[Theta],d2Sd\[Theta]2,dSd\[Omega],d2Sd\[Theta]d\[Omega],d3Sd\[Theta]2d\[Omega],
     L2S,dL2Sd\[Theta],L1L2S,dL2Sd\[Omega],d2L2Sd\[Theta]d\[Omega],dL1L2Sd\[Omega],
     \[Zeta],\[Zeta]bar,vn,vmb,
-    FnnIn,FnmbIn,FmbmbIn,DFnnIn,L0FmbmbIn,DFnmbIn,LFnmbIn,dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega],
-    FnnUp,FnmbUp,FmbmbUp,DFnnUp,L0FmbmbUp,DFnmbUp,LFnmbUp,dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega],
+    FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn,dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega],
+    FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp,dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega],
     W,W1,CPlus0,CPlus1,CMinus0,CMinus1},
   If[l < 2 || Abs[m] > l, Return[$Failed]];
   a = orbit["a"];(* Orbital parameters *)
@@ -2680,24 +2842,24 @@ TeukolskySpinModeCorrectionAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?
       vn = -((rp^2+a^2)*En0 - a*Lz0 + Urp)/\[CapitalDelta]; (* Four-velocity in rotated Kinnersley tetrad *)
       vmb = (-I*(a*sin\[Theta]p^2*En0 - Lz0) + Uzp)/sin\[Theta]p^2;
       (* In solution *)
-      {FnnIn,FnmbIn,FmbmbIn,DFnnIn,L0FmbmbIn,DFnmbIn,LFnmbIn} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RIn,DRIn,DDRIn,S,L2S,L1L2S];(* F_ab functions *)
+      {FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RIn,DRIn,DDRIn,S,L2S,L1L2S];(* F_ab functions *)
       {dFnnInd\[Omega],dFnmbInd\[Omega],dFmbmbInd\[Omega]}   = dFabd\[Omega][\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RIn,DRIn,DDRIn,dRInd\[Omega],dDRInd\[Omega],dDDRInd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
       (* Summing the geodesic ampltude over all quadrants *)
       sumPlus0  += Total[(vn*vn*FnnIn + vn*vmb*FnmbIn + vmb*vmb*FmbmbIn)*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}];
       (* Summing the linear part of the ampltude over all quadrants *)
       sumPlus1  += Total[(
-          (vn*( rp*DFnnIn - LFnmbIn/2) + vmb*( DFnmbIn/2 - I*a*zp*L0FmbmbIn ))/Sqrt[K0] +
+          (vn*( GnIn ) + vmb*( GmbIn ))/Sqrt[K0] +
           (vn*vn*FnnIn + vn*vmb*FnmbIn + vmb*vmb*FmbmbIn)*(expr1 + expz1) +
           (vn*vn*dFnnInd\[Omega] + vn*vmb*dFnmbInd\[Omega] + vmb*vmb*dFmbmbInd\[Omega])*\[Omega]1
          )*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}]; 
       (* Up solution *)
-      {FnnUp,FnmbUp,FmbmbUp,DFnnUp,L0FmbmbUp,DFnmbUp,LFnmbUp} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RUp,DRUp,DDRUp,S,L2S,L1L2S];(* F_ab functions *)
+      {FnnUp,FnmbUp,FmbmbUp,GnUp,GmbUp} = Fab[\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RUp,DRUp,DDRUp,S,L2S,L1L2S];(* F_ab functions *)
       {dFnnUpd\[Omega],dFnmbUpd\[Omega],dFmbmbUpd\[Omega]}   = dFabd\[Omega][\[Zeta],\[Zeta]bar,a,sin\[Theta]p,RUp,DRUp,DDRUp,dRUpd\[Omega],dDRUpd\[Omega],dDDRUpd\[Omega],S,L2S,L1L2S,dSd\[Omega],dL2Sd\[Omega],dL1L2Sd\[Omega]];(* \[Omega]-derivatives of F_ab *)
       (* Summing the geodesic ampltude over all quadrants *)
       sumMinus0  += Total[(vn*vn*FnnUp + vn*vmb*FnmbUp + vmb*vmb*FmbmbUp)*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}];
       (* Summing the linear part of the ampltude over all quadrants *)
       sumMinus1  += Total[(
-          (vn*( rp*DFnnUp - LFnmbUp/2) + vmb*( DFnmbUp/2 - I*a*zp*L0FmbmbUp ))/Sqrt[K0] +
+          (vn*GnUp + vmb*GmbUp)/Sqrt[K0] +
           (vn*vn*FnnUp + vn*vmb*FnmbUp + vmb*vmb*FmbmbUp)*(expr1 + expz1) +
           (vn*vn*dFnnUpd\[Omega] + vn*vmb*dFnmbUpd\[Omega] + vmb*vmb*dFmbmbUpd\[Omega])*\[Omega]1
          )*expr^{1,-1,1,-1}*expz^{1,1,-1,-1}]; 
@@ -2811,8 +2973,8 @@ TeukolskySpinModeSpherical[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCorrection_,
   sumPlus  = 0; (* Results of the integration are stored in these variables *)
   sumMinus = 0;
   (* number of steps for w\[Theta] integration *)
-  steps\[Theta] = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
+  steps\[Theta] = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   (*Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];*)
   correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
   rp = p;
@@ -3008,8 +3170,8 @@ TeukolskySpinModeSphericalCorrectionNum[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbi
   sumPlus0 = sumPlus1 = 0; (* Results of the integration are stored in these variables *)
   sumMinus0 = sumMinus1 = 0;
   (* number of steps for w\[Theta] integration *)
-  steps\[Theta] = Max[16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
-               16*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
+  steps\[Theta] = Max[32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/4]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/4]+k)]],
+               32*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
   (*Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];*)
   correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
   rp = p;
@@ -3196,246 +3358,6 @@ TeukolskySpinModeSphericalCorrectionNum[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbi
     "steps\[Theta]"->steps\[Theta]
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
 ]
-
-
-(*Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->30};
-
-TeukolskySpinModeSphericalCorrection[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
-    correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,SWSH,dSWSHd\[Omega],R,\[Lambda],d\[Lambda]d\[Omega],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMinus0,sumPlus1,sumMinus1,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,
-    Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,
-    \[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,
-    fmbmb01,fmbmb11,fmbmb21,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,
-    Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,
-    \[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,CPlus0,CMinus0,CPlus1,CMinus1,\[Omega]prec,\[Theta]p},
-  h1[r_,z_] := (r (-3 a^2 r^2 z^2+a^4 z^4+Kc (r^2-3 a^2 z^2)))/(Sqrt[Kc] (r^2+a^2 z^2)^3);
-  h2[r_,z_] := 1/(Sqrt[Kc] (r^2+a^2 z^2)^3) (-En Lz r^6+a^4 En Lz r^2 z^4+a^2 En Lz r^4 (-2+z^2)-a^6 En Lz z^4 (-2+z^2)+
-               a^7 En^2 z^4 (-1+z^2)+a r^3 (Lz^2 r+Kc (-1+z^2)+Kc r (-1+2 z^2)+r^3 (z^2-En^2 (-1+z^2)))+a^3 (-En^2 r^4 (-1+z^2)+
-               r z^2 (2 r^3+2 Kc r z^2-3 Kc (-1+z^2)-3 r^2 (-1+z^2)))+a^5 z^4 (Kc-Lz^2+r ( (-1+z^2)+r (2-z^2+En^2 (-1+z^2)))));
-  Print["Calculating l = "<>ToString[l]<>", m = "<>ToString[m]<>", k = "<>ToString[k]<>" mode"];
-  a = orbitCorrection["a"];(* Orbital parameters *)
-  p = orbitCorrection["p"];
-  e = orbitCorrection["e"];
-  x = orbitCorrection["Inclination"];
-  En = orbitCorrection["Ehat"]; (* Geodesic constants of motion *)
-  Lz = orbitCorrection["Lzhat"];
-  Kc = orbitCorrection["Khat"];
-  En1 = orbitCorrection["ES"]; (* Linear corrections to the constants of motion *)
-  Lz1 = orbitCorrection["LS"];
-  {\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi]} = orbitCorrection["BLFrequenciesGeo"]; (* Coordinate frequencies *)
-  {\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1} = orbitCorrection["BLFrequenciesCorrection"]; (* Coordinate frequencies *)
-  correction = orbitCorrection["OrbitCorrection"]; (* function containing corrections to the trajectory *)
-  z[wz_] := Cos[orbitCorrection["TrajectoryGeo"][[3]][wz]];
-  \[CapitalGamma] = orbitCorrection["MinoFrequenciesGeo"][[1]]; (* Geodesic average rate of change of BL time in Mino time and the linear correction *)
-  \[CapitalGamma]1 = orbitCorrection["MinoFrequenciesCorrection"][[1]]; 
-  \[Omega] = m*\[CapitalOmega]\[Phi] + k*\[CapitalOmega]\[Theta]; (* Geodesic frequency and the linear correction *)
-  \[Omega]prec = m*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[x,OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Phi]\)]\)"]
-        + k*KerrGeodesics`OrbitalFrequencies`KerrGeoFrequencies[SetPrecision[a,OptionValue[WorkingPrecision]+5],SetPrecision[p,OptionValue[WorkingPrecision]+5],0,SetPrecision[x,OptionValue[WorkingPrecision]+5]]["\!\(\*SubscriptBox[\(\[CapitalOmega]\), \(\[Theta]\)]\)"];
-  (*\[Omega]prec = SetPrecision[\[Omega],40];*)
-  \[Omega]1 = m*\[CapitalOmega]\[Phi]1 + k*\[CapitalOmega]\[Theta]1;
-  (*Print["Calculating angular functions"<>ToString@AbsoluteTiming[{\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega]}=angparNew[-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1];][[1]]];*)(* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
-  {\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega]}=angparNew[-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1];(* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
-  \[Lambda]1 = d\[Lambda]d\[Omega]*\[Omega]1;
-  Print["Calculating radial functions"<>ToString@AbsoluteTiming[R = TeukolskySolverHS1spin[p,-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1,\[Lambda],d\[Lambda]d\[Omega]]][[1]]];
-  (*R = TeukolskySolverHS1spin[p,-2,l,m,SetPrecision[a,OptionValue[WorkingPrecision]+5],\[Omega]prec,1,\[Lambda],d\[Lambda]d\[Omega]];*)
-  \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (*  TS constant *)
-  \[ScriptCapitalC]21 = 4 \[Lambda]^3 \[Lambda]1+4 \[Lambda]^2 (3 \[Lambda]1+10 a (m-2 a \[Omega]) \[Omega]1)+8 \[Lambda] (\[Lambda]1 (1+10 a m \[Omega]-10 a^2 \[Omega]^2)+6 a (m+2 a \[Omega]) \[Omega]1) + 
-        48 \[Omega] (a m \[Lambda]1+6 \[Omega]1-18 a^3 m \[Omega] \[Omega]1+12 a^4 \[Omega]^2 \[Omega]1+a^2 (\[Lambda]1 \[Omega]+6 m^2 \[Omega]1));  (* linear part of the TS constant *)
-  rplus = 1+Sqrt[1-a^2];  (*  horizon r_+  *)
-  P = \[Omega]-m*a/(2*rplus); (* frequency at the horizon *)
-  \[Epsilon] = Sqrt[1^2-a^2]/(4*rplus);
-  \[Alpha] = 256*(2*rplus)^5*P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2; (* constant for horizon fluxes *)
-  \[Alpha]1 = -256*(2*rplus)^5*P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2^2*\[ScriptCapitalC]21 + 256*(2*rplus)^5*(\[Omega]1*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3 +
-       P*(2*P*\[Omega]1)*(P^2+16*\[Epsilon]^2)*\[Omega]^3 + P*(P^2+4*\[Epsilon]^2)*(2*P*\[Omega]1)*\[Omega]^3 + P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*3*\[Omega]^2*\[Omega]1)/\[ScriptCapitalC]2; (* linear part of the constant for horizon fluxes *)
-  sumPlus0 = sumPlus1 = 0; (* Results of the integration are stored in these variables *)
-  sumMinus0 = sumMinus1 = 0;
-  (* number of steps for w\[Theta] integration *)
-  steps\[Theta] = Max[8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/2]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/2]+k)]],
-               8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
-  Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];
-  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
-  rp = p;
-  Ur = 0;(* Geodesic radial velocity *)
-  \[CapitalDelta]  = rp^2-2rp+a^2;
-  K  = (rp^2+a^2)*\[Omega]-a*m;
-  K1  = (rp^2+a^2)*\[Omega]1;
-  d\[CapitalDelta] = 2*(rp-1);
-  dK = 2*rp*\[Omega];
-  dK1 = 2*rp*\[Omega]1;
-  V  = -(K^2 + 4I*(rp-1)*K)/\[CapitalDelta] + 8*I*\[Omega]*rp + \[Lambda]; (* Potential in radial Teukolsky equation *)
-  V1  = -(2*K*K1 + 4I*(rp-1)*K1)/\[CapitalDelta] + 8*I*\[Omega]1*rp + \[Lambda]1; (* Linear part of the potential in radial Teukolsky equation *)
-  dV = -((2K*dK + 4I*K + 4I*(rp - 1)*dK)*\[CapitalDelta] - (K^2 + 4I*(rp - 1)*K)*d\[CapitalDelta])/\[CapitalDelta]^2 + 8I*\[Omega]; (* derivative of potential in radial Teukolsky equation wrt r *)
-  (*{{{RInrp,dRInrp},{RInrp1,dRInrp1}},{{RUprp,dRUprp},{RUprp1,dRUprp1}}} = R*{{{1,1},{\[Omega]1,\[Omega]1}},{{1,1},{\[Omega]1,\[Omega]1}}};*)
-  {RInrp,dRInrp} = R[[1,1]];
-  (*RInrp    = R[[1,1,1]]; (* radial function *)
-  dRInrp   = R[[1,1,2]];*)
-  ddRInrp  = (V*RInrp + d\[CapitalDelta]*dRInrp)/\[CapitalDelta];  (* second derivative of radial function from Teukolsky equation *)
-  {RInrp1,dRInrp1} = R[[1,2]]*\[Omega]1;
-  (*RInrp1   = R[[1,2,1]]*\[Omega]1; (* Linear part of the radial function *)
-  dRInrp1  = R[[1,2,2]]*\[Omega]1;*)
-  ddRInrp1 = (V*RInrp1 + V1*RInrp + d\[CapitalDelta]*dRInrp1)/\[CapitalDelta];
-  dddRInrp = 1/\[CapitalDelta] (dV*RInrp + (V + 2)*dRInrp);  (* third derivative of radial function from Teukolsky equation *)
-  {RUprp,dRUprp} = R[[2,1]];
-  (*RUprp    = R[[2,1,1]];
-  dRUprp   = R[[2,1,2]];*)
-  ddRUprp  = (V*RUprp + d\[CapitalDelta]*dRUprp)/\[CapitalDelta];  
-  {RUprp1,dRUprp1} = R[[2,2]]*\[Omega]1;
-  (*RUprp1   = R[[2,2,1]]*\[Omega]1;
-  dRUprp1  = R[[2,2,2]]*\[Omega]1;*)
-  ddRUprp1 = (V*RUprp1 + V1*RUprp + d\[CapitalDelta]*dRUprp1)/\[CapitalDelta];
-  dddRUprp = 1/\[CapitalDelta] (dV*RUprp+(V+2)*dRUprp);
-  Do[(* integration over w\[Theta] *)
-    w\[Theta]=N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]];
-    zp=z[w\[Theta]];(* functions of only w\[Theta] saved to lists *)
-    Uz={1,-1}*(-1)*Sqrt[-((1-zp^2)*a*En-Lz)^2+(1-zp^2)*(Kc-a^2*zp^2)];(* Polar geodesic velocity *)
-    exp\[Theta]=Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];
-    sin\[Theta]p=Sqrt[1-zp^2];
-    \[Theta]p=ArcCos[zp];
-    {S,dSd\[Theta],d2Sd\[Theta]2}=SWSH[\[Theta]p];  (*  Spin-weighted spheroidal harmonics S(\[Theta](z))  *)
-    {S1,dS1d\[Theta],d2S1d\[Theta]2}=dSWSHd\[Omega][\[Theta]p]*\[Omega]1;  (*  Linear part of S(\[Theta](z))  *)
-    d3Sd\[Theta]3=-(1/sin\[Theta]p^3)2 (-2+m zp+a zp (-1+zp^2) \[Omega]) (m+a \[Omega]-zp (2+a zp \[Omega]))*S
-           -(-(a*\[Omega])^2*(1-zp^2)-(m-2*zp)^2/(1-zp^2)+4a*\[Omega]*zp-2+2*m*a*\[Omega]+\[Lambda]-1/(1-zp^2))*dSd\[Theta]-zp/sin\[Theta]p*d2Sd\[Theta]2; (*third derivative from derivative of second derivative*)
-    L2S=dSd\[Theta]-(S (m-2 zp+a (-1+zp^2) \[Omega]))/sin\[Theta]p;(* Operators acting on S(\[Theta]) *)
-    L2S1=dS1d\[Theta]-(S1 (m-2 zp+a (-1+zp^2) \[Omega])+S (a (-1+zp^2) \[Omega]1))/sin\[Theta]p;(* Operators acting on S(\[Theta]) *)
-    dL2Sd\[Theta]=d2Sd\[Theta]2+1/(-1+zp^2) (dSd\[Theta] sin\[Theta]p (m-2 zp+a (-1+zp^2) \[Omega])+S (2-m zp+a zp (-1+zp^2) \[Omega]));
-    L1L2S=d2Sd\[Theta]2+(dSd\[Theta] (-2 m+3 zp-2 a (-1+zp^2) \[Omega]))/sin\[Theta]p+S (-2-(m (m-2 zp))/(-1+zp^2)-2 a (m-2 zp) \[Omega]-a^2 (-1+zp^2) \[Omega]^2);  
-    L1L2S1=d2S1d\[Theta]2+(dS1d\[Theta] (-2 m+3 zp-2 a (-1+zp^2) \[Omega])+dSd\[Theta] (-2 a (-1+zp^2) \[Omega]1))/sin\[Theta]p + 
-           S1 (-2-(m (m-2 zp))/(-1+zp^2)-2 a (m-2 zp) \[Omega]-a^2 (-1+zp^2) \[Omega]^2) + S (-2 a (m-2 zp) \[Omega]1 - a^2 (-1+zp^2) 2*\[Omega]*\[Omega]1);  
-    dL1L2Sd\[Theta]=d3Sd\[Theta]3+1/(-1+zp^2) dSd\[Theta] (5-m^2-2 zp^2-2 a (m-3 zp) (-1+zp^2) \[Omega]-a^2 (-1+zp^2)^2 \[Omega]^2)+
-             1/sin\[Theta]p^3 (d2Sd\[Theta]2 (-1+zp^2) (2 m-3 zp+2 a (-1+zp^2) \[Omega])+2 S (-m^2 zp+m (1+zp^2)+a (-1+zp^2)^2 \[Omega] (-2+a zp \[Omega])));
-    \[Zeta] = rp-I*a*zp;
-    \[Zeta]bar = rp+I*a*zp;
-    \[CapitalSigma] = rp^2+a^2*zp^2;
-    {fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2} = fabi[\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,S,L2S,L1L2S,a];
-    {dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr} = dfabidr[\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,S,L2S,L1L2S,a,\[Omega]];
-    {dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta]} = dfabid\[Theta][\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,S,L2S,L1L2S,dSd\[Theta],dL2Sd\[Theta],dL1L2Sd\[Theta],a];
-    {fnn01,fnmb01,fnmb11,fmbmb01,fmbmb11,fmbmb21} = dfabidS[\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,K1,dK1,S,L2S,L1L2S,S1,L2S1,L1L2S1,a];
-    vn = -((rp^2+a^2)*En - a*Lz + Ur)/(2*\[CapitalSigma]); (* Four-velocity in Kinnersley tetrad *)
-    vl = -((rp^2+a^2)*En - a*Lz - Ur)/(\[CapitalDelta]);
-    vm = (I*(a*sin\[Theta]p^2*En - Lz) + Uz)/(-Sqrt[2]*sin\[Theta]p*\[Zeta]bar);
-    vmb = Conjugate[vm];
-    Sln  = (-((rp (Kc-a^2 zp^2))/(Sqrt[Kc] \[CapitalSigma]))); (* Spin tensor in Kinnersley tetrad *)
-    Snm  = (\[Zeta]/Sqrt[Kc])*vm*vn;
-    Snmb = Conjugate[Snm];
-    Slmb = (-(\[Zeta]/Sqrt[Kc]))*vl*vmb;
-    Smmb = ((I a zp (Kc+rp^2))/(Sqrt[Kc] \[CapitalSigma]));
-    Cmnn   = vn^2;
-    Cmnmb  = vn*vmb;
-    Cmmbmb = vmb^2;
-    rho = 1/\[Zeta]; (* Spin coefficients *)
-    beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
-    pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
-    tau = (I a sin\[Theta]p)/(Sqrt[2] \[CapitalSigma]);
-    mu = \[CapitalDelta]/(2 \[Zeta]^2 \[Zeta]bar);
-    gamma = (a^2-rp+I a (-1+rp) zp)/(2 \[Zeta]^2 \[Zeta]bar);
-    alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
-    Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
-    Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-    Cdnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
-    Cdmbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-    Cdnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
-      -Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
-    St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
-    St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
-    Srn  = \[CapitalDelta]/(2\[CapitalSigma])*Sln;
-    Srmb = -Snmb+\[CapitalDelta]/(2\[CapitalSigma])*Slmb;
-    S\[Theta]n  = -(Snmb*\[Zeta]+Snm*\[Zeta]bar)/(Sqrt[2]*\[CapitalSigma]);
-    S\[Theta]mb = Smmb/(Sqrt[2]*\[Zeta]);
-    rp1 = {correctionp[[i\[Theta]]]["rS"],correctionp[[-i\[Theta]]]["rS"]}; (* Corrections to the coordinates and four-velocity for each quadrant *)
-    zp1 = {correctionp[[i\[Theta]]]["zS"],-correctionp[[-i\[Theta]]]["zS"]};
-    Urp1 = {correctionp[[i\[Theta]]]["UrS"],correctionp[[-i\[Theta]]]["UrS"]};
-    Uzp1 = {correctionp[[i\[Theta]]]["UzS"],-correctionp[[-i\[Theta]]]["UzS"]};
-    \[CapitalSigma]1 = 2*(rp*rp1+a^2*zp*zp1); (* Linear correction to \[CapitalSigma] *)
-    exp1 = I*{(\[Omega]*correctionp[[ i\[Theta]]]["\[CapitalDelta]tS"]-m*correctionp[[ i\[Theta]]]["\[CapitalDelta]\[Phi]S"])+\[Omega]1*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]],
-              (\[Omega]*correctionp[[-i\[Theta]]]["\[CapitalDelta]tS"]-m*correctionp[[-i\[Theta]]]["\[CapitalDelta]\[Phi]S"])-\[Omega]1*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]]};
-    vn1  = -( ((2*rp*rp1)*En) - ((rp^2+a^2)*En - a*Lz + Ur)/(\[CapitalSigma])*\[CapitalSigma]1 + 
-             ((rp^2+a^2)*(En1-h1[rp,zp]) - a*(Lz1+h2[rp,zp]) + Urp1))/(2*\[CapitalSigma]);(* Linear parts of the four-velocity in Kinnersley tetrad *)
-    vmb1 = ( (-I*(-2*a*zp*zp1*En)) - (-I*(a*sin\[Theta]p^2*En - Lz) + Uz)*(-zp*zp1/sin\[Theta]p^2 + (rp1-I*a*zp1)/\[Zeta]) + 
-             (-I*(a*sin\[Theta]p^2*(En1-h1[rp,zp]) - (Lz1+h2[rp,zp])) + Uzp1))/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Cdnn;
-    Annt\[Phi]S = (St\[Phi]n + exp1*vn)*vn;
-    AnnrS  = (Srn + rp1*vn)*vn;
-    Ann\[Theta]S  = (S\[Theta]n - zp1/sin\[Theta]p*vn)*vn;
-    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Cdnmb);
-    Anmbt\[Phi]S = ((St\[Phi]n*vmb + St\[Phi]mb*vn)/2 + exp1*vn*vmb);
-    AnmbrS  = ((Srn*vmb + Srmb*vn)/2 + rp1*vn*vmb);
-    Anmb\[Theta]S  = ((S\[Theta]n*vmb + S\[Theta]mb*vn)/2 - zp1/sin\[Theta]p*vn*vmb);
-    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Cdmbmb;
-    Ambmbt\[Phi]S = (St\[Phi]mb + exp1*vmb)*vmb;
-    AmbmbrS  = (Srmb + rp1*vmb)*vmb;
-    Ambmb\[Theta]S  = (S\[Theta]mb - zp1/sin\[Theta]p*vmb)*vmb;
-      sumPlus0  += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RInrp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRInrp + Cmmbmb*fmbmb2*ddRInrp)*exp\[Theta]^{1,-1})]; (* Totral of all quadrants *)
-      sumMinus0 += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUprp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUprp + Cmmbmb*fmbmb2*ddRUprp)*exp\[Theta]^{1,-1})]; 
-      sumPlus1  += Total[\[CapitalSigma]*((
-        ((Ann0S + Annt\[Phi]S)*RInrp*fnn0 + AnnrS*(dRInrp*fnn0 + RInrp*dfnn0dr) + Ann\[Theta]S*RInrp*dfnn0d\[Theta]) +
-        ((Anmb0S + Anmbt\[Phi]S)* RInrp*fnmb0 + AnmbrS*( RInrp*dfnmb0dr +  dRInrp*fnmb0) + Anmb\[Theta]S* RInrp*dfnmb0d\[Theta]) - 
-        ((Anmb0S + Anmbt\[Phi]S)*dRInrp*fnmb1 + AnmbrS*(dRInrp*dfnmb1dr + ddRInrp*fnmb1) + Anmb\[Theta]S*dRInrp*dfnmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*  RInrp*fmbmb0 + AmbmbrS*(  dRInrp*fmbmb0 +   RInrp*dfmbmb0dr) + Ambmb\[Theta]S*  RInrp*dfmbmb0d\[Theta]) -
-        ((Ambmb0S + Ambmbt\[Phi]S)* dRInrp*fmbmb1 + AmbmbrS*( ddRInrp*fmbmb1 +  dRInrp*dfmbmb1dr) + Ambmb\[Theta]S* dRInrp*dfmbmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*ddRInrp*fmbmb2 + AmbmbrS*(dddRInrp*fmbmb2 + ddRInrp*dfmbmb2dr) + Ambmb\[Theta]S*ddRInrp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RInrp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRInrp1 + Cmmbmb*fmbmb2*ddRInrp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RInrp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRInrp + Cmmbmb*fmbmb21*ddRInrp)*exp\[Theta]^{1,-1})]; 
-      sumMinus1 += Total[\[CapitalSigma]*((
-        ((Ann0S + Annt\[Phi]S)*RUprp*fnn0 + AnnrS*(dRUprp*fnn0 + RUprp*dfnn0dr) + Ann\[Theta]S*RUprp*dfnn0d\[Theta]) +
-        ((Anmb0S + Anmbt\[Phi]S)* RUprp*fnmb0 + AnmbrS*( RUprp*dfnmb0dr +  dRUprp*fnmb0) + Anmb\[Theta]S* RUprp*dfnmb0d\[Theta]) - 
-        ((Anmb0S + Anmbt\[Phi]S)*dRUprp*fnmb1 + AnmbrS*(dRUprp*dfnmb1dr + ddRUprp*fnmb1) + Anmb\[Theta]S*dRUprp*dfnmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*  RUprp*fmbmb0 + AmbmbrS*(  dRUprp*fmbmb0 +   RUprp*dfmbmb0dr) + Ambmb\[Theta]S*  RUprp*dfmbmb0d\[Theta]) -
-        ((Ambmb0S + Ambmbt\[Phi]S)* dRUprp*fmbmb1 + AmbmbrS*( ddRUprp*fmbmb1 +  dRUprp*dfmbmb1dr) + Ambmb\[Theta]S* dRUprp*dfmbmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*ddRUprp*fmbmb2 + AmbmbrS*(dddRUprp*fmbmb2 + ddRUprp*dfmbmb2dr) + Ambmb\[Theta]S*ddRUprp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RUprp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRUprp1 + Cmmbmb*fmbmb2*ddRUprp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RUprp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRUprp + Cmmbmb*fmbmb21*ddRUprp)*exp\[Theta]^{1,-1})];,
-    {i\[Theta], 1, steps\[Theta]/2}
-  ];
-  W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
-  W1 = (RInrp1*dRUprp + RInrp*dRUprp1 - dRInrp1*RUprp - dRInrp*RUprp1)/\[CapitalDelta]; (* Linear part of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalGamma]*W*steps\[Theta]); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalGamma]*W*steps\[Theta]);
-  CPlus1  = 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
-  <|
-    "l"->l,
-    "m"->m,
-    "k"->k,
-    "n"->0,
-    "\[Omega]"->\[Omega],
-    "Amplitudes"->
-    <|
-      "\[ScriptCapitalI]"->CPlus0,
-      "\[ScriptCapitalH]"->CMinus0
-    |>,
-    "AmplitudesCorrection"->
-    <|
-      "\[ScriptCapitalI]"->CPlus1,
-      "\[ScriptCapitalH]"->CMinus1
-    |>,
-    "\[Alpha]"->\[Alpha],
-    "S"->N[SWSH[Pi/2,0][[1]]],
-    "Fluxes"->
-    <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMinus0]^2/(4Pi*\[Omega]^2)
-      |>,
-      "AngularMomentum"->
-      <|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMinus0]^2*m/(4Pi*\[Omega]^3)
-      |>
-    |>,
-    "FluxesCorrection"->
-    <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 2*Abs[CMinus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
-      |>,
-      "AngularMomentum"->
-      <|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 3*Abs[CMinus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
-      |>
-    |>,
-    "steps\[Theta]"->steps\[Theta]
-  |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
-]*)
 
 
 Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->30};
@@ -4150,234 +4072,6 @@ TeukolskySpinModeSphericalCorrectionNew[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbi
     "steps\[Theta]" -> steps\[Theta]
   |>
 ]
-
-
-(*TeukolskySpinModeSphericalCorrection2[l_,m_,k_,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_}]:=Module[{h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,
-    correction,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,SWSH,SWSHS,R,\[Lambda],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,P,\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMinus0,sumPlus1,sumMinus1,steps\[Theta],correctionp,i\[Theta],w\[Theta],rp,zp,sin\[Theta]p,
-    Ur,Uz,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,K1,dK,dK1,V,V1,dV,RInrp,dRInrp,ddRInrp,RInrp1,dRInrp1,ddRInrp1,dddRInrp,RUprp,dRUprp,ddRUprp,RUprp1,dRUprp1,ddRUprp1,dddRUprp,
-    \[Theta]2,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,
-    fmbmb01,fmbmb11,fmbmb21,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,
-    Sln,Slmb,Snm,Snmb,Smmb,Cmnn,Cmnmb,Cmmbmb,rho,beta,pi,alpha,mu,gamma,tau,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,S\[Theta]n,S\[Theta]mb,rp1,zp1,Urp1,Uzp1,
-    \[CapitalSigma]1,exp1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Ann\[Theta]S,Anmb0S,Anmbt\[Phi]S,AnmbrS,Anmb\[Theta]S,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,Ambmb\[Theta]S,CPlus0,CMinus0,CPlus1,CMinus1},
-  h1[r_,z_] := (r (-3 a^2 r^2 z^2+a^4 z^4+Kc (r^2-3 a^2 z^2)))/(Sqrt[Kc] (r^2+a^2 z^2)^3);
-  h2[r_,z_] := 1/(Sqrt[Kc] (r^2+a^2 z^2)^3) (-En Lz r^6+a^4 En Lz r^2 z^4+a^2 En Lz r^4 (-2+z^2)-a^6 En Lz z^4 (-2+z^2)+
-               a^7 En^2 z^4 (-1+z^2)+a r^3 (Lz^2 r+Kc (-1+z^2)+Kc r (-1+2 z^2)+r^3 (z^2-En^2 (-1+z^2)))+a^3 (-En^2 r^4 (-1+z^2)+
-               r z^2 (2 r^3+2 Kc r z^2-3 Kc (-1+z^2)-3 r^2 (-1+z^2)))+a^5 z^4 (Kc-Lz^2+r ( (-1+z^2)+r (2-z^2+En^2 (-1+z^2)))));
-  a = orbitCorrection["a"];(* Orbital parameters *)
-  p = orbitCorrection["p"];
-  e = orbitCorrection["e"];
-  x = orbitCorrection["Inclination"];
-  En = orbitCorrection["Ehat"]; (* Geodesic constants of motion *)
-  Lz = orbitCorrection["Lzhat"];
-  Kc = orbitCorrection["Khat"];
-  En1 = orbitCorrection["ES"]; (* Linear corrections to the constants of motion *)
-  Lz1 = orbitCorrection["LS"];
-  {\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi]} = orbitCorrection["BLFrequenciesGeo"]; (* Coordinate frequencies *)
-  {\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1} = orbitCorrection["BLFrequenciesCorrection"]; (* Coordinate frequencies *)
-  correction = orbitCorrection["OrbitCorrection"]; (* function containing corrections to the trajectory *)
-  z[wz_] := Cos[orbitCorrection["TrajectoryGeo"][[3]][wz]];
-  \[CapitalGamma] = orbitCorrection["MinoFrequenciesGeo"][[1]]; (* Geodesic average rate of change of BL time in Mino time and the linear correction *)
-  \[CapitalGamma]1 = orbitCorrection["MinoFrequenciesCorrection"][[1]]; 
-  \[Omega] = m*\[CapitalOmega]\[Phi] + k*\[CapitalOmega]\[Theta]; (* Geodesic frequency and the linear correction *)
-  \[Omega]1 = m*\[CapitalOmega]\[Phi]1 + k*\[CapitalOmega]\[Theta]1;
-  {\[Lambda],\[Lambda]1,SWSH,SWSHS}=angparNew[-2,l,m,SetPrecision[a,48],SetPrecision[\[Omega],48],SetPrecision[\[Omega]1,48]];(* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
-  R = TeukolskySolverHS1spin[p,-2,l,m,SetPrecision[a,48],SetPrecision[\[Omega],48],SetPrecision[\[Omega]1,48],\[Lambda],\[Lambda]1];
-  \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (*  TS constant *)
-  \[ScriptCapitalC]21 = 4 \[Lambda]^3 \[Lambda]1+4 \[Lambda]^2 (3 \[Lambda]1+10 a (m-2 a \[Omega]) \[Omega]1)+8 \[Lambda] (\[Lambda]1 (1+10 a m \[Omega]-10 a^2 \[Omega]^2)+6 a (m+2 a \[Omega]) \[Omega]1) + 
-        48 \[Omega] (a m \[Lambda]1+6 \[Omega]1-18 a^3 m \[Omega] \[Omega]1+12 a^4 \[Omega]^2 \[Omega]1+a^2 (\[Lambda]1 \[Omega]+6 m^2 \[Omega]1));  (* linear part of the TS constant *)
-  rplus = 1+Sqrt[1-a^2];  (*  horizon r_+  *)
-  P = \[Omega]-m*a/(2*rplus); (* frequency at the horizon *)
-  \[Epsilon] = Sqrt[1^2-a^2]/(4*rplus);
-  \[Alpha] = 256*(2*rplus)^5*P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2; (* constant for horizon fluxes *)
-  \[Alpha]1 = -256*(2*rplus)^5*P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2^2*\[ScriptCapitalC]21 + 256*(2*rplus)^5*(\[Omega]1*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*\[Omega]^3 +
-       P*(2*P*\[Omega]1)*(P^2+16*\[Epsilon]^2)*\[Omega]^3 + P*(P^2+4*\[Epsilon]^2)*(2*P*\[Omega]1)*\[Omega]^3 + P*(P^2+4*\[Epsilon]^2)*(P^2+16*\[Epsilon]^2)*3*\[Omega]^2*\[Omega]1)/\[ScriptCapitalC]2; (* linear part of the constant for horizon fluxes *)
-  sumPlus0 = sumPlus1 = 0; (* Results of the integration are stored in these variables *)
-  sumMinus0 = sumMinus1 = 0;
-  (* number of steps for w\[Theta] integration *)
-  steps\[Theta] = Max[8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[Pi/2]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[Pi/2]+k)]],
-               8*Ceiling[Abs[(\[Omega]*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"]'[0   ]-m*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]'[0   ]+k)]],32];
-  Print[ToString[steps\[Theta]]<>" steps in w\[Theta]"];
-  correctionp = Table[correction[N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]]],{i\[Theta],1,steps\[Theta]/2}];(* corrections to the trajectory at all points *)
-  rp = p;
-  Ur = 0;(* Geodesic radial velocity *)
-  \[CapitalDelta]  = rp^2-2rp+a^2;
-  K  = (rp^2+a^2)*\[Omega]-a*m;
-  K1  = (rp^2+a^2)*\[Omega]1;
-  d\[CapitalDelta] = 2*(rp-1);
-  dK = 2*rp*\[Omega];
-  dK1 = 2*rp*\[Omega]1;
-  V  = -(K^2 + 4I*(rp-1)*K)/\[CapitalDelta] + 8*I*\[Omega]*rp + \[Lambda]; (* Potential in radial Teukolsky equation *)
-  V1  = -(2*K*K1 + 4I*(rp-1)*K1)/\[CapitalDelta] + 8*I*\[Omega]1*rp + \[Lambda]1; (* Linear part of the potential in radial Teukolsky equation *)
-  dV = -((2K*dK + 4I*K + 4I*(rp - 1)*dK)*\[CapitalDelta] - (K^2 + 4I*(rp - 1)*K)*d\[CapitalDelta])/\[CapitalDelta]^2 + 8I*\[Omega]; (* derivative of potential in radial Teukolsky equation wrt r *)
-  RInrp    = R[[1,1,1]]; (* radial function *)
-  dRInrp   = R[[1,1,2]];
-  ddRInrp  = (V*RInrp + d\[CapitalDelta]*dRInrp)/\[CapitalDelta];  (* second derivative of radial function from Teukolsky equation *)
-  RInrp1   = R[[1,2,1]]; (* Linear part of the radial function *)
-  dRInrp1  = R[[1,2,2]];
-  ddRInrp1 = (V*RInrp1 + V1*RInrp + d\[CapitalDelta]*dRInrp1)/\[CapitalDelta];
-  dddRInrp = 1/\[CapitalDelta] (dV*RInrp + (V + 2)*dRInrp);  (* third derivative of radial function from Teukolsky equation *)
-  RUprp    = R[[2,1,1]];
-  dRUprp   = R[[2,1,2]];
-  ddRUprp  = (V*RUprp + d\[CapitalDelta]*dRUprp)/\[CapitalDelta];  
-  RUprp1   = R[[2,2,1]];
-  dRUprp1  = R[[2,2,2]];
-  ddRUprp1 = (V*RUprp1 + V1*RUprp + d\[CapitalDelta]*dRUprp1)/\[CapitalDelta];
-  dddRUprp = 1/\[CapitalDelta] (dV*RUprp+(V+2)*dRUprp);
-  For[i\[Theta] = 1, i\[Theta] <= steps\[Theta]/2, i\[Theta]++,(* integration over w\[Theta] *)
-    w\[Theta]=N[(i\[Theta]-1/2)*2Pi/steps\[Theta],Precision[{a,p,e,x}]];
-    zp=z[w\[Theta]];(* functions of only w\[Theta] saved to lists *)
-    Uz={1,-1}*(-1)*Sqrt[-((1-zp^2)*a*En-Lz)^2+(1-zp^2)*(Kc-a^2*zp^2)];(* Polar geodesic velocity *)
-    exp\[Theta]=Exp[I*(\[Omega]*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]])-m*(orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"][w\[Theta]])+2Pi*k*(i\[Theta]-1/2)/steps\[Theta])];
-    sin\[Theta]p=Sqrt[1-zp^2];
-    S=SWSH[ArcCos[zp]][[1]];  (*  Spin-weighted spheroidal harmonics S(\[Theta](z))  *)
-    S1=SWSHS[ArcCos[zp]][[1]];  (*  Linear part of S(\[Theta](z))  *)
-    dSd\[Theta]=SWSH[ArcCos[zp]][[2]]; (* First derivative of S wrt \[Theta] *)
-    dS1d\[Theta]=SWSHS[ArcCos[zp]][[2]]; (* Linear part of first derivative of S wrt \[Theta] *)
-    d2Sd\[Theta]2=SWSH[ArcCos[zp]][[3]]; (* second derivative of S from Teukolsky equation *)
-    d2S1d\[Theta]2=SWSHS[ArcCos[zp]][[3]];(* Linear part of second derivative of S from Teukolsky equation *)
-    d3Sd\[Theta]3=-(1/sin\[Theta]p^3)2 (-2+m zp+a zp (-1+zp^2) \[Omega]) (m+a \[Omega]-zp (2+a zp \[Omega]))*S
-           -(-(a*\[Omega])^2*(1-zp^2)-(m-2*zp)^2/(1-zp^2)+4a*\[Omega]*zp-2+2*m*a*\[Omega]+\[Lambda]-1/(1-zp^2))*dSd\[Theta]-zp/sin\[Theta]p*d2Sd\[Theta]2; (*third derivative from derivative of second derivative*)
-    L2S=dSd\[Theta]-(S (m-2 zp+a (-1+zp^2) \[Omega]))/sin\[Theta]p;(* Operators acting on S(\[Theta]) *)
-    L2S1=dS1d\[Theta]-(S1 (m-2 zp+a (-1+zp^2) \[Omega])+S (a (-1+zp^2) \[Omega]1))/sin\[Theta]p;(* Operators acting on S(\[Theta]) *)
-    dL2Sd\[Theta]=d2Sd\[Theta]2+1/(-1+zp^2) (dSd\[Theta] sin\[Theta]p (m-2 zp+a (-1+zp^2) \[Omega])+S (2-m zp+a zp (-1+zp^2) \[Omega]));
-    L1L2S=d2Sd\[Theta]2+(dSd\[Theta] (-2 m+3 zp-2 a (-1+zp^2) \[Omega]))/sin\[Theta]p+S (-2-(m (m-2 zp))/(-1+zp^2)-2 a (m-2 zp) \[Omega]-a^2 (-1+zp^2) \[Omega]^2);  
-    L1L2S1=d2S1d\[Theta]2+(dS1d\[Theta] (-2 m+3 zp-2 a (-1+zp^2) \[Omega])+dSd\[Theta] (-2 a (-1+zp^2) \[Omega]1))/sin\[Theta]p + 
-           S1 (-2-(m (m-2 zp))/(-1+zp^2)-2 a (m-2 zp) \[Omega]-a^2 (-1+zp^2) \[Omega]^2) + S (-2 a (m-2 zp) \[Omega]1 - a^2 (-1+zp^2) 2*\[Omega]*\[Omega]1);  
-    dL1L2Sd\[Theta]=d3Sd\[Theta]3+1/(-1+zp^2) dSd\[Theta] (5-m^2-2 zp^2-2 a (m-3 zp) (-1+zp^2) \[Omega]-a^2 (-1+zp^2)^2 \[Omega]^2)+
-             1/sin\[Theta]p^3 (d2Sd\[Theta]2 (-1+zp^2) (2 m-3 zp+2 a (-1+zp^2) \[Omega])+2 S (-m^2 zp+m (1+zp^2)+a (-1+zp^2)^2 \[Omega] (-2+a zp \[Omega])));
-    \[Zeta] = rp-I*a*zp;
-    \[Zeta]bar = rp+I*a*zp;
-    \[CapitalSigma] = rp^2+a^2*zp^2;
-    {fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2} = fabi[\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,S,L2S,L1L2S,a];
-    {dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr} = dfabidr[\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,S,L2S,L1L2S,a,\[Omega]];
-    {dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta]} = dfabid\[Theta][\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,S,L2S,L1L2S,dSd\[Theta],dL2Sd\[Theta],dL1L2Sd\[Theta],a];
-    {fnn01,fnmb01,fnmb11,fmbmb01,fmbmb11,fmbmb21} = dfabidS[\[Zeta],\[Zeta]bar,sin\[Theta]p,\[CapitalDelta],d\[CapitalDelta],K,dK,K1,dK1,S,L2S,L1L2S,S1,L2S1,L1L2S1,a];
-    vn = -((rp^2+a^2)*En - a*Lz + Ur)/(2*\[CapitalSigma]); (* Four-velocity in Kinnersley tetrad *)
-    vl = -((rp^2+a^2)*En - a*Lz - Ur)/(\[CapitalDelta]);
-    vm = (I*(a*sin\[Theta]p^2*En - Lz) + Uz)/(-Sqrt[2]*sin\[Theta]p*\[Zeta]bar);
-    vmb = Conjugate[vm];
-    Sln  = (-((rp (Kc-a^2 zp^2))/(Sqrt[Kc] \[CapitalSigma]))); (* Spin tensor in Kinnersley tetrad *)
-    Snm  = (\[Zeta]/Sqrt[Kc])*vm*vn;
-    Snmb = Conjugate[Snm];
-    Slmb = (-(\[Zeta]/Sqrt[Kc]))*vl*vmb;
-    Smmb = ((I a zp (Kc+rp^2))/(Sqrt[Kc] \[CapitalSigma]));
-    Cmnn   = vn^2;
-    Cmnmb  = vn*vmb;
-    Cmmbmb = vmb^2;
-    rho = 1/\[Zeta]; (* Spin coefficients *)
-    beta = -(zp/(2*\[Zeta]bar Sqrt[2]*sin\[Theta]p));
-    pi = -((I a sin\[Theta]p)/(\[Zeta]^2 Sqrt[2]));
-    tau = (I a sin\[Theta]p)/(Sqrt[2] \[CapitalSigma]);
-    mu = \[CapitalDelta]/(2 \[Zeta]^2 \[Zeta]bar);
-    gamma = (a^2-rp+I a (-1+rp) zp)/(2 \[Zeta]^2 \[Zeta]bar);
-    alpha = -((-rp zp-I a (-2+zp^2))/(2 \[Zeta]^2 Sqrt[2]sin\[Theta]p));
-    Scd\[Gamma]ndc = -Sln*2*Re[gamma](*-2*Re[Snmb*(-Conjugate[pi]+Conjugate[alpha]+beta)]*)-Smmb*(-mu+Conjugate[mu]);
-    Scd\[Gamma]mbdc = -Sln*(pi+Conjugate[tau])-Snmb*Conjugate[rho]-Slmb*(-Conjugate[gamma]+gamma-mu)-Smmb*(-alpha+Conjugate[beta]);
-    Cdnn  = (Scd\[Gamma]ndc*vn-Sln*2*Re[gamma]*vn-2*Re[Snmb*((Conjugate[alpha]+beta)*vn-mu*vm)]);
-    Cdmbmb= (Scd\[Gamma]mbdc*vmb-Snmb*(-pi*vl)-Slmb*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)+Smmb*(-(-alpha+Conjugate[beta])*vmb));
-    Cdnmb = (Scd\[Gamma]ndc*vmb+Scd\[Gamma]mbdc*vn-Sln*(Conjugate[tau]*vn-(Conjugate[gamma]-gamma)*vmb)-Snmb*(Conjugate[rho]*vn-mu*vl-(Conjugate[alpha]-beta)*vmb)
-      -Snm*(-(-alpha+Conjugate[beta])*vmb)-Snmb*(-Conjugate[pi]*vmb-pi*vm)-Slmb*(2*Re[gamma]*vn)+Smmb*((alpha+Conjugate[beta])*vn-Conjugate[mu]*vmb))/2;
-    St\[Phi]n  = -I*K/(2\[CapitalSigma])*Sln+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[CapitalSigma])*(\[Zeta]*Snmb-\[Zeta]bar*Snm);
-    St\[Phi]mb = -I*K*(1/\[CapitalDelta]*Snmb+1/(2\[CapitalSigma])*Slmb)+(a*\[Omega]*sin\[Theta]p-m/sin\[Theta]p)/(Sqrt[2]*\[Zeta])*Smmb;
-    Srn  = \[CapitalDelta]/(2\[CapitalSigma])*Sln;
-    Srmb = -Snmb+\[CapitalDelta]/(2\[CapitalSigma])*Slmb;
-    S\[Theta]n  = -(Snmb*\[Zeta]+Snm*\[Zeta]bar)/(Sqrt[2]*\[CapitalSigma]);
-    S\[Theta]mb = Smmb/(Sqrt[2]*\[Zeta]);
-    rp1 = {correctionp[[i\[Theta]]]["rS"],correctionp[[-i\[Theta]]]["rS"]}; (* Corrections to the coordinates and four-velocity for each quadrant *)
-    zp1 = {correctionp[[i\[Theta]]]["zS"],-correctionp[[-i\[Theta]]]["zS"]};
-    Urp1 = {correctionp[[i\[Theta]]]["UrS"],correctionp[[-i\[Theta]]]["UrS"]};
-    Uzp1 = {correctionp[[i\[Theta]]]["UzS"],-correctionp[[-i\[Theta]]]["UzS"]};
-    \[CapitalSigma]1 = 2*(rp*rp1+a^2*zp*zp1); (* Linear correction to \[CapitalSigma] *)
-    exp1 = I*{(\[Omega]*correctionp[[ i\[Theta]]]["\[CapitalDelta]tS"]-m*correctionp[[ i\[Theta]]]["\[CapitalDelta]\[Phi]S"])+\[Omega]1*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]],
-              (\[Omega]*correctionp[[-i\[Theta]]]["\[CapitalDelta]tS"]-m*correctionp[[-i\[Theta]]]["\[CapitalDelta]\[Phi]S"])-\[Omega]1*orbitCorrection["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][w\[Theta]]};
-    vn1  = -( ((2*rp*rp1)*En) - ((rp^2+a^2)*En - a*Lz + Ur)/(\[CapitalSigma])*\[CapitalSigma]1 + 
-             ((rp^2+a^2)*(En1-h1[rp,zp]) - a*(Lz1+h2[rp,zp]) + Urp1))/(2*\[CapitalSigma]);(* Linear parts of the four-velocity in Kinnersley tetrad *)
-    vmb1 = ( (-I*(-2*a*zp*zp1*En)) - (-I*(a*sin\[Theta]p^2*En - Lz) + Uz)*(-zp*zp1/sin\[Theta]p^2 + (rp1-I*a*zp1)/\[Zeta]) + 
-             (-I*(a*sin\[Theta]p^2*(En1-h1[rp,zp]) - (Lz1+h2[rp,zp])) + Uzp1))/(-Sqrt[2]*sin\[Theta]p*\[Zeta]);
-    Ann0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn + 2*vn1)*vn + Cdnn;
-    Annt\[Phi]S = (St\[Phi]n + exp1*vn)*vn;
-    AnnrS  = (Srn + rp1*vn)*vn;
-    Ann\[Theta]S  = (S\[Theta]n - zp1/sin\[Theta]p*vn)*vn;
-    Anmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vn*vmb + vn1*vmb + vn*vmb1 + Cdnmb);
-    Anmbt\[Phi]S = ((St\[Phi]n*vmb + St\[Phi]mb*vn)/2 + exp1*vn*vmb);
-    AnmbrS  = ((Srn*vmb + Srmb*vn)/2 + rp1*vn*vmb);
-    Anmb\[Theta]S  = ((S\[Theta]n*vmb + S\[Theta]mb*vn)/2 - zp1/sin\[Theta]p*vn*vmb);
-    Ambmb0S  = (\[CapitalSigma]1/\[CapitalSigma]*vmb + 2*vmb1)*vmb + Cdmbmb;
-    Ambmbt\[Phi]S = (St\[Phi]mb + exp1*vmb)*vmb;
-    AmbmbrS  = (Srmb + rp1*vmb)*vmb;
-    Ambmb\[Theta]S  = (S\[Theta]mb - zp1/sin\[Theta]p*vmb)*vmb;
-      sumPlus0  += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RInrp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRInrp + Cmmbmb*fmbmb2*ddRInrp)*exp\[Theta]^{1,-1})]; (* Totral of all quadrants *)
-      sumMinus0 += Total[\[CapitalSigma]*(((Cmnn*fnn0+Cmnmb*fnmb0+Cmmbmb*fmbmb0)*RUprp - (Cmnmb*fnmb1+Cmmbmb*fmbmb1)*dRUprp + Cmmbmb*fmbmb2*ddRUprp)*exp\[Theta]^{1,-1})]; 
-      sumPlus1  += Total[\[CapitalSigma]*((
-        ((Ann0S + Annt\[Phi]S)*RInrp*fnn0 + AnnrS*(dRInrp*fnn0 + RInrp*dfnn0dr) + Ann\[Theta]S*RInrp*dfnn0d\[Theta]) +
-        ((Anmb0S + Anmbt\[Phi]S)* RInrp*fnmb0 + AnmbrS*( RInrp*dfnmb0dr +  dRInrp*fnmb0) + Anmb\[Theta]S* RInrp*dfnmb0d\[Theta]) - 
-        ((Anmb0S + Anmbt\[Phi]S)*dRInrp*fnmb1 + AnmbrS*(dRInrp*dfnmb1dr + ddRInrp*fnmb1) + Anmb\[Theta]S*dRInrp*dfnmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*  RInrp*fmbmb0 + AmbmbrS*(  dRInrp*fmbmb0 +   RInrp*dfmbmb0dr) + Ambmb\[Theta]S*  RInrp*dfmbmb0d\[Theta]) -
-        ((Ambmb0S + Ambmbt\[Phi]S)* dRInrp*fmbmb1 + AmbmbrS*( ddRInrp*fmbmb1 +  dRInrp*dfmbmb1dr) + Ambmb\[Theta]S* dRInrp*dfmbmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*ddRInrp*fmbmb2 + AmbmbrS*(dddRInrp*fmbmb2 + ddRInrp*dfmbmb2dr) + Ambmb\[Theta]S*ddRInrp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RInrp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRInrp1 + Cmmbmb*fmbmb2*ddRInrp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RInrp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRInrp + Cmmbmb*fmbmb21*ddRInrp)*exp\[Theta]^{1,-1})]; 
-      sumMinus1 += Total[\[CapitalSigma]*((
-        ((Ann0S + Annt\[Phi]S)*RUprp*fnn0 + AnnrS*(dRUprp*fnn0 + RUprp*dfnn0dr) + Ann\[Theta]S*RUprp*dfnn0d\[Theta]) +
-        ((Anmb0S + Anmbt\[Phi]S)* RUprp*fnmb0 + AnmbrS*( RUprp*dfnmb0dr +  dRUprp*fnmb0) + Anmb\[Theta]S* RUprp*dfnmb0d\[Theta]) - 
-        ((Anmb0S + Anmbt\[Phi]S)*dRUprp*fnmb1 + AnmbrS*(dRUprp*dfnmb1dr + ddRUprp*fnmb1) + Anmb\[Theta]S*dRUprp*dfnmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*  RUprp*fmbmb0 + AmbmbrS*(  dRUprp*fmbmb0 +   RUprp*dfmbmb0dr) + Ambmb\[Theta]S*  RUprp*dfmbmb0d\[Theta]) -
-        ((Ambmb0S + Ambmbt\[Phi]S)* dRUprp*fmbmb1 + AmbmbrS*( ddRUprp*fmbmb1 +  dRUprp*dfmbmb1dr) + Ambmb\[Theta]S* dRUprp*dfmbmb1d\[Theta]) +
-        ((Ambmb0S + Ambmbt\[Phi]S)*ddRUprp*fmbmb2 + AmbmbrS*(dddRUprp*fmbmb2 + ddRUprp*dfmbmb2dr) + Ambmb\[Theta]S*ddRUprp*dfmbmb2d\[Theta]))*exp\[Theta]^{1,-1}) + 
-        \[CapitalSigma]*(((Cmnn*fnn0 + Cmnmb*fnmb0 + Cmmbmb*fmbmb0)*RUprp1 - (Cmnmb*fnmb1 + Cmmbmb*fmbmb1)*dRUprp1 + Cmmbmb*fmbmb2*ddRUprp1
-          + (Cmnn*fnn01 + Cmnmb*fnmb01 + Cmmbmb*fmbmb01)*RUprp - (Cmnmb*fnmb11 + Cmmbmb*fmbmb11)*dRUprp + Cmmbmb*fmbmb21*ddRUprp)*exp\[Theta]^{1,-1})]; 
-  ];
-  W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
-  W1 = (RInrp1*dRUprp + RInrp*dRUprp1 - dRInrp1*RUprp - dRInrp*RUprp1)/\[CapitalDelta]; (* Linear part of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalGamma]*W*steps\[Theta]); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalGamma]*W*steps\[Theta]);
-  CPlus1  = 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
-  <|
-    "l"->l,
-    "m"->m,
-    "k"->k,
-    "n"->0,
-    "\[Omega]"->\[Omega],
-    "Amplitudes"->
-    <|
-      "\[ScriptCapitalI]"->CPlus0,
-      "\[ScriptCapitalH]"->CMinus0
-    |>,
-    "AmplitudesCorrection"->
-    <|
-      "\[ScriptCapitalI]"->CPlus1,
-      "\[ScriptCapitalH]"->CMinus1
-    |>,
-    "\[Alpha]"->\[Alpha],
-    "S"->SWSH[Pi/2,0],
-    "Fluxes"->
-    <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMinus0]^2/(4Pi*\[Omega]^2)
-      |>,
-      "AngularMomentum"->
-      <|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMinus0]^2*m/(4Pi*\[Omega]^3)
-      |>
-    |>,
-    "FluxesCorrection"->
-    <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 2*Abs[CMinus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
-      |>,
-      "AngularMomentum"->
-      <|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 3*Abs[CMinus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
-      |>
-    |>,
-    "steps\[Theta]"->steps\[Theta]
-  |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
-]*)
 
 
 (* ::Section::Closed:: *)
