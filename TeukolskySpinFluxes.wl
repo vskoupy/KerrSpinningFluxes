@@ -273,7 +273,8 @@ TeukolskySpinModeCircularCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,orbit_,{an
     "FluxesCorrection"-><|
       "Energy"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]En\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]En\[ScriptCapitalH]1|>,
       "AngularMomentum"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]Lz\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]Lz\[ScriptCapitalH]1|>
-    |>
+    |>,
+    "\[Lambda]"->\[Lambda], "d\[Lambda]d\[Omega]"->d\[Lambda]d\[Omega]
   |>
 ]
 
@@ -758,6 +759,7 @@ TeukolskySpinModeEquatorialCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?Integ
       "Energy"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]En\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]En\[ScriptCapitalH]1|>,
       "AngularMomentum"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]Lz\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]Lz\[ScriptCapitalH]1|>
     |>,
+    "\[Lambda]"->\[Lambda], "d\[Lambda]d\[Omega]"->d\[Lambda]d\[Omega],
     "stepsr"->stepsr
   |>
 ]
@@ -1003,6 +1005,7 @@ TeukolskySpinModeEquatorialCorrectionAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?In
       "Energy"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]En\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]En\[ScriptCapitalH]1|>,
       "AngularMomentum"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]Lz\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]Lz\[ScriptCapitalH]1|>
     |>,
+    "\[Lambda]"->\[Lambda], "d\[Lambda]d\[Omega]"->d\[Lambda]d\[Omega],
     "stepsr"->stepsr
   |>
 ]
@@ -1201,6 +1204,7 @@ TeukolskySpinModeEquatorialCorrectionAnalyticalNew2[l_?IntegerQ,m_?IntegerQ,n_?I
       "Energy"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]En\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]En\[ScriptCapitalH]1|>,
       "AngularMomentum"-><|"\[ScriptCapitalI]"->\[ScriptCapitalF]Lz\[ScriptCapitalI]1, "\[ScriptCapitalH]"->\[ScriptCapitalF]Lz\[ScriptCapitalH]1|>
     |>,
+    "\[Lambda]"->\[Lambda], "d\[Lambda]d\[Omega]"->d\[Lambda]d\[Omega],
     "stepsr"->stepsr
   |>
 ]
