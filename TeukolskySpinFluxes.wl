@@ -271,24 +271,24 @@ TeukolskySpinModeCircularCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,orbit_,{an
                 vmb*vmb*dFmbmbUpdr + vmb*vmb*dFmbmbUpd\[Omega]*d\[Omega]dr);
   W = (RIn*dRUpdr - dRIndr*RUp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
   dWd\[Omega] = (dRInd\[Omega]*dRUpdr + RIn*d2RUpdrd\[Omega] - d2RIndrd\[Omega]*RUp - dRIndr*dRUpd\[Omega])/(rp^2-2*rp+a^2); (* \[Omega] derivative of the Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W);
-  CPlus1  = 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - dWd\[Omega]*\[Omega]1/W)*CPlus0; (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*sumMinus1/(\[CapitalUpsilon]t*W) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - dWd\[Omega]*\[Omega]1/W)*CMinus0;
-  dCPlusdr  = 2*Pi*(dsumPlusdr)/(\[CapitalUpsilon]t*W) + (- d\[CapitalUpsilon]tdr/\[CapitalUpsilon]t - dWd\[Omega]*d\[Omega]dr/W)*CPlus0; (* Derivatives of geodesic amplitudes *)
-  dCMinusdr  = 2*Pi*(dsumMinusdr)/(\[CapitalUpsilon]t*W) + (- d\[CapitalUpsilon]tdr/\[CapitalUpsilon]t - dWd\[Omega]*d\[Omega]dr/W)*CMinus0;
+  CPlus0    = - 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W); (* Geodesic amplitudes *)
+  CMinus0   = - 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W);
+  CPlus1    = - 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - dWd\[Omega]*\[Omega]1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1   = - 2*Pi*sumMinus1/(\[CapitalUpsilon]t*W) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - dWd\[Omega]*\[Omega]1/W)*CMinus0;
+  dCPlusdr  = - 2*Pi*(dsumPlusdr)/(\[CapitalUpsilon]t*W) + (- d\[CapitalUpsilon]tdr/\[CapitalUpsilon]t - dWd\[Omega]*d\[Omega]dr/W)*CPlus0; (* Derivatives of geodesic amplitudes *)
+  dCMinusdr = - 2*Pi*(dsumMinusdr)/(\[CapitalUpsilon]t*W) + (- d\[CapitalUpsilon]tdr/\[CapitalUpsilon]t - dWd\[Omega]*d\[Omega]dr/W)*CMinus0;
   \[ScriptCapitalF]En\[ScriptCapitalI] = Abs[CPlus0]^2/(4Pi*\[Omega]^2); (* Fluxes and their linear parts and derivatives *)
-  d\[ScriptCapitalF]En\[ScriptCapitalI]dr = (2*Re[dCPlusdr*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*d\[Omega]dr/\[Omega])/(4Pi*\[Omega]^2); 
   \[ScriptCapitalF]En\[ScriptCapitalH] = \[Alpha]*Abs[CMinus0]^2/(4Pi*\[Omega]^2);
-  d\[ScriptCapitalF]En\[ScriptCapitalH]dr = \[Alpha]*(d\[Alpha]d\[Omega]*d\[Omega]dr/\[Alpha]*Abs[CMinus0]^2 + 2*Re[dCMinusdr*Conjugate[CMinus0]] - 2*Abs[CMinus0]^2*d\[Omega]dr/\[Omega])/(4Pi*\[Omega]^2); 
   \[ScriptCapitalF]Lz\[ScriptCapitalI] = Abs[CPlus0]^2*m/(4Pi*\[Omega]^3);
-  d\[ScriptCapitalF]Lz\[ScriptCapitalI]dr = (2*Re[dCPlusdr*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*d\[Omega]dr/\[Omega])*m/(4Pi*\[Omega]^3);
   \[ScriptCapitalF]Lz\[ScriptCapitalH] = \[Alpha]*Abs[CMinus0]^2*m/(4Pi*\[Omega]^3);
-  d\[ScriptCapitalF]Lz\[ScriptCapitalH]dr = \[Alpha]*(d\[Alpha]d\[Omega]*d\[Omega]dr/\[Alpha]*Abs[CMinus0]^2 + 2*Re[dCMinusdr*Conjugate[CMinus0]] - 3*Abs[CMinus0]^2*d\[Omega]dr/\[Omega])*m/(4Pi*\[Omega]^3);
   \[ScriptCapitalF]En\[ScriptCapitalI]1 = (2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2);
   \[ScriptCapitalF]En\[ScriptCapitalH]1 = \[Alpha]*(d\[Alpha]d\[Omega]*\[Omega]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 2*Abs[CMinus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2);
   \[ScriptCapitalF]Lz\[ScriptCapitalI]1 = (2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3);
   \[ScriptCapitalF]Lz\[ScriptCapitalH]1 = \[Alpha]*(d\[Alpha]d\[Omega]*\[Omega]1/\[Alpha]*Abs[CMinus0]^2 + 2*Re[CMinus1*Conjugate[CMinus0]] - 3*Abs[CMinus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3);
+  d\[ScriptCapitalF]En\[ScriptCapitalI]dr = (2*Re[dCPlusdr*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*d\[Omega]dr/\[Omega])/(4Pi*\[Omega]^2); 
+  d\[ScriptCapitalF]En\[ScriptCapitalH]dr = \[Alpha]*(d\[Alpha]d\[Omega]*d\[Omega]dr/\[Alpha]*Abs[CMinus0]^2 + 2*Re[dCMinusdr*Conjugate[CMinus0]] - 2*Abs[CMinus0]^2*d\[Omega]dr/\[Omega])/(4Pi*\[Omega]^2); 
+  d\[ScriptCapitalF]Lz\[ScriptCapitalI]dr = (2*Re[dCPlusdr*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*d\[Omega]dr/\[Omega])*m/(4Pi*\[Omega]^3);
+  d\[ScriptCapitalF]Lz\[ScriptCapitalH]dr = \[Alpha]*(d\[Alpha]d\[Omega]*d\[Omega]dr/\[Alpha]*Abs[CMinus0]^2 + 2*Re[dCMinusdr*Conjugate[CMinus0]] - 3*Abs[CMinus0]^2*d\[Omega]dr/\[Omega])*m/(4Pi*\[Omega]^3);
   <|
     "l"->l, "m"->m, "k"->0, "n"->0,
     "\[Omega]"->\[Omega], "\[Omega]Correction"->\[Omega]1, "\[Omega]Derivative"-> d\[Omega]dr,
@@ -770,10 +770,10 @@ TeukolskySpinModeEquatorialCorrectionAnalyticalOld[l_?IntegerQ,m_?IntegerQ,n_?In
   ];
   W = (RIn*dRUpdr - dRIndr*RUp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
   W1 = (dRInd\[Omega]*dRUpdr + RIn*d2RUpdrd\[Omega] - d2RIndrd\[Omega]*RUp - dRIndr*dRUpd\[Omega])/(rp^2-2*rp+a^2)*\[Omega]1; (* Invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr); (* Amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr);
-  CPlus1  = 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*sumMinus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr); (* Amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr);
+  CPlus1  = - 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*sumMinus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
   \[ScriptCapitalF]En\[ScriptCapitalI] = Abs[CPlus0]^2/(4Pi*\[Omega]^2);
   \[ScriptCapitalF]En\[ScriptCapitalH] = \[Alpha]*Abs[CMinus0]^2/(4Pi*\[Omega]^2);
   \[ScriptCapitalF]Lz\[ScriptCapitalI] = Abs[CPlus0]^2*m/(4Pi*\[Omega]^3);
@@ -961,10 +961,10 @@ TeukolskySpinModeEquatorialCorrectionAnalyticalPhases[l_?IntegerQ,m_?IntegerQ,n_
    )/expr,"Method"->"CompensatedSummation"];
   W = (RIn[[1]]*dRUpdr[[1]] - dRIndr[[1]]*RUp[[1]])/(rp[[1]]^2-2*rp[[1]]+a^2); (* Invariant Wronskian *)
   W1 = (dRInd\[Omega][[1]]*dRUpdr[[1]] + RIn[[1]]*d2RUpdrd\[Omega][[1]] - d2RIndrd\[Omega][[1]]*RUp[[1]] - dRIndr[[1]]*dRUpd\[Omega][[1]])/(rp[[1]]^2-2*rp[[1]]+a^2)*\[Omega]1; (* derivative of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr);
-  CPlus1  = 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*sumMinus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr); (* Geodesic amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr);
+  CPlus1  = - 2*Pi*sumPlus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*sumMinus1/(\[CapitalUpsilon]t*W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
   \[ScriptCapitalF]En\[ScriptCapitalI] = Abs[CPlus0]^2/(4Pi*\[Omega]^2); (* Fluxes and their linear parts *)
   \[ScriptCapitalF]En\[ScriptCapitalH] = \[Alpha]*Abs[CMinus0]^2/(4Pi*\[Omega]^2);
   \[ScriptCapitalF]Lz\[ScriptCapitalI] = Abs[CPlus0]^2*m/(4Pi*\[Omega]^3);
@@ -1160,10 +1160,10 @@ TeukolskySpinModeEquatorialCorrectionAnalyticalDarwin[l_?IntegerQ,m_?IntegerQ,n_
    )/expr),"Method"->"CompensatedSummation"];
   W = (RIn[[1]]*dRUpdr[[1]] - dRIndr[[1]]*RUp[[1]])/(rp[[1]]^2-2*rp[[1]]+a^2); (* Invariant Wronskian *)
   W1 = (dRInd\[Omega][[1]]*dRUpdr[[1]] + RIn[[1]]*d2RUpdrd\[Omega][[1]] - d2RIndrd\[Omega][[1]]*RUp[[1]] - dRIndr[[1]]*dRUpd\[Omega][[1]])/(rp[[1]]^2-2*rp[[1]]+a^2)*\[Omega]1; (* derivative of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0*\[CapitalOmega]r/(W*stepsr); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0*\[CapitalOmega]r/(W*stepsr);
-  CPlus1  = 2*Pi*sumPlus1*\[CapitalOmega]r/(W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*sumMinus1*\[CapitalOmega]r/(W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
+  CPlus0  = - 2*Pi*sumPlus0*\[CapitalOmega]r/(W*stepsr); (* Geodesic amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0*\[CapitalOmega]r/(W*stepsr);
+  CPlus1  = - 2*Pi*sumPlus1*\[CapitalOmega]r/(W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*sumMinus1*\[CapitalOmega]r/(W*stepsr) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
   \[ScriptCapitalF]En\[ScriptCapitalI] = Abs[CPlus0]^2/(4Pi*\[Omega]^2); (* Fluxes and their linear parts *)
   \[ScriptCapitalF]En\[ScriptCapitalH] = \[Alpha]*Abs[CMinus0]^2/(4Pi*\[Omega]^2);
   \[ScriptCapitalF]Lz\[ScriptCapitalI] = Abs[CPlus0]^2*m/(4Pi*\[Omega]^3);
@@ -1371,8 +1371,8 @@ TeukolskySpinMode[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Modul
     ];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/(r0p^2-2*r0p+a^2); (* Invariant Wronskian *)
-  CPlus = 2Pi/\[CapitalGamma]/W/stepsr/steps\[Theta]*sumPlus; (* Amplitudes *)
-  CMinus = 2Pi/\[CapitalGamma]/W/stepsr/steps\[Theta]*sumMinus;
+  CPlus = - 2Pi/\[CapitalGamma]/W/stepsr/steps\[Theta]*sumPlus; (* Amplitudes *)
+  CMinus = - 2Pi/\[CapitalGamma]/W/stepsr/steps\[Theta]*sumMinus;
   Association[
     "l"->l,
     "m"->m,
@@ -1570,8 +1570,8 @@ TeukolskySpinModeFromCorrectionOld[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?Intege
     ];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
-  CPlus  = 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumPlus/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Amplitudes *)
-  CMinus = 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumMinus/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
+  CPlus  = - 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumPlus/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Amplitudes *)
+  CMinus = - 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumMinus/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
   <|
     "l"->l,
     "m"->m,
@@ -1834,8 +1834,8 @@ TeukolskySpinModeFromCorrection[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,
     ];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
-  CPlus  = 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumPlus/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Amplitudes *)
-  CMinus = 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumMinus/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
+  CPlus  = - 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumPlus/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Amplitudes *)
+  CMinus = - 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumMinus/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
   <|
     "l"->l,
     "m"->m,
@@ -2311,8 +2311,8 @@ TeukolskySpinModeAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbi
     ];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
-  CPlus  = ( 1 + spar*En0/(2*Sqrt[K0]) )*2*Pi*sumPlus/(\[CapitalUpsilon]t*W*stepsr*stepsz); (* Amplitudes *)
-  CMinus = ( 1 + spar*En0/(2*Sqrt[K0]) )*2*Pi*sumMinus/(\[CapitalUpsilon]t*W*stepsr*stepsz);
+  CPlus  = - ( 1 + spar*En0/(2*Sqrt[K0]) )*2*Pi*sumPlus/(\[CapitalUpsilon]t*W*stepsr*stepsz); (* Amplitudes *)
+  CMinus = - ( 1 + spar*En0/(2*Sqrt[K0]) )*2*Pi*sumMinus/(\[CapitalUpsilon]t*W*stepsr*stepsz);
   <|
     "l"->l,
     "m"->m,
@@ -2553,10 +2553,10 @@ TeukolskySpinModeCorrectionNum[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,o
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
   W1 = (RInrp1*dRUprp + RInrp*dRUprp1 - dRInrp1*RUprp - dRInrp*RUprp1)/\[CapitalDelta]; (* Linear part of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
-  CPlus1  = 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Geodesic amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
+  CPlus1  = - 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
   Association[
     "l"->l,
     "m"->m,
@@ -2808,10 +2808,10 @@ TeukolskySpinModeCorrection[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbi
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
   W1 = (RInrp1*dRUprp + RInrp*dRUprp1 - dRInrp1*RUprp - dRInrp*RUprp1)/\[CapitalDelta]; (* Linear part of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
-  CPlus1  = 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Geodesic amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
+  CPlus1  = - 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*stepsr*steps\[Theta]); (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*stepsr*steps\[Theta]);
   Association[
     "l"->l,
     "m"->m,
@@ -3023,10 +3023,10 @@ TeukolskySpinModeCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?Int
   ];
   W = (RIn*dRUpdr - dRIndr*RUp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
   W1 = (dRInd\[Omega]*dRUpdr + RIn*d2RUpdrd\[Omega] - d2RIndrd\[Omega]*RUp - dRIndr*dRUpd\[Omega])/(rp^2-2*rp+a^2)*\[Omega]1; (* Invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr*stepsz); (* Amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr*stepsz);
-  CPlus1  = 2*Pi*(sumPlus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr*stepsz); (* Amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr*stepsz);
+  CPlus1  = - 2*Pi*(sumPlus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*(sumMinus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
   <|
     "l"->l,
     "m"->m,
@@ -3261,10 +3261,10 @@ TeukolskySpinModeCorrectionAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?
   ];
   W = (RIn*dRUpdr - dRIndr*RUp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
   W1 = (dRInd\[Omega]*dRUpdr + RIn*d2RUpdrd\[Omega] - d2RIndrd\[Omega]*RUp - dRIndr*dRUpd\[Omega])/(rp^2-2*rp+a^2)*\[Omega]1; (* Invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr*stepsz); (* Amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr*stepsz);
-  CPlus1  = 2*Pi*(sumPlus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsr*stepsz); (* Amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsr*stepsz);
+  CPlus1  = - 2*Pi*(sumPlus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*(sumMinus1)/(\[CapitalUpsilon]t*W*stepsr*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
   <|
     "l"->l,
     "m"->m,
@@ -3481,8 +3481,8 @@ TeukolskySpinModeSpherical[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCorrection_,
       \[CapitalSigma]*(((Amnn*fnn0+Amnmb*fnmb0+Ammbmb*fmbmb0)*RUprp - (Amnmb*fnmb1+Ammbmb*fmbmb1)*dRUprp + (Ammbmb*fmbmb2)*ddRUprp)*exp\[Theta]^{1,-1})];
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
-  CPlus  = 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumPlus/(\[CapitalGamma]*W*steps\[Theta]); (* Amplitudes *)
-  CMinus = 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumMinus/(\[CapitalGamma]*W*steps\[Theta]);
+  CPlus  = - 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumPlus/(\[CapitalGamma]*W*steps\[Theta]); (* Amplitudes *)
+  CMinus = - 2*Pi*(1-s*\[CapitalGamma]1/\[CapitalGamma])*sumMinus/(\[CapitalGamma]*W*steps\[Theta]);
   <|
     "l"->l,
     "m"->m,
@@ -3699,10 +3699,10 @@ TeukolskySpinModeSphericalCorrectionNum[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbi
   ];
   W = (RInrp*dRUprp - dRInrp*RUprp)/\[CapitalDelta]; (* Invariant Wronskian *)
   W1 = (RInrp1*dRUprp + RInrp*dRUprp1 - dRInrp1*RUprp - dRInrp*RUprp1)/\[CapitalDelta]; (* Linear part of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalGamma]*W*steps\[Theta]); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalGamma]*W*steps\[Theta]);
-  CPlus1  = 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalGamma]*W*steps\[Theta]); (* Geodesic amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalGamma]*W*steps\[Theta]);
+  CPlus1  = - 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - W1/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - W1/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
   <|
     "l"->l,
     "m"->m,
@@ -4020,14 +4020,14 @@ TeukolskySpinModeSphericalCorrection[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCo
   ];
   W = (RIn*dRUpdr - dRIndr*RUp)/\[CapitalDelta]; (* Invariant Wronskian *)
   dWd\[Omega]= (dRInd\[Omega]*dRUpdr + RIn*d2RUpdrd\[Omega] - d2RIndrd\[Omega]*RUp - dRIndr*dRUpd\[Omega])/\[CapitalDelta]; (* \[Omega]-derivative of the invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalGamma]*W*steps\[Theta]); (* Geodesic amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalGamma]*W*steps\[Theta]);
-  CPlus1  = 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - dWd\[Omega]*\[Omega]1/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - dWd\[Omega]*\[Omega]1/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
-  dCPlusdr  = 2*Pi*(dsumPlusdr  - d\[CapitalGamma]dr/\[CapitalGamma]*sumPlus0  - dWd\[Omega]*d\[Omega]dr/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Derivatives of the amplitudes *)
-  dCMinusdr = 2*Pi*(dsumMinusdr - d\[CapitalGamma]dr/\[CapitalGamma]*sumMinus0 - dWd\[Omega]*d\[Omega]dr/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
-  dCPlusdx  = 2*Pi*(dsumPlusdx  - d\[CapitalGamma]dx/\[CapitalGamma]*sumPlus0  - dWd\[Omega]*d\[Omega]dx/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]);
-  dCMinusdx = 2*Pi*(dsumMinusdx - d\[CapitalGamma]dx/\[CapitalGamma]*sumMinus0 - dWd\[Omega]*d\[Omega]dx/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalGamma]*W*steps\[Theta]); (* Geodesic amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalGamma]*W*steps\[Theta]);
+  CPlus1  = - 2*Pi*(sumPlus1  - \[CapitalGamma]1/\[CapitalGamma]*sumPlus0  - dWd\[Omega]*\[Omega]1/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*(sumMinus1 - \[CapitalGamma]1/\[CapitalGamma]*sumMinus0 - dWd\[Omega]*\[Omega]1/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
+  dCPlusdr  = - 2*Pi*(dsumPlusdr  - d\[CapitalGamma]dr/\[CapitalGamma]*sumPlus0  - dWd\[Omega]*d\[Omega]dr/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]); (* Derivatives of the amplitudes *)
+  dCMinusdr = - 2*Pi*(dsumMinusdr - d\[CapitalGamma]dr/\[CapitalGamma]*sumMinus0 - dWd\[Omega]*d\[Omega]dr/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
+  dCPlusdx  = - 2*Pi*(dsumPlusdx  - d\[CapitalGamma]dx/\[CapitalGamma]*sumPlus0  - dWd\[Omega]*d\[Omega]dx/W*sumPlus0 )/(\[CapitalGamma]*W*steps\[Theta]);
+  dCMinusdx = - 2*Pi*(dsumMinusdx - d\[CapitalGamma]dx/\[CapitalGamma]*sumMinus0 - dWd\[Omega]*d\[Omega]dx/W*sumMinus0)/(\[CapitalGamma]*W*steps\[Theta]);
   (*Print[NumberForm[Re[CPlus0],16]];*)
   <|
     "l" -> l,
@@ -4610,10 +4610,10 @@ TeukolskySpinModeSphericalCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,k_?Intege
     {iz, 1, stepsz/2}];
   W = (RIn*dRUpdr - dRIndr*RUp)/(rp^2-2*rp+a^2); (* Invariant Wronskian *)
   W1 = (dRInd\[Omega]*dRUpdr + RIn*d2RUpdrd\[Omega] - d2RIndrd\[Omega]*RUp - dRIndr*dRUpd\[Omega])/(rp^2-2*rp+a^2)*\[Omega]1; (* Invariant Wronskian *)
-  CPlus0  = 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsz); (* Amplitudes *)
-  CMinus0 = 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsz);
-  CPlus1  = 2*Pi*(sumPlus1)/(\[CapitalUpsilon]t*W*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
-  CMinus1 = 2*Pi*(sumMinus1)/(\[CapitalUpsilon]t*W*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
+  CPlus0  = - 2*Pi*sumPlus0/(\[CapitalUpsilon]t*W*stepsz); (* Amplitudes *)
+  CMinus0 = - 2*Pi*sumMinus0/(\[CapitalUpsilon]t*W*stepsz);
+  CPlus1  = - 2*Pi*(sumPlus1)/(\[CapitalUpsilon]t*W*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CPlus0; (* Linear parts of the amplitudes *)
+  CMinus1 = - 2*Pi*(sumMinus1)/(\[CapitalUpsilon]t*W*stepsz) + (En0/(2*Sqrt[K0]) - \[CapitalUpsilon]t1/\[CapitalUpsilon]t - W1/W)*CMinus0;
   <|
     "l"->l,
     "m"->m,
