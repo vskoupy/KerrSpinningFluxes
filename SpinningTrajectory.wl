@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Begin package*)
 
 
@@ -10,19 +10,21 @@ BeginPackage["SpinningOrbit`",
 
 
 KerrSpinOrbitCorrection::usage = "KerrSpinOrbitCorrection[a, p, e, x, nmax, kmax] calculates linear correction to the trajectory";
-KerrSpinOrbit::usage = "KerrSpinOrbit[KerrSpinOrbitCorrection, spar] calculates trajectory of spinning particle"
+KerrSpinOrbitNum::usage = "KerrSpinOrbit[KerrSpinOrbitCorrection, spar] calculates trajectory of spinning particle"
+KerrSpinOrbit::usage = "KerrSpinOrbit[a, p, e, x, spar] calculates trajectory of spinning particle"
 KerrSpinOrbitCorrectionSpherical::usage = "KerrSpinOrbitCorrectionSpherical[a, p, e, x, kmax] calculates linear correction to the spherical trajectory";
 KerrSpinOrbitSpherical::usage = "KerrSpinOrbit[KerrSpinOrbitCorrection, spar] calculates nearly spherical trajectory of spinning particle"
+TrajectoryEquatorial::usage = "TrajectoryEquatorial[orbit] returns eccentric equatorial orbit"
 
 
 Begin["`Private`"];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Generic trajectory*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Generic*)
 
 
@@ -433,7 +435,7 @@ KerrSpinOrbitCorrection[a_, p_, e_, x_, nmax_?(IntegerQ[#] && # > 0&), kmax_?Eve
 ]
 
 
-KerrSpinOrbit[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[CapitalUpsilon]r,\[CapitalUpsilon]\[Theta],\[CapitalUpsilon]\[Phi],\[CapitalOmega]r,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi]},
+KerrSpinOrbitNum[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[CapitalUpsilon]r,\[CapitalUpsilon]\[Theta],\[CapitalUpsilon]\[Phi],\[CapitalOmega]r,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi]},
   {\[CapitalGamma],\[CapitalUpsilon]r,\[CapitalUpsilon]\[Theta],\[CapitalUpsilon]\[Phi]}=orbitCorrection["MinoFrequenciesGeo"]+spar*orbitCorrection["MinoFrequenciesCorrection"];
   \[CapitalOmega]r=\[CapitalUpsilon]r/\[CapitalGamma];
   \[CapitalOmega]\[Theta]=\[CapitalUpsilon]\[Theta]/\[CapitalGamma];
@@ -917,6 +919,66 @@ KerrSpinOrbitSpherical[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[Capita
     "\[Delta]En"->orbitCorrection["\[Delta]En"],
     "LS"->orbitCorrection["\[Delta]Lz"],
     "OrbitCorrection"->orbitCorrection["OrbitCorrection"]
+  |>
+]
+
+
+(* ::Subsection::Closed:: *)
+(*Equatorial*)
+
+
+TrajectoryEquatorial[orbit_]:=Module[{M=1,a,En,L,Q,r1,r2,r3,r4,kr,rp,rm,hr,hp,hm,traj},
+  If[Abs[orbit["Inclination"]]!=1&,Print["Cannot use offequatorial orbit as input"];Return[$Failed]];
+  a = orbit["a"];
+  {En,L,Q} = Values[orbit["ConstantsOfMotion"]];
+  {r1,r2,r3,r4} = orbit["RadialRoots"];	
+  kr = (r1-r2)*(r3-r4)/((r1-r3)*(r2-r4));
+  rp=M+Sqrt[M^2-a^2];
+  rm=M-Sqrt[M^2-a^2];
+  hr=(r1-r2)/(r1-r3);
+  hp=((r1-r2)(r3-rp))/((r1-r3)(r2-rp));
+  hm=((r1-r2)(r3-rm))/((r1-r3)(r2-rm));
+  
+  traj = Function[{qr}, Module[{sn,\[Psi]r,\[CapitalDelta]E,\[CapitalDelta]\[CapitalPi]hr,\[CapitalDelta]\[CapitalPi]hm,\[CapitalDelta]\[CapitalPi]hp,r,Ur,\[CapitalDelta]tr,\[CapitalDelta]\[Phi]r,\[CapitalDelta]\[Tau]r},
+    sn = JacobiSN[EllipticK[kr]/\[Pi] qr,kr];
+    (*cn = JacobiCN[EllipticK[kr]/\[Pi] qr,kr];
+    dn = JacobiDN[EllipticK[kr]/\[Pi] qr,kr];*)
+    \[Psi]r = ArcSin[sn];
+    \[CapitalDelta]E   = EllipticE[kr] qr/\[Pi]-EllipticE[\[Psi]r,kr];
+    \[CapitalDelta]\[CapitalPi]hr = EllipticPi[hr,kr] qr/\[Pi]-EllipticPi[hr,\[Psi]r,kr];
+    \[CapitalDelta]\[CapitalPi]hm = EllipticPi[hm,kr] qr/\[Pi]-EllipticPi[hm,\[Psi]r,kr];
+    \[CapitalDelta]\[CapitalPi]hp = EllipticPi[hp,kr] qr/\[Pi]-EllipticPi[hp,\[Psi]r,kr];
+    
+    r = (r3(r1 - r2)sn^2-r2(r1-r3))/((r1-r2)sn^2-(r1-r3));
+    Ur = Sqrt[(1-En^2)/(r1-r3)*(r2-r4)]*(r1-r2) (r2-r3) Sqrt[(1-sn^2)*(1-kr*sn^2)] sn/(1-hr sn^2)^2;
+    \[CapitalDelta]tr = -1/Sqrt[(1-En^2) (r1-r3) (r2-r4)] (
+      - 4 (r2-r3)/(rp-rm) (
+      -(-2 a^2 En + rm (4 En - a L))/((-rm+r2) (-rm+r3)) \[CapitalDelta]\[CapitalPi]hm 
+      +(-2 a^2 En + rp (4 En - a L))/((-rp+r2) (-rp+r3)) \[CapitalDelta]\[CapitalPi]hp) 
+      + 2 En (r2-r3) (2 + 1/(1-En^2)) \[CapitalDelta]\[CapitalPi]hr 
+      + En (r2-r4) ((r1-r3) \[CapitalDelta]E + (r1-r2) sn/(1-hr sn^2) Sqrt[(1-sn^2) (1-kr sn^2)]) );
+
+    \[CapitalDelta]\[Phi]r = (2 a (r2-r3) (
+      -(2 rm En - a L)/((-rm+r2) (-rm+r3)) \[CapitalDelta]\[CapitalPi]hm
+      +(2 rp En - a L)/((-rp+r2) (-rp+r3)) \[CapitalDelta]\[CapitalPi]hp)
+      )/((-rm+rp) Sqrt[(1-En^2) (r1-r3) (r2-r4)]);
+
+    \[CapitalDelta]\[Tau]r = -1/Sqrt[(1-En^2) (r1-r3) (r2-r4)] ((r2-r3) 2/(1-En^2) \[CapitalDelta]\[CapitalPi]hr
+      +(r2-r4) ((r1-r3) \[CapitalDelta]E + (r1-r2) sn/(1-hr sn^2) Sqrt[(1-sn^2) (1-kr sn^2)]) );
+    <|"r"->r, "Ur"->Ur, "\[CapitalDelta]tr"->\[CapitalDelta]tr, "\[CapitalDelta]\[Phi]r"->\[CapitalDelta]\[Phi]r, "\[CapitalDelta]\[Tau]r"->\[CapitalDelta]\[Tau]r|>
+  ]];
+  <|
+    "a"->a,
+    "p"->orbit["p"],
+    "e"->orbit["e"],
+    "Inclination"->orbit["Inclination"],
+    "Energy"->En,
+    "AngularMomentum"->L,
+    "CarterConstant"->Q,
+    "Frequencies"->orbit["Frequencies"],
+    "ProperTimeFrequency"->orbit["ProperTimeFrequency"],
+    "Trajectory"->traj,
+    "TrajectoryDeltas"->orbit["TrajectoryDeltas"]
   |>
 ]
 

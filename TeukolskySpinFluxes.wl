@@ -13,30 +13,25 @@ BeginPackage["TeukolskySpinFluxes`",
 
 TeukolskySpinModeCircularCorrectionAnalytical::usage = "TeukolskySpinModeCircularCorrectionAnalytical[l,m,orbit,{angparNew,RCorrection}]"
 
-TeukolskySpinModeEquatorialCorrectionAnalytical::usage = "TeukolskySpinModeEquatorialCorrectionAnalytical[l,m,n,orbit,{angparNew,RCorrection}]"
-TeukolskySpinModeEquatorialCorrectionAnalyticalNew::usage = "TeukolskySpinModeEquatorialCorrectionAnalyticalNew[l,m,n,orbit,{angparNew,RCorrection}]"
-TeukolskySpinModeEquatorialCorrectionAnalyticalNew2::usage = "TeukolskySpinModeEquatorialCorrectionAnalyticalNew2[l,m,n,orbit,{angparNew,RCorrection}]"
+TeukolskySpinModeEquatorialCorrectionAnalyticalPhases::usage = "TeukolskySpinModeEquatorialCorrectionAnalyticalPhases[l,m,n,orbit,{angparNew,RCorrection}]"
+TeukolskySpinModeEquatorialCorrectionAnalyticalDarwin::usage = "TeukolskySpinModeEquatorialCorrectionAnalyticalDarwin[l,m,n,orbit,{angparNew,RCorrection}]"
 
 TeukolskySpinMode::usage = "TeukolskySpinMode[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from a spinning orbit";
 TeukolskySpinModeFromCorrection::usage = "TeukolskySpinModeFromCorrection[l,m,n,k,orbitCorrection,s] calculates Teukolsky amplitudes and fluxes from a linear correction to an orbit and a value of the spin";
-TeukolskySpinModeFromCorrectionNew::usage = "TeukolskySpinModeFromCorrectionNew[l,m,n,k,orbitCorrection,s] calculates Teukolsky amplitudes and fluxes from a linear correction to an orbit and a value of the spin";
 
-TeukolskySpinModeAnalytical::usage = "TeukolskySpinModeFromCorrectionAalytical[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from analytical orbit";
-TeukolskySpinModeAnalyticalNew::usage = "TeukolskySpinModeFromCorrectionAalyticalNew[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from analytical orbit"
-TeukolskySpinModeAnalyticalNew2::usage = "TeukolskySpinModeFromCorrectionAalyticalNew2[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from analytical orbit"
+TeukolskySpinModeAnalytical::usage = "TeukolskySpinModeAnalytical[l,m,n,k,orbit] calculates Teukolsky amplitudes and fluxes from analytical orbit";
 
-TeukolskySpinModeCorrectionNum::usage = "TeukolskySpinModeCorrectionNum[l,m,n,k,orbitCorrection,\[Delta]\[Omega]] calculates linear correction to the fluxes from numerical derivatives of R ans S with step \[Delta]\[Omega]";
+(*TeukolskySpinModeCorrectionNum::usage = "TeukolskySpinModeCorrectionNum[l,m,n,k,orbitCorrection,\[Delta]\[Omega]] calculates linear correction to the fluxes from numerical derivatives of R ans S with step \[Delta]\[Omega]";*)
 TeukolskySpinModeCorrection::usage = "TeukolskySpinModeCorrection[l,m,n,k,orbitCorrection,{angparNew,RCorrection}] calculates linear correction to the fluxes using given function for the R and S derivatives";
 TeukolskySpinModeCorrectionAnalytical::usage = "TeukolskySpinModeCorrectionAnalytical[l,m,n,k,orbit,{angparNew,RCorrection}]"
-TeukolskySpinModeCorrectionAnalyticalNew::usage = "TeukolskySpinModeCorrectionAnalyticalNew[l,m,n,k,orbit,{angparNew,RCorrection}]"
+(*TeukolskySpinModeCorrectionAnalyticalNew::usage = "TeukolskySpinModeCorrectionAnalyticalNew[l,m,n,k,orbit,{angparNew,RCorrection}]"*)
 
 TeukolskySpinModeSpherical::usage = "TeukolskySpinModeSpherical[l,m,k,orbitCorrection,s] calculates Teukolsky amplitudes and fluxes from a correction to a spherical orbit and a value of the spin";
 TeukolskySpinModeSphericalCorrectionNum::usage = "TeukolskySpinModeSphericalCorrectionNum[l,m,k,orbitCorrection,\[Delta]\[Omega]] calculates linear correction to the fluxes for spherical orbit from numerical derivatives of R ans S with step \[Delta]\[Omega]";
 TeukolskySpinModeSphericalCorrection::usage = "TeukolskySpinModeSphericalCorrection[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";
-TeukolskySpinModeSphericalCorrectionNew::usage = "TeukolskySpinModeSphericalCorrectionNew[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";
+(*TeukolskySpinModeSphericalCorrectionNew::usage = "TeukolskySpinModeSphericalCorrectionNew[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";*)
 TeukolskySpinModeSphericalCorrectionAnalytical::usage = "TeukolskySpinModeSphericalCorrectionAnalytical[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";
 
-Trajectory::usage = "Trajectory[orbit] returns the orbital functions for orbit = KerrGeoOrbit[a,p,e,x]";
 
 
 Begin["`Private`"];
@@ -634,8 +629,8 @@ TeukolskySpinModeCircularCorrection[l_,m_,orbitCorrection_,orbitDerivatives_,{an
 (*Equatorial*)
 
 
-Options[TeukolskySpinModeEquatorialCorrectionAnalytical] = {WorkingPrecision->30};
-TeukolskySpinModeEquatorialCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,orbit_,{angparNew_,RCorrection_},OptionsPattern[]]:=Module[{a,p,e,x,
+Options[TeukolskySpinModeEquatorialCorrectionAnalyticalOld] = {WorkingPrecision->30};
+TeukolskySpinModeEquatorialCorrectionAnalyticalOld[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,orbit_,{angparNew_,RCorrection_},OptionsPattern[]]:=Module[{a,p,e,x,
     En0,Lz0,K0,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]t1,\[Omega],\[Omega]1,SWSH,dSWSHd\[Omega],R,\[Lambda],d\[Lambda]d\[Omega],\[ScriptCapitalC]2,d\[ScriptCapitalC]2d\[Omega],rplus,P,\[Epsilon],\[Alpha],d\[Alpha]d\[Omega],W,W1,sumPlus0,sumPlus1,sumMinus0,sumMinus1,stepsr,ir,wr,
     rp,Urp,expr,expr1,\[CapitalDelta],d\[CapitalDelta],K,dKdr,dKd\[Omega],d2Kdrd\[Omega],V,dVd\[Omega],
     Rp,RIn,dRIndr,d2RIndr2,dRInd\[Omega],d2RIndrd\[Omega],d3RIndr2d\[Omega],RUp,dRUpdr,d2RUpdr2,dRUpd\[Omega],d2RUpdrd\[Omega],d3RUpdr2d\[Omega],
@@ -814,63 +809,8 @@ TeukolskySpinModeEquatorialCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,n_?Integ
 ]
 
 
-Trajectory[orbit_]:=Module[{M=1,a,En,L,Q,r1,r2,r3,r4,kr,rp,rm,hr,hp,hm,traj},
-  a = orbit["a"];
-  {En,L,Q} = Values[orbit["ConstantsOfMotion"]];
-  {r1,r2,r3,r4} = orbit["RadialRoots"];	
-  kr = (r1-r2)*(r3-r4)/((r1-r3)*(r2-r4));
-  rp=M+Sqrt[M^2-a^2];
-  rm=M-Sqrt[M^2-a^2];
-  hr=(r1-r2)/(r1-r3);
-  hp=((r1-r2)(r3-rp))/((r1-r3)(r2-rp));
-  hm=((r1-r2)(r3-rm))/((r1-r3)(r2-rm));
-  
-  traj = Function[{qr}, Module[{sn,\[Psi]r,\[CapitalDelta]E,\[CapitalDelta]\[CapitalPi]hr,\[CapitalDelta]\[CapitalPi]hm,\[CapitalDelta]\[CapitalPi]hp,r,Ur,\[CapitalDelta]tr,\[CapitalDelta]\[Phi]r,\[CapitalDelta]\[Tau]r},
-    sn = JacobiSN[EllipticK[kr]/\[Pi] qr,kr];
-    (*cn = JacobiCN[EllipticK[kr]/\[Pi] qr,kr];
-    dn = JacobiDN[EllipticK[kr]/\[Pi] qr,kr];*)
-    \[Psi]r = ArcSin[sn];
-    \[CapitalDelta]E   = EllipticE[kr] qr/\[Pi]-EllipticE[\[Psi]r,kr];
-    \[CapitalDelta]\[CapitalPi]hr = EllipticPi[hr,kr] qr/\[Pi]-EllipticPi[hr,\[Psi]r,kr];
-    \[CapitalDelta]\[CapitalPi]hm = EllipticPi[hm,kr] qr/\[Pi]-EllipticPi[hm,\[Psi]r,kr];
-    \[CapitalDelta]\[CapitalPi]hp = EllipticPi[hp,kr] qr/\[Pi]-EllipticPi[hp,\[Psi]r,kr];
-    
-    r = (r3(r1 - r2)sn^2-r2(r1-r3))/((r1-r2)sn^2-(r1-r3));
-    Ur = Sqrt[(1-En^2)/(r1-r3)*(r2-r4)]*(r1-r2) (r2-r3) Sqrt[(1-sn^2)*(1-kr*sn^2)] sn/(1-hr sn^2)^2;
-    \[CapitalDelta]tr = -1/Sqrt[(1-En^2) (r1-r3) (r2-r4)] (
-      - 4 (r2-r3)/(rp-rm) (
-      -(-2 a^2 En + rm (4 En - a L))/((-rm+r2) (-rm+r3)) \[CapitalDelta]\[CapitalPi]hm 
-      +(-2 a^2 En + rp (4 En - a L))/((-rp+r2) (-rp+r3)) \[CapitalDelta]\[CapitalPi]hp) 
-      + 2 En (r2-r3) (2 + 1/(1-En^2)) \[CapitalDelta]\[CapitalPi]hr 
-      + En (r2-r4) ((r1-r3) \[CapitalDelta]E + (r1-r2) sn/(1-hr sn^2) Sqrt[(1-sn^2) (1-kr sn^2)]) );
-
-    \[CapitalDelta]\[Phi]r = (2 a (r2-r3) (
-      -(2 rm En - a L)/((-rm+r2) (-rm+r3)) \[CapitalDelta]\[CapitalPi]hm
-      +(2 rp En - a L)/((-rp+r2) (-rp+r3)) \[CapitalDelta]\[CapitalPi]hp)
-      )/((-rm+rp) Sqrt[(1-En^2) (r1-r3) (r2-r4)]);
-
-    \[CapitalDelta]\[Tau]r = -1/Sqrt[(1-En^2) (r1-r3) (r2-r4)] ((r2-r3) 2/(1-En^2) \[CapitalDelta]\[CapitalPi]hr
-      +(r2-r4) ((r1-r3) \[CapitalDelta]E + (r1-r2) sn/(1-hr sn^2) Sqrt[(1-sn^2) (1-kr sn^2)]) );
-    <|"r"->r, "Ur"->Ur, "\[CapitalDelta]tr"->\[CapitalDelta]tr, "\[CapitalDelta]\[Phi]r"->\[CapitalDelta]\[Phi]r, "\[CapitalDelta]\[Tau]r"->\[CapitalDelta]\[Tau]r|>
-  ]];
-  <|
-    "a"->a,
-    "p"->orbit["p"],
-    "e"->orbit["e"],
-    "Inclination"->orbit["Inclination"],
-    "Energy"->En,
-    "AngularMomentum"->L,
-    "CarterConstant"->Q,
-    "Frequencies"->orbit["Frequencies"],
-    "ProperTimeFrequency"->orbit["ProperTimeFrequency"],
-    "Trajectory"->traj,
-    "TrajectoryDeltas"->orbit["TrajectoryDeltas"]
-  |>
-]
-
-
-Options[TeukolskySpinModeEquatorialCorrectionAnalyticalNew] = {WorkingPrecision->30};
-TeukolskySpinModeEquatorialCorrectionAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,orbit_,{angparNew_,RCorrection_},OptionsPattern[]]:=Module[{prec,a,p,e,x,
+Options[TeukolskySpinModeEquatorialCorrectionAnalyticalPhases] = {WorkingPrecision->30};
+TeukolskySpinModeEquatorialCorrectionAnalyticalPhases[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,orbit_,{angparNew_,RCorrection_},OptionsPattern[]]:=Module[{prec,a,p,e,x,
     En0,Lz0,K0,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],traj,\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]t1,\[Omega],\[Omega]1,SWSH,dSWSHd\[Omega],R,Rp,\[Lambda],d\[Lambda]d\[Omega],\[ScriptCapitalC]2,d\[ScriptCapitalC]2d\[Omega],rplus,P,\[Epsilon],\[Alpha],d\[Alpha]d\[Omega],W,W1,sumPlus0,sumPlus1,sumMinus0,sumMinus1,stepsr,wr,
     trajp,rp,Urp,expr,expr1,\[CapitalDelta],d\[CapitalDelta],K,dKdr,dKd\[Omega],d2Kdrd\[Omega],V,dVd\[Omega],
     RIn,dRIndr,d2RIndr2,dRInd\[Omega],d2RIndrd\[Omega],d3RIndr2d\[Omega],RUp,dRUpdr,d2RUpdr2,dRUpd\[Omega],d2RUpdrd\[Omega],d3RUpdr2d\[Omega],
@@ -1060,8 +1000,8 @@ TeukolskySpinModeEquatorialCorrectionAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?In
 ]
 
 
-Options[TeukolskySpinModeEquatorialCorrectionAnalyticalNew2] = {WorkingPrecision->30};
-TeukolskySpinModeEquatorialCorrectionAnalyticalNew2[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,orbit_,{angparNew_,RCorrection_},OptionsPattern[]]:=Module[{prec,a,p,e,x,
+Options[TeukolskySpinModeEquatorialCorrectionAnalyticalDarwin] = {WorkingPrecision->30};
+TeukolskySpinModeEquatorialCorrectionAnalyticalDarwin[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,orbit_,{angparNew_,RCorrection_},OptionsPattern[]]:=Module[{prec,a,p,e,x,
     En0,Lz0,K0,r3,r4,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]t1,\[Omega],\[Omega]1,SWSH,dSWSHd\[Omega],R,Rp,\[Lambda],d\[Lambda]d\[Omega],\[ScriptCapitalC]2,d\[ScriptCapitalC]2d\[Omega],rplus,P,\[Epsilon],\[Alpha],d\[Alpha]d\[Omega],W,W1,sumPlus0,sumPlus1,sumMinus0,sumMinus1,stepsr,\[Chi]r,
     cos\[Chi]r,sin\[Chi]r,rp,d\[Lambda]d\[Chi]r,Urp,\[CapitalDelta]tr,\[CapitalDelta]\[Phi]r,\[CapitalDelta]\[Tau]r,expr,expr1,\[CapitalDelta],d\[CapitalDelta],K,dKdr,dKd\[Omega],d2Kdrd\[Omega],V,dVd\[Omega],
     RIn,dRIndr,d2RIndr2,dRInd\[Omega],d2RIndrd\[Omega],d3RIndr2d\[Omega],RUp,dRUpdr,d2RUpdr2,dRUpd\[Omega],d2RUpdrd\[Omega],d3RUpdr2d\[Omega],
@@ -1464,7 +1404,7 @@ TeukolskySpinMode[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Modul
 ]
 
 
-TeukolskySpinModeFromCorrection[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbitCorrection_,s_]:=Module[{h1,h2,h3,a,p,e,\[ScriptCapitalI],En0,Lz0,Kc0,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],correction,r,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
+TeukolskySpinModeFromCorrectionOld[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbitCorrection_,s_]:=Module[{h1,h2,h3,a,p,e,\[ScriptCapitalI],En0,Lz0,Kc0,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],correction,r,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
     sumPlus,sumMinus,stepsr,steps\[Theta],\[Theta]list,correctionp,ir,i\[Theta],wr,w\[Theta],rp,zp,sin\[Theta]p,Ur,Uz,expr,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,dK,V,dV,RInrp,dRInrp,ddRInrp,dddRInrp,
     RUprp,dRUprp,ddRUprp,dddRUprp,\[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,
     dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,
@@ -1713,7 +1653,7 @@ KS+2*((Kg+a^2)*Eng-a*Lzg)/Sqrt[Kg]
 ]
 
 
-TeukolskySpinModeFromCorrectionNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbitCorrection_,s_]:=Module[{h1,h2,h3,a,p,e,\[ScriptCapitalI],En0,Lz0,Kc0,En1,Lz1,Kc1,\[CapitalOmega]r,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],correction,r,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
+TeukolskySpinModeFromCorrection[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbitCorrection_,s_]:=Module[{h1,h2,h3,a,p,e,\[ScriptCapitalI],En0,Lz0,Kc0,En1,Lz1,Kc1,\[CapitalOmega]r,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],correction,r,z,\[CapitalGamma],\[CapitalGamma]1,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
     sumPlus,sumMinus,stepsr,steps\[Theta],\[Theta]list,correctionp,ir,i\[Theta],wr,w\[Theta],rp,zp,sin\[Theta]p,Ur,Uz,expr,exp\[Theta],\[CapitalDelta],d\[CapitalDelta],K,dK,V,dV,RInrp,dRInrp,ddRInrp,dddRInrp,
     RUprp,dRUprp,ddRUprp,dddRUprp,\[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,
     dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,dfnn0d\[Theta],dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vl,vn,vm,vmb,Sln,Slmb,Snm,Snmb,Smmb,
@@ -1936,7 +1876,7 @@ TeukolskySpinModeFromCorrectionNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?Intege
 (*Analytical trajectory*)
 
 
-TeukolskySpinModeAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Module[{a,p,e,x,spar,En0,Lz0,K0,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,z,Ur,Uz,\[CapitalUpsilon]t,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
+(*TeukolskySpinModeAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Module[{a,p,e,x,spar,En0,Lz0,K0,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,z,Ur,Uz,\[CapitalUpsilon]t,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
     sumPlus,sumMinus,stepsr,stepsz,zlist,ir,iz,wr,wz,rp,zp,sin\[Theta]p,Urp,Uzp,expr,expz,\[CapitalDelta],d\[CapitalDelta],K,dK,V,dV,RInrp,dRInrp,ddRInrp,
     RUprp,dRUprp,ddRUprp,\[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,
     dfnmb0dr,dfnmb1dr,dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],\[Xi]n,\[Xi]mb,vn,vmb,Sln,Smmb,
@@ -2112,12 +2052,12 @@ TeukolskySpinModeAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbi
       |>
     |>,
     "stepsr"->stepsr,
-    "stepsz"->stepsz
+    "steps\[Theta]"->stepsz
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
-]
+]*)
 
 
-TeukolskySpinModeAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Module[{a,p,e,x,spar,En0,Lz0,K0,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,z,\[CapitalUpsilon]t,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
+(*TeukolskySpinModeAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Module[{a,p,e,x,spar,En0,Lz0,K0,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,z,\[CapitalUpsilon]t,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,
     sumPlus,sumMinus,stepsr,stepsz,zlist,ir,iz,wr,wz,rp,zp,sin\[Theta]p,Urp,Uzp,expr,expz,\[CapitalDelta],d\[CapitalDelta],K,dK,V,dV,RInrp,dRInrp,ddRInrp,
     RUprp,dRUprp,ddRUprp,\[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,
     dfnmb0dr,dfnmb1dr,dfnmb0d\[Theta],dfnmb1d\[Theta],dfmbmb0d\[Theta],dfmbmb1d\[Theta],dfmbmb2d\[Theta],vn,vmb,
@@ -2267,12 +2207,12 @@ TeukolskySpinModeAnalyticalNew[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,o
       |>
     |>,
     "stepsr"->stepsr,
-    "stepsz"->stepsz
+    "steps\[Theta]"->stepsz
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
-]
+]*)
 
 
-TeukolskySpinModeAnalyticalNew2[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Module[{a,p,e,x,spar,
+TeukolskySpinModeAnalytical[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,orbit_]:=Module[{a,p,e,x,spar,
     En0,Lz0,K0,\[CapitalOmega]r,\[CapitalOmega]z,\[CapitalOmega]\[Phi],r,z,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[Omega],SWSH,R,\[Lambda],\[ScriptCapitalC]2,rplus,P,\[Epsilon],\[Alpha],W,sumPlus,sumMinus,stepsr,stepsz,zlist,ir,iz,wr,wz,rp,zp,sin\[Theta]p,K\[Theta],
     Urp,Uzp,expr,expz,\[CapitalDelta],d\[CapitalDelta],K,dK,V,RInrp,dRInrp,ddRInrp,RUprp,dRUprp,ddRUprp,DRIn,dDRIndr,DDRIn,DRUp,dDRUpdr,DDRUp,
     \[Theta]2,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,dL2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],vn,vmb,CPlus,CMinus,FnnIn,FnmbIn,FmbmbIn,GnIn,GmbIn,(*dFnnIndr,dFnmbIndr,dFnmbInd\[Theta],dFmbmbInd\[Theta],*)
@@ -2404,7 +2344,7 @@ TeukolskySpinModeAnalyticalNew2[l_?IntegerQ,m_?IntegerQ,n_?IntegerQ,k_?IntegerQ,
       |>
     |>,
     "stepsr"->stepsr,
-    "stepsz"->stepsz
+    "steps\[Theta]"->stepsz
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
 ]
 
@@ -4170,7 +4110,7 @@ TeukolskySpinModeSphericalCorrection[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCo
 ]
 
 
-Options[TeukolskySpinModeSphericalCorrectionNew] = {WorkingPrecision->30};
+(*Options[TeukolskySpinModeSphericalCorrectionNew] = {WorkingPrecision->30};
 
 TeukolskySpinModeSphericalCorrectionNew[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCorrection_,orbitDerivatives_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{
     h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,dEndr,dLzdr,dEndx,dLzdx,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,d\[CapitalOmega]\[Theta]dr,d\[CapitalOmega]\[Phi]dr,d\[CapitalOmega]\[Theta]dx,d\[CapitalOmega]\[Phi]dx,correction,derivatives,z,\[CapitalGamma],\[CapitalGamma]1,d\[CapitalGamma]dr,d\[CapitalGamma]dx,
@@ -4525,7 +4465,7 @@ TeukolskySpinModeSphericalCorrectionNew[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbi
     "d\[Lambda]d\[Omega]" -> d\[Lambda]d\[Omega],
     "steps\[Theta]" -> steps\[Theta]
   |>
-]
+]*)
 
 
 Options[TeukolskySpinModeSphericalCorrectionAnalytical] = {WorkingPrecision->32};
