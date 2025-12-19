@@ -5,13 +5,18 @@
 
 
 BeginPackage["SpinningOrbit`",
-  {"KerrGeodesics`KerrGeoOrbit`"}
+  {
+    "KerrGeodesics`KerrGeoOrbit`",
+    "KerrGeodesics`OrbitalFrequencies`",
+    "KerrGeodesics`ConstantsOfMotion`"
+  }
 ];
 
 
+KerrSpinOrbit::usage = "KerrSpinOrbit[a, p, e, x, spar] calculates trajectory of a spinning particle"
+LinearParts::usage = "LinearParts[a, p, e, x] calculates linear parts of the constants, shifted constants, parameters, frequencies and actions in different gauges"
 KerrSpinOrbitCorrection::usage = "KerrSpinOrbitCorrection[a, p, e, x, nmax, kmax] calculates linear correction to the trajectory";
 KerrSpinOrbitNum::usage = "KerrSpinOrbit[KerrSpinOrbitCorrection, spar] calculates trajectory of spinning particle"
-KerrSpinOrbit::usage = "KerrSpinOrbit[a, p, e, x, spar] calculates trajectory of spinning particle"
 KerrSpinOrbitCorrectionSpherical::usage = "KerrSpinOrbitCorrectionSpherical[a, p, e, x, kmax] calculates linear correction to the spherical trajectory";
 KerrSpinOrbitSpherical::usage = "KerrSpinOrbit[KerrSpinOrbitCorrection, spar] calculates nearly spherical trajectory of spinning particle"
 TrajectoryEquatorial::usage = "TrajectoryEquatorial[orbit] returns eccentric equatorial orbit"
@@ -25,7 +30,482 @@ Begin["`Private`"];
 
 
 (* ::Subsection::Closed:: *)
+(*Analytical generic trajectory*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Linear parts*)
+
+
+\[CapitalOmega]1CTildeFun[a_,p_,e_,x_]:=Module[{\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]t,K},
+\[CapitalUpsilon]\[Tau]=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoProperFrequencyFactor[a,p,e,x];
+\[CapitalUpsilon]t=KerrGeoFrequencies[a,p,e,x,"Time"->"Mino"]["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"];
+K=KerrGeoCarterConstant[a,p,e,x]+(KerrGeoAngularMomentum[a,p,e,x]-a KerrGeoEnergy[a,p,e,x])^2;
+Values[KerrGeoFrequencies[a,p,e,x] 3 \[CapitalUpsilon]\[Tau]/(2 \[CapitalUpsilon]t Sqrt[K])]
+]
+C1CTildeFun[a_,p_,e_,x_]:=Module[{CoM,En,Lz,Q,K},
+CoM=KerrGeoConstantsOfMotion[a,p,e,x];
+En=CoM["\[ScriptCapitalE]"];
+Lz=CoM["\[ScriptCapitalL]"];
+Q=CoM["\[ScriptCapitalQ]"];
+K=Q+(Lz-a En)^2;
+-{(1-En^2)/2,(a-Lz En/2),(3a (Lz-a En)-K En)}/Sqrt[K]
+]
+pex1CTildeFun[a_,p_,e_,x_]:=Module[{En,Lz,K,Q,r1,r2,r3,r4,z1,az2,kzsq,krsq,az1Int\[CapitalSigma],int\[CapitalSigma]r1,int\[CapitalSigma]r2,\[Delta]r1,\[Delta]r2,\[Delta]z1,\[Delta]p,\[Delta]e,\[Delta]x},
+En=KerrGeoEnergy[a,p,e,x];
+Lz=KerrGeoAngularMomentum[a,p,e,x,En];
+Q=KerrGeoCarterConstant[a,p,e,x,En,Lz];
+K=Q+(Lz-a En)^2;
+{r1,r2,r3,r4}=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q];
+z1=Sqrt[1-x^2];
+az2=Sqrt[a^2 (1-z1^2)+(Lz^2+Q)/(1-En^2)];
+kzsq=a^2 z1^2/az2^2;
+krsq=(r1-r2) (r3-r4)/((r1-r3) (r2-r4));
+int\[CapitalSigma]r1=EllipticPi[-a^2 z1^2/r1^2,kzsq]/EllipticK[kzsq]/r1^2;
+int\[CapitalSigma]r2=EllipticPi[-a^2 z1^2/r2^2,kzsq]/EllipticK[kzsq]/r2^2;
+az1Int\[CapitalSigma]=((a z1)/(r3^2+a^2 z1^2)+2 Re[((I (-r2+r3))/(2 (r2+I a z1) (r3+I a z1))) EllipticPi[((r1-r2) (r3+I a z1))/((r1-r3) (r2+I a z1)),krsq]]/EllipticK[krsq]);
+\[Delta]r1=-r1 ((r1^2+a^2) En-a Lz) int\[CapitalSigma]r1/Sqrt[K];
+\[Delta]r2=-r2 ((r2^2+a^2) En-a Lz) int\[CapitalSigma]r2/Sqrt[K];
+\[Delta]z1=-(Lz-a En x^2) az1Int\[CapitalSigma]/Sqrt[K];
+\[Delta]p=(2 r2^2 \[Delta]r1)/(r1+r2)^2+(2 r1^2 \[Delta]r2)/(r1+r2)^2;
+\[Delta]e=(2 r2 \[Delta]r1)/(r1+r2)^2-(2 r1 \[Delta]r2)/(r1+r2)^2;
+\[Delta]x=-((z1 \[Delta]z1)/x);
+{\[Delta]p,\[Delta]e,\[Delta]x}
+]
+J1CFun[a_,p_,e_,x_]:=Module[{En,Lz,Q,K,az2,z1,Jz1,r1,r2,r3,r4,krsq,Jr1},
+En=KerrGeoEnergy[a,p,e,x];
+Lz=KerrGeoAngularMomentum[a,p,e,x,En];
+Q=KerrGeoCarterConstant[a,p,e,x,En,Lz];
+K=Q+(Lz-a En)^2;
+{r1,r2,r3,r4}=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q];
+krsq=((r1-r2) (r3-r4))/((r1-r3) (r2-r4));
+Jr1=-2/\[Pi] Sqrt[K/((1-En^2)(r1-r3)(r2-r4))]((a^2 En - a Lz+En r3^2)/(K+r3^2) EllipticK[krsq]+((r2-r3) (-a^2 En+a Lz+En K))/Sqrt[K] Im[1/((r2-I Sqrt[K]) ( r3-I Sqrt[K])) EllipticPi[((r1-r2) (Sqrt[K]+I r3))/((Sqrt[K]+I r2) (r1-r3)),krsq]]);
+z1=Sqrt[1-x^2];
+az2=Sqrt[a^2 (1-z1^2)+(Lz^2+Q)/(1-En^2)];
+Jz1=2/\[Pi] 1/(az2 Sqrt[K] Sqrt[1 - En^2]) (En K EllipticK[((a z1)/az2)^2] + (En(a^2 - K) - a Lz)EllipticPi[(a^2 z1^2)/K,((a z1)/az2)^2]);
+{Jr1,Jz1,0}
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Jacobians*)
+
+
+d\[CapitalOmega]JdCFun[a_,p_,e_,x_]:=Module[{M=1,En,Lz,Q,K,r1,r2,r3,r4,krsq,Kkr,Ekr,Pi\[Alpha]rkr,rplus,rminus,Pi\[Rho]pluskr,Pi\[Rho]minuskr,\[ScriptCapitalC],dJrdK,dJrdEn,dJrdLz,int1,int2,int3,int4,d2JrdK2,d2JrdKdEn,d2JrdKdLz,intr,
+intr2,d2JrdEn2,d2JrdEndLz,d2JrdLz2,\[CapitalUpsilon]r,d\[CapitalUpsilon]rdK,d\[CapitalUpsilon]rdEn,d\[CapitalUpsilon]rdLz,\[CapitalUpsilon]tr,\[CapitalUpsilon]\[Phi]r,d\[CapitalUpsilon]trdEn,d\[CapitalUpsilon]trdLz,d\[CapitalUpsilon]trdK,d\[CapitalUpsilon]\[Phi]rdEn,d\[CapitalUpsilon]\[Phi]rdLz,d\[CapitalUpsilon]\[Phi]rdK,az2,z1,kzsq,Kkz,Ekz,Dkz,Pikz,dJzdK,dJzdEn,dJzdLz,d2JzdKdEn,d2JzdKdLz,d2JzdK2,d2JzdEn2,d2JzdEndLz,d2JzdLz2,\[CapitalUpsilon]z,d\[CapitalUpsilon]zdK,d\[CapitalUpsilon]zdEn,d\[CapitalUpsilon]zdLz,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z,d\[CapitalUpsilon]tzdEn,d\[CapitalUpsilon]tzdLz,d\[CapitalUpsilon]tzdK,d\[CapitalUpsilon]\[Phi]zdEn,d\[CapitalUpsilon]\[Phi]zdLz,d\[CapitalUpsilon]\[Phi]zdK,\[CapitalUpsilon]t,\[CapitalUpsilon]\[Phi],d\[CapitalUpsilon]tdK,d\[CapitalUpsilon]tdEn,d\[CapitalUpsilon]tdLz,d\[CapitalUpsilon]\[Phi]dK,d\[CapitalUpsilon]\[Phi]dEn,d\[CapitalUpsilon]\[Phi]dLz,d\[CapitalOmega]rdK,d\[CapitalOmega]rdEn,d\[CapitalOmega]rdLz,d\[CapitalOmega]zdK,d\[CapitalOmega]zdEn,d\[CapitalOmega]zdLz,d\[CapitalOmega]\[Phi]dK,d\[CapitalOmega]\[Phi]dEn,d\[CapitalOmega]\[Phi]dLz,Iz2,Iz1},
+En=KerrGeoEnergy[a,p,e,x];
+Lz=KerrGeoAngularMomentum[a,p,e,x,En];
+Q=KerrGeoCarterConstant[a,p,e,x,En,Lz];
+K=Q+(Lz-a En)^2;
+{r1,r2,r3,r4}=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q];
+krsq=((r1-r2) (r3-r4))/((r1-r3) (r2-r4));
+Kkr=EllipticK[krsq];
+Ekr=EllipticE[krsq];
+Pi\[Alpha]rkr=EllipticPi[(r1-r2)/(r1-r3),krsq];
+rminus=1-Sqrt[1-a^2];
+rplus=1+Sqrt[1-a^2];
+Pi\[Rho]pluskr=EllipticPi[(r1-r2)/(r1-r3)*(r3-rplus)/(r2-rplus),krsq];
+Pi\[Rho]minuskr=EllipticPi[(r1-r2)/(r1-r3)*(r3-rminus)/(r2-rminus),krsq];
+\[ScriptCapitalC]=2/Sqrt[(1-En^2) (r1-r3) (r2-r4)];
+dJrdK=-((\[ScriptCapitalC] Kkr)/(2\[Pi]));
+dJrdEn=\[ScriptCapitalC]/\[Pi] (Kkr ((4+a^2) En-a Lz)+En (1/2 (Kkr (-r1 r2+r3 (4+r1+r2+r3))+Ekr (r1-r3) (r2-r4)+Pi\[Alpha]rkr (r2-r3) (4+r1+r2+r3+r4))+2/(-rminus+rplus) (-(((Kkr-(Pi\[Rho]minuskr (r2-r3))/(r2-rminus)) (-2 a^2+(4-(a Lz)/En) rminus))/(r3-rminus))+((Kkr-(Pi\[Rho]pluskr (r2-r3))/(r2-rplus)) (-2 a^2+(4-(a Lz)/En) rplus))/(r3-rplus))));
+dJrdLz=-(\[ScriptCapitalC]/\[Pi]) (a En Kkr+a/(-rminus+rplus) (-(((Kkr-(Pi\[Rho]minuskr (r2-r3))/(r2-rminus)) (-a Lz+2 En rminus))/(r3-rminus))+((Kkr-(Pi\[Rho]pluskr (r2-r3))/(r2-rplus)) (-a Lz+2 En rplus))/(r3-rplus)));
+int1=((r2-r4) Ekr+(-r1+r4) Kkr)/((r1-r2) (r1-r4));
+int2=((-r1+r3) Ekr+(r2-r3) Kkr)/((r1-r2) (r2-r3));
+int3=((r2-r4) Ekr+(-r2+r3) Kkr)/((r2-r3) (r3-r4));
+int4=((r1-r3) Ekr+(-r1+r4) Kkr)/((r3-r4) (-r1+r4));
+d2JrdK2=\[ScriptCapitalC]/(4Pi (1-En^2)) ((a^2-2 M r1+r1^2)/((r1-r2) (r1-r3) (r1-r4)) int1-(a^2-2 M r2+r2^2)/((r1-r2) (r2-r3) (r2-r4)) int2-(a^2-2 M r3+r3^2)/((r1-r3) (-r2+r3) (r3-r4)) int3-(a^2-2 M r4+r4^2)/((r1-r4) (-r2+r4) (-r3+r4)) int4);
+d2JrdKdEn=-\[ScriptCapitalC]/(2Pi (1-En^2)) (En Kkr+((a^2+r1^2) (a^2 En-a Lz+En r1^2))/((r1-r2) (r1-r3) (r1-r4))  int1-((a^2+r2^2) (a^2 En-a Lz+En r2^2))/((r1-r2) (r2-r3) (r2-r4)) int2-((a^2+r3^2) (a^2 En-a Lz+En r3^2))/((r1-r3) (-r2+r3) (r3-r4)) int3-((a^2+r4^2) (a^2 En-a Lz+En r4^2))/((r1-r4) (-r2+r4) (-r3+r4)) int4);
+d2JrdKdLz=a \[ScriptCapitalC]/(2Pi (1-En^2)) ((a^2 En-a Lz+En r1^2)/((r1-r2) (r1-r3) (r1-r4)) int1-(a^2 En-a Lz+En r2^2)/((r1-r2) (r2-r3) (r2-r4)) int2-(a^2 En-a Lz+En r3^2)/((r1-r3) (-r2+r3) (r3-r4)) int3-(a^2 En-a Lz+En r4^2)/((r1-r4) (-r2+r4) (-r3+r4)) int4);
+intr=r3 Kkr+(r2-r3) Pi\[Alpha]rkr;
+intr2=1/2 (r1 (-r2+r3)+r3 (r2+r3)) Kkr+1/2 (r1-r3) (r2-r4) Ekr+1/2 (r2-r3) (r1+r2+r3+r4) Pi\[Alpha]rkr;
+d2JrdEn2=\[ScriptCapitalC]/(Pi (1-En^2)) ((4+(-1+En^2) (-a^2+En^2 K+2 a En Lz))/(-1+En^2)^2 Kkr+2/(1-En^2) intr+intr2+((a^2+r1^2)^2 (K+r1^2))/((r1-r2) (r1-r3) (r1-r4)) int1-((a^2+r2^2)^2 (K+r2^2))/((r1-r2) (r2-r3) (r2-r4)) int2-((a^2+r3^2)^2 (K+r3^2))/((r1-r3) (-r2+r3) (r3-r4)) int3-((a^2+r4^2)^2 (K+r4^2))/((r1-r4) (-r2+r4) (-r3+r4)) int4);
+d2JrdEndLz=\[ScriptCapitalC] a/(Pi (1-En^2)) (-Kkr-(int1 (a^2+r1^2) (K+r1^2))/((r1-r2) (r1-r3) (r1-r4))+(int2 (a^2+r2^2) (K+r2^2))/((r1-r2) (r2-r3) (r2-r4))+(int3 (a^2+r3^2) (K+r3^2))/((r1-r3) (-r2+r3) (r3-r4))+(int4 (a^2+r4^2) (K+r4^2))/((r1-r4) (-r2+r4) (-r3+r4)));
+d2JrdLz2=\[ScriptCapitalC] a^2/(Pi (1-En^2)) ((K+r1^2)/((r1-r2) (r1-r3) (r1-r4)) int1+(-K-r2^2)/((r1-r2) (r2-r3) (r2-r4)) int2+(-K-r3^2)/((r1-r3) (-r2+r3) (r3-r4)) int3+(-K-r4^2)/((r1-r4) (-r2+r4) (-r3+r4)) int4);
+\[CapitalUpsilon]r=-1/(2 dJrdK);
+d\[CapitalUpsilon]rdK=d2JrdK2/(2 dJrdK^2);
+d\[CapitalUpsilon]rdEn=d2JrdKdEn/(2 dJrdK^2);
+d\[CapitalUpsilon]rdLz=d2JrdKdLz/(2 dJrdK^2);
+\[CapitalUpsilon]tr=-dJrdEn/(2 dJrdK);
+\[CapitalUpsilon]\[Phi]r=dJrdLz/(2 dJrdK);
+d\[CapitalUpsilon]trdK=-d2JrdKdEn/(2 dJrdK)+dJrdEn/(2 dJrdK^2) d2JrdK2;
+d\[CapitalUpsilon]trdEn=-d2JrdEn2/(2 dJrdK)+dJrdEn/(2 dJrdK^2) d2JrdKdEn;
+d\[CapitalUpsilon]trdLz=-d2JrdEndLz/(2 dJrdK)+dJrdEn/(2 dJrdK^2) d2JrdKdLz;
+d\[CapitalUpsilon]\[Phi]rdK=d2JrdKdLz/(2 dJrdK)-dJrdLz/(2 dJrdK^2) d2JrdK2;
+d\[CapitalUpsilon]\[Phi]rdEn=d2JrdEndLz/(2 dJrdK)-dJrdLz/(2 dJrdK^2) d2JrdKdEn;
+d\[CapitalUpsilon]\[Phi]rdLz=d2JrdLz2/(2 dJrdK)-dJrdLz/(2 dJrdK^2) d2JrdKdLz;
+(********************************************************)
+z1=Sqrt[1-x^2];
+az2=Sqrt[a^2 (1-z1^2)+(Lz^2+Q)/(1-En^2)];
+kzsq=(a z1/az2)^2;
+Kkz=EllipticK[kzsq];
+Ekz=EllipticE[kzsq];
+Dkz=1/3CarlsonRD[0,1-kzsq,1];
+Pikz=EllipticPi[z1^2,kzsq];
+dJzdK=Kkz/(Sqrt[1-En^2] \[Pi] az2);
+dJzdEn=1/(Sqrt[1-En^2] \[Pi] az2) 2 (-En az2^2 Ekz+(a Lz-En (a^2-az2^2)) Kkz);
+dJzdLz=-((2 (-a En Kkz+Lz Pikz))/(Sqrt[1-En^2] \[Pi] az2));
+Iz2=(-(Ekz/(1-kzsq)));
+Iz1=((-Dkz+Kkz)/(-1+kzsq));
+d2JzdK2=-1/(2Pi az2^3 (1-En^2)^(3/2) (az2^2-a^2 z1^2)) ((a^2-az2^2)Iz2+(1-z1^2)a^2 Iz1);
+d2JzdKdEn=1/(Pi az2 (1-En^2)^(3/2)) (En Kkz-1/((az2^2-a^2 z1^2) az2^2) ((a^2-az2^2) (a Lz+En (-a^2+az2^2))Iz2+a^3 (1-z1^2) (Lz+a En (-1+z1^2)) Iz1));
+d2JzdKdLz=1/(Pi az2^3 (1-En^2)^(3/2) (az2^2-a^2 z1^2)) ((a^2 Lz+a En (-a^2+az2^2))Iz2+(Lz+a En (-1+z1^2))a^2 Iz1);
+d2JzdEn2=2/(Pi az2 (1-En^2)^(3/2)) (-(K- (-2 a^2+az2^2+a^2 z1^2)) Kkz+az2^2 (Kkz-Ekz)-1/((az2^2-a^2 z1^2) az2^2) ((a^2-az2^2)^2 (K-az2^2)Iz2+a^4 (1-z1^2)^2 (K-a^2 z1^2) Iz1));
+d2JzdEndLz=2 a/(Pi az2 (1-En^2)^(3/2)) (Kkz+1/((az2^2-a^2 z1^2) az2^2) ((a^2-az2^2) (K-az2^2)Iz2+a^2 (1-z1^2) (K-a^2 z1^2) Iz1));
+d2JzdLz2=-2 a^2/(Pi az2^3 (1-En^2)^(3/2) (az2^2-a^2 z1^2)) ((K-az2^2)Iz2+(K-a^2 z1^2) Iz1);
+\[CapitalUpsilon]z=1/(2 dJzdK);
+d\[CapitalUpsilon]zdK=-d2JzdK2/(2 dJzdK^2);
+d\[CapitalUpsilon]zdEn=-d2JzdKdEn/(2 dJzdK^2);
+d\[CapitalUpsilon]zdLz=-d2JzdKdLz/(2 dJzdK^2);
+\[CapitalUpsilon]tz=dJzdEn/(2 dJzdK);
+\[CapitalUpsilon]\[Phi]z=-dJzdLz/(2 dJzdK);
+d\[CapitalUpsilon]tzdK=d2JzdKdEn/(2 dJzdK)-dJzdEn/(2 dJzdK^2) d2JzdK2;
+d\[CapitalUpsilon]tzdEn=d2JzdEn2/(2 dJzdK)-dJzdEn/(2 dJzdK^2) d2JzdKdEn;
+d\[CapitalUpsilon]tzdLz=d2JzdEndLz/(2 dJzdK)-dJzdEn/(2 dJzdK^2) d2JzdKdLz;
+d\[CapitalUpsilon]\[Phi]zdK=-d2JzdKdLz/(2 dJzdK)+dJzdLz/(2 dJzdK^2) d2JzdK2;
+d\[CapitalUpsilon]\[Phi]zdEn=-d2JzdEndLz/(2 dJzdK)+dJzdLz/(2 dJzdK^2) d2JzdKdEn;
+d\[CapitalUpsilon]\[Phi]zdLz=-d2JzdLz2/(2 dJzdK)+dJzdLz/(2 dJzdK^2) d2JzdKdLz;
+(********************************************************)
+\[CapitalUpsilon]t=\[CapitalUpsilon]tr+\[CapitalUpsilon]tz;
+\[CapitalUpsilon]\[Phi]=\[CapitalUpsilon]\[Phi]r+\[CapitalUpsilon]\[Phi]z;
+d\[CapitalUpsilon]tdK=d\[CapitalUpsilon]trdK+d\[CapitalUpsilon]tzdK;
+d\[CapitalUpsilon]tdEn=d\[CapitalUpsilon]trdEn+d\[CapitalUpsilon]tzdEn;
+d\[CapitalUpsilon]tdLz=d\[CapitalUpsilon]trdLz+d\[CapitalUpsilon]tzdLz;
+d\[CapitalUpsilon]\[Phi]dK=d\[CapitalUpsilon]\[Phi]rdK+d\[CapitalUpsilon]\[Phi]zdK;
+d\[CapitalUpsilon]\[Phi]dEn=d\[CapitalUpsilon]\[Phi]rdEn+d\[CapitalUpsilon]\[Phi]zdEn;
+d\[CapitalUpsilon]\[Phi]dLz=d\[CapitalUpsilon]\[Phi]rdLz+d\[CapitalUpsilon]\[Phi]zdLz;
+d\[CapitalOmega]rdK=d\[CapitalUpsilon]rdK/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdK \[CapitalUpsilon]r/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]rdEn=d\[CapitalUpsilon]rdEn/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdEn \[CapitalUpsilon]r/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]rdLz=d\[CapitalUpsilon]rdLz/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdLz \[CapitalUpsilon]r/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]zdK=d\[CapitalUpsilon]zdK/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdK \[CapitalUpsilon]z/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]zdEn=d\[CapitalUpsilon]zdEn/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdEn \[CapitalUpsilon]z/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]zdLz=d\[CapitalUpsilon]zdLz/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdLz \[CapitalUpsilon]z/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]\[Phi]dK=d\[CapitalUpsilon]\[Phi]dK/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdK \[CapitalUpsilon]\[Phi]/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]\[Phi]dEn=d\[CapitalUpsilon]\[Phi]dEn/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdEn \[CapitalUpsilon]\[Phi]/\[CapitalUpsilon]t^2;
+d\[CapitalOmega]\[Phi]dLz=d\[CapitalUpsilon]\[Phi]dLz/\[CapitalUpsilon]t-d\[CapitalUpsilon]tdLz \[CapitalUpsilon]\[Phi]/\[CapitalUpsilon]t^2;
+{{{d\[CapitalOmega]rdEn,d\[CapitalOmega]rdLz,d\[CapitalOmega]rdK},{d\[CapitalOmega]zdEn,d\[CapitalOmega]zdLz,d\[CapitalOmega]zdK},{d\[CapitalOmega]\[Phi]dEn,d\[CapitalOmega]\[Phi]dLz,d\[CapitalOmega]\[Phi]dK}},
+{{dJrdEn,dJrdLz,dJrdK},{dJzdEn,dJzdLz,dJzdK},{0,1,0}}}
+]
+dr12z1sqdCFun[a_,p_,e_,x_]:=Module[{dRdr,dRdEn,dRdLz,dRdK,dZdzsq,dZdEn,dZdLz,dZdK,CoM,En,Lz,Q,K,r1,r2,z1,\[CapitalDelta]},
+\[CapitalDelta][r_]:=r^2-2r+a^2;
+dRdr[r_]:=4 En r (-a Lz+En (a^2+r^2))-2 r \[CapitalDelta][r]-((-a En+Lz)^2+Q+r^2) Derivative[1][\[CapitalDelta]][r];
+dRdEn[r_]:=2 (a^2+r^2) (a^2 En-a Lz+En r^2);
+dRdLz[r_]:=2 a^2 Lz-2 a En (a^2+r^2);
+dRdK[r_]:=-\[CapitalDelta][r];
+dZdzsq[z_]:=-(Lz^2+Q+a^2 (-1+En^2) (-1+2 z^2));
+dZdEn[z_]:=2 a (1-z^2) (Lz-a En (1-z^2));
+dZdLz[z_]:=-2 (Lz-a En (1-z^2));
+dZdK[z_]:=1-z^2;
+r1=p/(1-e);
+r2=p/(1+e);
+z1=Sqrt[1-x^2];
+CoM=KerrGeoConstantsOfMotion[a,p,e,x];
+En=CoM["\[ScriptCapitalE]"];
+Lz=CoM["\[ScriptCapitalL]"];
+Q=CoM["\[ScriptCapitalQ]"];
+K=Q+(Lz-a En)^2;
+-{{dRdEn[r1],dRdLz[r1],dRdK[r1]}/dRdr[r1],{dRdEn[r2],dRdLz[r2],dRdK[r2]}/dRdr[r2],{dZdEn[z1],dZdLz[z1],dZdK[z1]}/dZdzsq[z1]}
+]
+dpexdr12z1sqFun[a_,p_,e_,x_]:={{1/2 (-1+e)^2,1/2 (1+e)^2,0},{((-1+e)^2 (1+e))/(2 p),((-1+e) (1+e)^2)/(2 p),0},{0,0,-(1/(2 x))}}
+dpexdCFun[a_,p_,e_,x_]:=dpexdr12z1sqFun[a,p,e,x] . dr12z1sqdCFun[a,p,e,x]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Master function for linear parts*)
+
+
+LinearParts[a_,p_,e_,x_]:=Module[{\[CapitalOmega]1CTilde,C1CTilde,pex1CTilde,J1C,d\[CapitalOmega]dC,dJdC,dpexdC,CTilde1C,CTilde1pex,CTilde1\[CapitalOmega],\[CapitalOmega]1C,\[CapitalOmega]1pex,C1pex,pex1C,C1\[CapitalOmega],pex1\[CapitalOmega],J1CTilde,J1pex,J1\[CapitalOmega],\[CapitalOmega]1J,C1J,CTilde1J,pex1J},
+\[CapitalOmega]1CTilde=\[CapitalOmega]1CTildeFun[a,p,e,x];
+C1CTilde=C1CTildeFun[a,p,e,x];
+pex1CTilde=pex1CTildeFun[a,p,e,x];
+J1C=J1CFun[a,p,e,x];
+{d\[CapitalOmega]dC,dJdC}=d\[CapitalOmega]JdCFun[a,p,e,x];
+dpexdC=dpexdCFun[a,p,e,x];
+CTilde1C=-C1CTilde;
+CTilde1pex=-dpexdC . pex1CTilde;
+CTilde1\[CapitalOmega]=-Inverse[d\[CapitalOmega]dC] . \[CapitalOmega]1CTilde;
+\[CapitalOmega]1C=\[CapitalOmega]1CTilde-d\[CapitalOmega]dC . C1CTilde;
+\[CapitalOmega]1pex=\[CapitalOmega]1CTilde-d\[CapitalOmega]dC . Inverse[dpexdC] . pex1CTilde;
+C1pex=C1CTilde-Inverse[dpexdC] . pex1CTilde;
+pex1C=pex1CTilde-dpexdC . C1CTilde;
+C1\[CapitalOmega]=C1CTilde-Inverse[d\[CapitalOmega]dC] . \[CapitalOmega]1CTilde;
+pex1\[CapitalOmega]=pex1CTilde-dpexdC . Inverse[d\[CapitalOmega]dC] . \[CapitalOmega]1CTilde;
+J1CTilde=J1C+dJdC . C1CTilde;
+J1pex=J1C+dJdC . (C1CTilde-Inverse[dpexdC] . pex1CTilde);
+J1\[CapitalOmega]=J1C+dJdC . (C1CTilde-Inverse[d\[CapitalOmega]dC] . \[CapitalOmega]1CTilde);
+\[CapitalOmega]1J=\[CapitalOmega]1CTilde-d\[CapitalOmega]dC . (C1CTilde+Inverse[dJdC] . J1C);
+C1J=-Inverse[dJdC] . J1C;
+CTilde1J=-C1CTilde-Inverse[dJdC] . J1C;
+pex1J=pex1CTilde-dpexdC . (C1CTilde+Inverse[dJdC] . J1C);
+<|
+"\[CapitalOmega]1CTilde"->\[CapitalOmega]1CTilde,
+"C1CTilde"->C1CTilde,
+"pex1CTilde"->pex1CTilde,
+"J1C"->J1C,
+"CTilde1C"->CTilde1C,
+"CTilde1pex"->CTilde1pex,
+"CTilde1\[CapitalOmega]"->CTilde1\[CapitalOmega],
+"\[CapitalOmega]1C"->\[CapitalOmega]1C,
+"\[CapitalOmega]1pex"->\[CapitalOmega]1pex,
+"C1pex"->C1pex,
+"pex1C"->pex1C,
+"C1\[CapitalOmega]"->C1\[CapitalOmega],
+"pex1\[CapitalOmega]"->pex1\[CapitalOmega],
+"J1CTilde"->J1CTilde,
+"J1pex"->J1pex,
+"J1\[CapitalOmega]"->J1\[CapitalOmega],
+"\[CapitalOmega]1J"->\[CapitalOmega]1J,
+"C1J"->C1J,
+"CTilde1J"->CTilde1J,
+"pex1J"->pex1J,
+"d\[CapitalOmega]dC"->d\[CapitalOmega]dC,
+"dJdC"->dJdC,
+"dpexdC"->dpexdC
+|>
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Auxiliary functions*)
+
+
+\[Delta]t3[r_, z_, Ur_, Uz_, K_, a_]:=(r (a^2+r^2) Ur - a^2 (a^2 + r (-2+r)) z Uz)/(Sqrt[K] (a^2 + r (-2+r)) (r^2+a^2 z^2));
+\[Delta]r3[r_, z_, En_, Jz_, K_, a_]:=(r (a^2 En - a Jz+En r^2))/(Sqrt[K] (r^2+a^2 z^2));
+\[Delta]z3[r_, z_, En_, Jz_, K_, a_]:=(a z (Jz - a En (1-z^2)))/(Sqrt[K] (r^2+a^2 z^2));
+\[Delta]\[Phi]3[r_, z_, Ur_, Uz_, K_, a_]:=(a (r (1-z^2) Ur - (a^2 + r (-2+r)) z Uz))/(Sqrt[K] (a^2 + r (-2+r)) (1-z^2) (r^2+a^2 z^2));
+
+
+ProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzsq,
+	Kkr,Kkz,\[CapitalUpsilon]r,\[CapitalUpsilon]z,rminus,rplus,hr,hplus,hminus,\[CapitalUpsilon]tr,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]r,\[CapitalUpsilon]\[Phi]z,\[CapitalUpsilon]\[Tau]r,\[CapitalUpsilon]\[Tau]z,\[CapitalUpsilon]\[Psi]r,\[CapitalUpsilon]\[Psi]z,\[CapitalUpsilon]t,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]\[Psi],rTilde,zTilde,tTilde,\[Phi]Tilde,\[Tau],\[Psi],thatr,thatz,\[Phi]hatr,\[Phi]hatz,\[Tau]hatr,\[Tau]hatz,\[Psi]hatr,\[Psi]hatz,\[CapitalDelta]trTilde,\[CapitalDelta]tzTilde,\[CapitalDelta]\[Phi]rTilde,\[CapitalDelta]\[Phi]zTilde,\[CapitalDelta]\[Tau]r,\[CapitalDelta]\[Tau]z,\[CapitalDelta]\[Psi]r,\[CapitalDelta]\[Psi]z,\[Delta]rpar,\[Delta]zpar,\[Delta]tpar,\[Delta]\[Phi]par,t,r,z,\[Phi]},
+	a = orbitGeo["a"];
+	En = orbitGeo["Energy"];
+	Lz = orbitGeo["AngularMomentum"];
+	K = orbitGeo["CarterConstant"]+(Lz-a*En)^2;
+	{r1,r2,r3,r4}=orbitGeo["RadialRoots"];
+	x = orbitGeo["Inclination"];
+	z1=Sqrt[1-x^2];
+	z2=Sqrt[(K-(Lz-a*En)^2)/(a^2*(1-En^2)*z1^2)];
+	krsq=(r1-r2)*(r3-r4)/((r1-r3)*(r2-r4));
+	kzsq=z1^2/z2^2;
+	Kkr=EllipticK[krsq];
+	Kkz=EllipticK[kzsq];
+	\[CapitalUpsilon]r=Pi*Sqrt[(1-En^2)*(r1-r3)*(r2-r4)]/(2*Kkr);
+	\[CapitalUpsilon]z=Pi*Sqrt[a^2*(1-En^2)]*z2/(2*Kkz);
+	rminus=M-Sqrt[M^2-a^2];
+	rplus=M+Sqrt[M^2-a^2];
+	hr=(r1-r2)/(r1-r3);
+	hplus=hr*(r3-rplus)/(r2-rplus);
+	hminus=hr*(r3-rminus)/(r2-rminus);
+	\[CapitalUpsilon]\[Tau]r=1/2*((r1 (-r2+r3)+r3 (r2+r3))+(r2-r3) (r1+r2+r3+r4)*EllipticPi[hr,krsq]/Kkr+(r1-r3) (r2-r4)*EllipticE[krsq]/Kkr);
+	\[CapitalUpsilon]\[Tau]z=a^2*z2^2*(1-EllipticE[kzsq]/Kkz);
+	\[CapitalUpsilon]\[Tau]=\[CapitalUpsilon]\[Tau]r+\[CapitalUpsilon]\[Tau]z;
+	\[Tau]hatz[\[Xi]z_]:=-z2*a/Sqrt[1-En^2]*EllipticE[\[Xi]z,kzsq];
+	\[Tau]hatr[\[Xi]r_]:=((r2-r3) (r1+r2+r3+r4)*EllipticPi[hr,\[Xi]r,krsq]+(r1-r3) (r2-r4)*EllipticE[\[Xi]r,krsq]-(r1-r2) (r2-r4)*Sin[\[Xi]r]*Cos[\[Xi]r]*Sqrt[1-krsq*Sin[\[Xi]r]^2]/(1-hr*Sin[\[Xi]r]^2))/Sqrt[(1-En^2)*(r1-r3)*(r2-r4)];
+	\[CapitalDelta]\[Tau]r[qr_]:=\[Tau]hatr[JacobiAmplitude[Kkr*qr/Pi,krsq]]-\[Tau]hatr[Pi]/(2Pi)*qr;
+	\[CapitalDelta]\[Tau]z[qz_]:=\[Tau]hatz[JacobiAmplitude[2Kkz*(qz+Pi/2)/Pi,kzsq]]-\[Tau]hatz[Pi]/Pi*(qz+Pi/2);
+	\[Tau][q\[Tau]_,qr_,qz_]:=q\[Tau]+\[CapitalDelta]\[Tau]r[qr]+\[CapitalDelta]\[Tau]z[qz];
+	<|
+		"ProperTimeFrequency"->\[CapitalUpsilon]\[Tau],
+		"ProperTime"->Function[{q\[Tau],qr,qz},\[Tau][q\[Tau],qr,qz]],
+		"\[CapitalUpsilon]\[Tau]z" -> \[CapitalUpsilon]\[Tau]z
+	|>
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*KerrSpinOrbit function*)
+
+
+Options[KerrSpinOrbit] = {"Gauge"->"CTilde"};
+KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTilde,eTilde,xTilde,orbitTilde,EnTilde,JzTilde,KTilde,
+	sqrtKTilde,En,Jz,K,\[Tau]Tilde,frequencies,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalDelta]tr,\[CapitalDelta]tz,rTilde,zTilde,
+	UrTilde,UzTilde,trajectoryTilde,\[Delta]x,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z},
+	linearParts = LinearParts[a,p,e,x];
+	Switch[OptionValue["Gauge"],
+		"CTilde",
+		{pTilde,eTilde,xTilde} = {p,e,x};,
+		"pex",
+		{pTilde,eTilde,xTilde} = {p,e,x} - spar*linearParts["pex1CTilde"];,
+		"C",
+		{pTilde,eTilde,xTilde} = {p,e,x} - spar*linearParts["dpexdC"] . linearParts["C1CTilde"];,
+		_,
+		Print["Unknown gauge"];Return[$Failed];
+	];
+	orbitTilde = KerrGeodesics`KerrGeoOrbit`KerrGeoOrbit[a, pTilde, eTilde, xTilde, "Parametrization" -> "Phases", "Method" -> "Analytic"];
+	EnTilde = orbitTilde["ConstantsOfMotion"]["\[ScriptCapitalE]"];
+	JzTilde = orbitTilde["ConstantsOfMotion"]["\[ScriptCapitalL]"];
+	KTilde = orbitTilde["ConstantsOfMotion"]["\[ScriptCapitalQ]"] + (JzTilde - a*EnTilde)^2;
+	sqrtKTilde = Sqrt[KTilde];
+	En = EnTilde - spar*(1 - EnTilde^2)/(2*sqrtKTilde);
+	Jz = JzTilde - spar*(a - EnTilde*JzTilde/2)/(sqrtKTilde);
+	K  = KTilde  - spar*(3*a*(JzTilde - a*EnTilde) - EnTilde*KTilde)/(sqrtKTilde);
+	\[Tau]Tilde = ProperTime[orbitTilde];
+	frequencies = orbitTilde["Frequencies"];
+	\[CapitalUpsilon]r = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"];
+	\[CapitalUpsilon]z = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Theta]\)]\)"];
+	\[CapitalUpsilon]\[Phi] = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"];
+	\[CapitalUpsilon]t = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTimeFrequency"];
+	\[CapitalUpsilon]tz = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequencyt\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] + a*JzTilde - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["\[CapitalUpsilon]\[Tau]z"];
+	\[CapitalUpsilon]\[Phi]z = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequency\[Phi]\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] - a*EnTilde;
+	\[CapitalDelta]tr = Function[qr, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]tr"][qr] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTime"][0,qr,0]];
+	\[CapitalDelta]tz = Function[qz, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][qz] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTime"][0,0,qz]];
+	rTilde = orbitTilde["Trajectory"][[2]];
+	zTilde[qz_] := Cos[orbitTilde["Trajectory"][[3]][qz]];
+	UrTilde[qr_]:=If[Mod[qr,2Pi]<Pi,1,-1]*Sqrt[((rTilde[qr]^2+a^2)*EnTilde - a*JzTilde)^2 - (rTilde[qr]^2 - 2*rTilde[qr] + a^2)*(KTilde + rTilde[qr]^2)];
+	UzTilde[qz_]:=If[Mod[qz,2Pi]<Pi,-1,1]*Sqrt[-((1-zTilde[qz]^2)*a*EnTilde - JzTilde)^2 + (1-zTilde[qz]^2)*(KTilde - a^2*zTilde[qz]^2)];
+	trajectoryTilde = {Function[{qt,qr,qz},orbitTilde["Trajectory"][[1]][qt,qr,qz] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTime"][0,qr,qz]],
+	rTilde,zTilde,orbitTilde["Trajectory"][[4]]};
+	\[Delta]x = Function[{qr,qz},{
+		\[Delta]t3[rTilde[qr], zTilde[qz], UrTilde[qr], UzTilde[qz], KTilde, a],
+		\[Delta]r3[rTilde[qr], zTilde[qz], EnTilde, JzTilde, KTilde, a],
+		\[Delta]z3[rTilde[qr], zTilde[qz], EnTilde, JzTilde, KTilde, a],
+		\[Delta]\[Phi]3[rTilde[qr], zTilde[qz], UrTilde[qr], UzTilde[qz], KTilde, a]}];
+	<|
+		"a"->a,
+		"p"->p,
+		"e"->e,
+		"x"->x,
+		"spar"->spar,
+		"Energy"->En,
+		"AngularMomentum"->Jz,
+		"CarterConstantK"->K,
+		"EnTilde"->EnTilde,
+		"JzTilde"->JzTilde,
+		"KTilde"->KTilde,
+		"pTilde"->pTilde,
+		"eTilde"->eTilde,
+		"xTilde"->xTilde,
+		"Frequencies"-><|
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"->\[CapitalUpsilon]r,
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(z\)]\)"->\[CapitalUpsilon]z,
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"->\[CapitalUpsilon]\[Phi],
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"->\[CapitalUpsilon]t
+		|>,
+		"ProperTimeFrequency"->\[Tau]Tilde["ProperTimeFrequency"],
+		"BLFrequencies"->{\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi]}/\[CapitalUpsilon]t,
+		"TrajectoryDeltas"-><|
+			"\[CapitalDelta]tr"->\[CapitalDelta]tr,
+			"\[CapitalDelta]tz"->\[CapitalDelta]tz,
+			"\[CapitalDelta]\[Phi]r"->orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"],
+			"\[CapitalDelta]\[Phi]z"->orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]
+		|>,
+		"TrajectoryTilde"->trajectoryTilde,
+		"\[Delta]x"->\[Delta]x,
+		"FourVelocitiesg"->{Function[qr,UrTilde[qr]],Function[qz,UzTilde[qz]]},
+		"\[CapitalUpsilon]tz"->\[CapitalUpsilon]tz,
+		"\[CapitalUpsilon]\[Phi]z"->\[CapitalUpsilon]\[Phi]z
+	|>
+]
+
+
+(*dr12z1dCOM[a_,p_,e_,x_,constants_]:=Module[{dRdr,dRdEn,dRdLz,dRdK,dZdz,dZdEn,dZdLz,dZdK,En,Lz,K,r1,r2,z1,\[CapitalDelta]},
+\[CapitalDelta][r_]:=r^2-2r+a^2;
+dRdr[r_]:=4 En r (-a Lz+En (a^2+r^2))-2 r \[CapitalDelta][r]-(K+r^2) Derivative[1][\[CapitalDelta]][r];
+dRdEn[r_]:=2 (a^2+r^2) (a^2 En-a Lz+En r^2);
+dRdLz[r_]:=2 a^2 Lz-2 a En (a^2+r^2);
+dRdK[r_]:=-\[CapitalDelta][r];
+dZdz[z_]:=2*z*(-(Lz^2+K-(Lz-a*En)^2+a^2 (-1+En^2) (-1+2 z^2)));
+dZdEn[z_]:=2 a*(1-z^2)*(Lz-a*En*(1-z^2));
+dZdLz[z_]:=-2*(Lz-a*En*(1-z^2));
+dZdK[z_]:=1-z^2;
+r1=p/(1-e);
+r2=p/(1+e);
+z1=Sqrt[1-x^2];
+En=constants["\[ScriptCapitalE]"];
+Lz=constants["\[ScriptCapitalL]"];
+K=constants["\[ScriptCapitalQ]"]+(Lz-a*En)^2;
+-{{dRdEn[r1]/dRdr[r1],dRdLz[r1]/dRdr[r1],dRdK[r1]/dRdr[r1]},{dRdEn[r2]/dRdr[r2],dRdLz[r2]/dRdr[r2],dRdK[r2]/dRdr[r2]},{dZdEn[z1]/dZdz[z1],dZdLz[z1]/dZdz[z1],dZdK[z1]/dZdz[z1]}}
+]*)
+
+
+(*KerrSpinOrbit[a_, p_, e_, x_, spar_]:=Module[{constants,En,Jz,K,sqrtK,
+	\[Delta]En,\[Delta]Jz,\[Delta]K,EnTilde,JzTilde,KTilde,dr1dEn,dr1dLz,dr1dK,dr2dEn,dr2dLz,
+	dr2dK,dz1dEn,dz1dLz,dz1dK,r1,r2,z1,\[Delta]r1,\[Delta]r2,\[Delta]z1,xTilde,r,pTilde,eTilde,
+	orbitTilde,\[Tau]Tilde,frequencies,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalDelta]tr,\[CapitalDelta]tz,rTilde,zTilde,
+	UrTilde,UzTilde,Trajectoryg,\[Delta]x,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z},
+	constants = KerrGeodesics`ConstantsOfMotion`KerrGeoConstantsOfMotion[a,p,e,x];
+	En = constants["\[ScriptCapitalE]"];
+	Jz = constants["\[ScriptCapitalL]"];
+	K = constants["\[ScriptCapitalQ]"] + (Jz - a*En)^2;
+	sqrtK = Sqrt[K];
+	\[Delta]En = spar*(1 - En^2)/(2*sqrtK);
+	\[Delta]Jz = spar*(a - En*Jz/2)/(sqrtK);
+	\[Delta]K = spar*(3*a*(Jz - a*En) - En*K)/(sqrtK);
+	EnTilde = En + \[Delta]En;
+	JzTilde = Jz + \[Delta]Jz;
+	KTilde = K + \[Delta]K;
+	{{dr1dEn,dr1dLz,dr1dK},{dr2dEn,dr2dLz,dr2dK},{dz1dEn,dz1dLz,dz1dK}}=dr12z1dCOM[a,p,e,x,constants];
+	r1 = p/(1-e);
+	r2 = p/(1+e);
+	z1 = Sqrt[1-x^2];
+	{\[Delta]r1,\[Delta]r2,\[Delta]z1}={{dr1dEn,dr1dLz,dr1dK},{dr2dEn,dr2dLz,dr2dK},{dz1dEn,dz1dLz,dz1dK}} . {\[Delta]En,\[Delta]Jz,\[Delta]K};
+	pTilde=2*(r1+\[Delta]r1)*(r2+\[Delta]r2)/(r1+\[Delta]r1+r2+\[Delta]r2);
+	eTilde=((r1+\[Delta]r1)-(r2+\[Delta]r2))/(r1+\[Delta]r1+r2+\[Delta]r2);
+	xTilde=Sqrt[1-(z1+\[Delta]z1)^2];
+	orbitTilde = KerrGeodesics`KerrGeoOrbit`KerrGeoOrbit[a, pTilde, eTilde, xTilde, "Parametrization" -> "Phases", "Method" -> "Analytic"];
+	\[Tau]Tilde = ProperTime[orbitTilde];
+	frequencies = orbitTilde["Frequencies"];
+	\[CapitalUpsilon]r = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"];
+	\[CapitalUpsilon]z = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Theta]\)]\)"];
+	\[CapitalUpsilon]\[Phi] = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"];
+	\[CapitalUpsilon]t = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTimeFrequency"];
+	\[CapitalUpsilon]tz = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequencyt\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] + a*JzTilde - 3*spar/(2*sqrtK)*\[Tau]Tilde["\[CapitalUpsilon]\[Tau]z"];
+	\[CapitalUpsilon]\[Phi]z = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequency\[Phi]\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] - a*EnTilde;
+	\[CapitalDelta]tr = Function[qr, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]tr"][qr] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,qr,0]];
+	\[CapitalDelta]tz = Function[qz, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][qz] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,0,qz]];
+	rTilde = orbitTilde["Trajectory"][[2]];
+	zTilde[qz_] := Cos[orbitTilde["Trajectory"][[3]][qz]];
+	UrTilde[qr_]:=If[Mod[qr,2Pi]<Pi,1,-1]*Sqrt[((rTilde[qr]^2+a^2)*EnTilde - a*JzTilde)^2 - (rTilde[qr]^2 - 2*rTilde[qr] + a^2)*(KTilde + rTilde[qr]^2)];
+	UzTilde[qz_]:=If[Mod[qz,2Pi]<Pi,-1,1]*Sqrt[-((1-zTilde[qz]^2)*a*EnTilde - JzTilde)^2 + (1-zTilde[qz]^2)*(KTilde - a^2*zTilde[qz]^2)];
+	Trajectoryg = {Function[{qt,qr,qz},orbitTilde["Trajectory"][[1]][qt,qr,qz] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,qr,qz]],
+	rTilde,zTilde,orbitTilde["Trajectory"][[4]]};
+	\[Delta]x = Function[{qr,qz},{
+		\[Delta]t3[rTilde[qr], zTilde[qz], UrTilde[qr], UzTilde[qz], KTilde, a],
+		\[Delta]r3[rTilde[qr], zTilde[qz], EnTilde, JzTilde, KTilde, a],
+		\[Delta]z3[rTilde[qr], zTilde[qz], EnTilde, JzTilde, KTilde, a],
+		\[Delta]\[Phi]3[rTilde[qr], zTilde[qz], UrTilde[qr], UzTilde[qz], KTilde, a]}];
+	<|
+		"a"->a,
+		"p"->p,
+		"e"->e,
+		"x"->x,
+		"spar"->spar,
+		"Energy"->En,
+		"AngularMomentum"->Jz,
+		"CarterConstantK"->K,
+		"EnTilde"->EnTilde,
+		"JzTilde"->JzTilde,
+		"KTilde"->KTilde,
+		"Frequencies"-><|
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"->\[CapitalUpsilon]r,
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(z\)]\)"->\[CapitalUpsilon]z,
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"->\[CapitalUpsilon]\[Phi],
+			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"->\[CapitalUpsilon]t
+		|>,
+		"ProperTimeFrequency"->\[Tau]Tilde["ProperTimeFrequency"],
+		"BLFrequencies"->{\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi]}/\[CapitalUpsilon]t,
+		"TrajectoryDeltas"-><|
+			"\[CapitalDelta]tr"->\[CapitalDelta]tr,
+			"\[CapitalDelta]tz"->\[CapitalDelta]tz,
+			"\[CapitalDelta]\[Phi]r"->orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"],
+			"\[CapitalDelta]\[Phi]z"->orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]
+		|>,
+		"Trajectoryg"->Trajectoryg,
+		"\[Delta]x"->\[Delta]x,
+		"FourVelocitiesg"->{Function[qr,UrTilde[qr]],Function[qz,UzTilde[qz]]},
+		"rootsTilde"->{r2+\[Delta]r2,r1+\[Delta]r1},
+		"\[CapitalUpsilon]tz"->\[CapitalUpsilon]tz,
+		"\[CapitalUpsilon]\[Phi]z"->\[CapitalUpsilon]\[Phi]z
+	|>
+]*)
+
+
+(* ::Subsection::Closed:: *)
 (*Generic*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Numerical*)
 
 
 Correction[orbitGeo_,nmax_,kmax_?EvenQ]:=Module[{a,p,e,x,\[ScriptCapitalI],\[ScriptCapitalR]tfunc,\[ScriptCapitalR]\[Phi]func,\[ScriptCapitalF]rfunc,\[ScriptCapitalF]\[GothicR]func,\[ScriptCapitalG]rfunc,\[ScriptCapitalG]\[GothicR]func,\[ScriptCapitalG]\[Theta]func,\[ScriptCapitalG]\[GothicZ]func,\[ScriptCapitalH]rfunc,\[ScriptCapitalH]\[GothicR]func,\[ScriptCapitalH]\[Theta]func,\[ScriptCapitalH]\[GothicZ]func,
@@ -459,151 +939,6 @@ KerrSpinOrbitNum[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[CapitalUpsil
     "LS"->orbitCorrection["LS"],
     "OrbitCorrection"->orbitCorrection["OrbitCorrection"]
   |>
-]
-
-
-\[Delta]t3[r_, z_, Ur_, Uz_, K_, a_]:=(r (a^2+r^2) Ur - a^2 (a^2 + r (-2+r)) z Uz)/(Sqrt[K] (a^2 + r (-2+r)) (r^2+a^2 z^2));
-\[Delta]r3[r_, z_, En_, Jz_, K_, a_]:=(r (a^2 En - a Jz+En r^2))/(Sqrt[K] (r^2+a^2 z^2));
-\[Delta]z3[r_, z_, En_, Jz_, K_, a_]:=(a z (Jz - a En (1-z^2)))/(Sqrt[K] (r^2+a^2 z^2));
-\[Delta]\[Phi]3[r_, z_, Ur_, Uz_, K_, a_]:=(a (r (1-z^2) Ur - (a^2 + r (-2+r)) z Uz))/(Sqrt[K] (a^2 + r (-2+r)) (1-z^2) (r^2+a^2 z^2));
-
-
-ProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzsq,
-	Kkr,Kkz,\[CapitalUpsilon]r,\[CapitalUpsilon]z,rminus,rplus,hr,hplus,hminus,\[CapitalUpsilon]tr,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]r,\[CapitalUpsilon]\[Phi]z,\[CapitalUpsilon]\[Tau]r,\[CapitalUpsilon]\[Tau]z,\[CapitalUpsilon]\[Psi]r,\[CapitalUpsilon]\[Psi]z,\[CapitalUpsilon]t,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]\[Psi],rTilde,zTilde,tTilde,\[Phi]Tilde,\[Tau],\[Psi],thatr,thatz,\[Phi]hatr,\[Phi]hatz,\[Tau]hatr,\[Tau]hatz,\[Psi]hatr,\[Psi]hatz,\[CapitalDelta]trTilde,\[CapitalDelta]tzTilde,\[CapitalDelta]\[Phi]rTilde,\[CapitalDelta]\[Phi]zTilde,\[CapitalDelta]\[Tau]r,\[CapitalDelta]\[Tau]z,\[CapitalDelta]\[Psi]r,\[CapitalDelta]\[Psi]z,\[Delta]rpar,\[Delta]zpar,\[Delta]tpar,\[Delta]\[Phi]par,t,r,z,\[Phi]},
-	a = orbitGeo["a"];
-	En = orbitGeo["Energy"];
-	Lz = orbitGeo["AngularMomentum"];
-	K = orbitGeo["CarterConstant"]+(Lz-a*En)^2;
-	{r1,r2,r3,r4}=orbitGeo["RadialRoots"];
-	x = orbitGeo["Inclination"];
-	z1=Sqrt[1-x^2];
-	z2=Sqrt[(K-(Lz-a*En)^2)/(a^2*(1-En^2)*z1^2)];
-	krsq=(r1-r2)*(r3-r4)/((r1-r3)*(r2-r4));
-	kzsq=z1^2/z2^2;
-	Kkr=EllipticK[krsq];
-	Kkz=EllipticK[kzsq];
-	\[CapitalUpsilon]r=Pi*Sqrt[(1-En^2)*(r1-r3)*(r2-r4)]/(2*Kkr);
-	\[CapitalUpsilon]z=Pi*Sqrt[a^2*(1-En^2)]*z2/(2*Kkz);
-	rminus=M-Sqrt[M^2-a^2];
-	rplus=M+Sqrt[M^2-a^2];
-	hr=(r1-r2)/(r1-r3);
-	hplus=hr*(r3-rplus)/(r2-rplus);
-	hminus=hr*(r3-rminus)/(r2-rminus);
-	\[CapitalUpsilon]\[Tau]r=1/2*((r1 (-r2+r3)+r3 (r2+r3))+(r2-r3) (r1+r2+r3+r4)*EllipticPi[hr,krsq]/Kkr+(r1-r3) (r2-r4)*EllipticE[krsq]/Kkr);
-	\[CapitalUpsilon]\[Tau]z=a^2*z2^2*(1-EllipticE[kzsq]/Kkz);
-	\[CapitalUpsilon]\[Tau]=\[CapitalUpsilon]\[Tau]r+\[CapitalUpsilon]\[Tau]z;
-	\[Tau]hatz[\[Xi]z_]:=-z2*a/Sqrt[1-En^2]*EllipticE[\[Xi]z,kzsq];
-	\[Tau]hatr[\[Xi]r_]:=((r2-r3) (r1+r2+r3+r4)*EllipticPi[hr,\[Xi]r,krsq]+(r1-r3) (r2-r4)*EllipticE[\[Xi]r,krsq]-(r1-r2) (r2-r4)*Sin[\[Xi]r]*Cos[\[Xi]r]*Sqrt[1-krsq*Sin[\[Xi]r]^2]/(1-hr*Sin[\[Xi]r]^2))/Sqrt[(1-En^2)*(r1-r3)*(r2-r4)];
-	\[CapitalDelta]\[Tau]r[qr_]:=\[Tau]hatr[JacobiAmplitude[Kkr*qr/Pi,krsq]]-\[Tau]hatr[Pi]/(2Pi)*qr;
-	\[CapitalDelta]\[Tau]z[qz_]:=\[Tau]hatz[JacobiAmplitude[2Kkz*(qz+Pi/2)/Pi,kzsq]]-\[Tau]hatz[Pi]/Pi*(qz+Pi/2);
-	\[Tau][q\[Tau]_,qr_,qz_]:=q\[Tau]+\[CapitalDelta]\[Tau]r[qr]+\[CapitalDelta]\[Tau]z[qz];
-	<|
-		"ProperTimeFrequency"->\[CapitalUpsilon]\[Tau],
-		"ProperTime"->Function[{q\[Tau],qr,qz},\[Tau][q\[Tau],qr,qz]],
-		"\[CapitalUpsilon]\[Tau]z" -> \[CapitalUpsilon]\[Tau]z
-	|>
-]
-
-
-dr12z1dCOM[a_,p_,e_,x_,constants_]:=Module[{dRdr,dRdEn,dRdLz,dRdK,dZdz,dZdEn,dZdLz,dZdK,En,Lz,K,r1,r2,z1,\[CapitalDelta]},
-\[CapitalDelta][r_]:=r^2-2r+a^2;
-dRdr[r_]:=4 En r (-a Lz+En (a^2+r^2))-2 r \[CapitalDelta][r]-(K+r^2) Derivative[1][\[CapitalDelta]][r];
-dRdEn[r_]:=2 (a^2+r^2) (a^2 En-a Lz+En r^2);
-dRdLz[r_]:=2 a^2 Lz-2 a En (a^2+r^2);
-dRdK[r_]:=-\[CapitalDelta][r];
-dZdz[z_]:=2*z*(-(Lz^2+K-(Lz-a*En)^2+a^2 (-1+En^2) (-1+2 z^2)));
-dZdEn[z_]:=2 a*(1-z^2)*(Lz-a*En*(1-z^2));
-dZdLz[z_]:=-2*(Lz-a*En*(1-z^2));
-dZdK[z_]:=1-z^2;
-r1=p/(1-e);
-r2=p/(1+e);
-z1=Sqrt[1-x^2];
-En=constants["\[ScriptCapitalE]"];
-Lz=constants["\[ScriptCapitalL]"];
-K=constants["\[ScriptCapitalQ]"]+(Lz-a*En)^2;
--{{dRdEn[r1]/dRdr[r1],dRdLz[r1]/dRdr[r1],dRdK[r1]/dRdr[r1]},{dRdEn[r2]/dRdr[r2],dRdLz[r2]/dRdr[r2],dRdK[r2]/dRdr[r2]},{dZdEn[z1]/dZdz[z1],dZdLz[z1]/dZdz[z1],dZdK[z1]/dZdz[z1]}}
-]
-
-
-KerrSpinOrbit[a_, p_, e_, x_, spar_]:=Module[{constants,En,Jz,K,sqrtK,
-	\[Delta]En,\[Delta]Jz,\[Delta]K,EnTilde,JzTilde,KTilde,dr1dEn,dr1dLz,dr1dK,dr2dEn,dr2dLz,
-	dr2dK,dz1dEn,dz1dLz,dz1dK,r1,r2,z1,\[Delta]r1,\[Delta]r2,\[Delta]z1,xTilde,r,pTilde,eTilde,
-	orbitTilde,\[Tau]Tilde,frequencies,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalDelta]tr,\[CapitalDelta]tz,rTilde,zTilde,
-	UrTilde,UzTilde,Trajectoryg,\[Delta]x,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z},
-	constants = KerrGeodesics`ConstantsOfMotion`KerrGeoConstantsOfMotion[a,p,e,x];
-	En = constants["\[ScriptCapitalE]"];
-	Jz = constants["\[ScriptCapitalL]"];
-	K = constants["\[ScriptCapitalQ]"] + (Jz - a*En)^2;
-	sqrtK = Sqrt[K];
-	\[Delta]En = spar*(1 - En^2)/(2*sqrtK);
-	\[Delta]Jz = spar*(a - En*Jz/2)/(sqrtK);
-	\[Delta]K = spar*(3*a*(Jz - a*En) - En*K)/(sqrtK);
-	EnTilde = En + \[Delta]En;
-	JzTilde = Jz + \[Delta]Jz;
-	KTilde = K + \[Delta]K;
-	{{dr1dEn,dr1dLz,dr1dK},{dr2dEn,dr2dLz,dr2dK},{dz1dEn,dz1dLz,dz1dK}}=dr12z1dCOM[a,p,e,x,constants];
-	r1 = p/(1-e);
-	r2 = p/(1+e);
-	z1 = Sqrt[1-x^2];
-	{\[Delta]r1,\[Delta]r2,\[Delta]z1}={{dr1dEn,dr1dLz,dr1dK},{dr2dEn,dr2dLz,dr2dK},{dz1dEn,dz1dLz,dz1dK}} . {\[Delta]En,\[Delta]Jz,\[Delta]K};
-	pTilde=2*(r1+\[Delta]r1)*(r2+\[Delta]r2)/(r1+\[Delta]r1+r2+\[Delta]r2);
-	eTilde=((r1+\[Delta]r1)-(r2+\[Delta]r2))/(r1+\[Delta]r1+r2+\[Delta]r2);
-	xTilde=Sqrt[1-(z1+\[Delta]z1)^2];
-	orbitTilde = KerrGeodesics`KerrGeoOrbit`KerrGeoOrbit[a, pTilde, eTilde, xTilde, "Parametrization" -> "Phases", "Method" -> "Analytic"];
-	\[Tau]Tilde = ProperTime[orbitTilde];
-	frequencies = orbitTilde["Frequencies"];
-	\[CapitalUpsilon]r = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"];
-	\[CapitalUpsilon]z = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Theta]\)]\)"];
-	\[CapitalUpsilon]\[Phi] = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"];
-	\[CapitalUpsilon]t = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTimeFrequency"];
-	\[CapitalUpsilon]tz = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequencyt\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] + a*JzTilde - 3*spar/(2*sqrtK)*\[Tau]Tilde["\[CapitalUpsilon]\[Tau]z"];
-	\[CapitalUpsilon]\[Phi]z = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequency\[Phi]\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] - a*EnTilde;
-	\[CapitalDelta]tr = Function[qr, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]tr"][qr] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,qr,0]];
-	\[CapitalDelta]tz = Function[qz, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][qz] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,0,qz]];
-	rTilde = orbitTilde["Trajectory"][[2]];
-	zTilde[qz_] := Cos[orbitTilde["Trajectory"][[3]][qz]];
-	UrTilde[qr_]:=If[Mod[qr,2Pi]<Pi,1,-1]*Sqrt[((rTilde[qr]^2+a^2)*EnTilde - a*JzTilde)^2 - (rTilde[qr]^2 - 2*rTilde[qr] + a^2)*(KTilde + rTilde[qr]^2)];
-	UzTilde[qz_]:=If[Mod[qz,2Pi]<Pi,-1,1]*Sqrt[-((1-zTilde[qz]^2)*a*EnTilde - JzTilde)^2 + (1-zTilde[qz]^2)*(KTilde - a^2*zTilde[qz]^2)];
-	Trajectoryg = {Function[{qt,qr,qz},orbitTilde["Trajectory"][[1]][qt,qr,qz] - 3*spar/(2*sqrtK)*\[Tau]Tilde["ProperTime"][0,qr,qz]],
-	rTilde,zTilde,orbitTilde["Trajectory"][[4]]};
-	\[Delta]x = Function[{qr,qz},{
-		\[Delta]t3[rTilde[qr], zTilde[qz], UrTilde[qr], UzTilde[qz], KTilde, a],
-		\[Delta]r3[rTilde[qr], zTilde[qz], EnTilde, JzTilde, KTilde, a],
-		\[Delta]z3[rTilde[qr], zTilde[qz], EnTilde, JzTilde, KTilde, a],
-		\[Delta]\[Phi]3[rTilde[qr], zTilde[qz], UrTilde[qr], UzTilde[qz], KTilde, a]}];
-	<|
-		"a"->a,
-		"p"->p,
-		"e"->e,
-		"x"->x,
-		"spar"->spar,
-		"Energy"->En,
-		"AngularMomentum"->Jz,
-		"CarterConstantK"->K,
-		"EnTilde"->EnTilde,
-		"JzTilde"->JzTilde,
-		"KTilde"->KTilde,
-		"Frequencies"-><|
-			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"->\[CapitalUpsilon]r,
-			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(z\)]\)"->\[CapitalUpsilon]z,
-			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"->\[CapitalUpsilon]\[Phi],
-			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"->\[CapitalUpsilon]t
-		|>,
-		"ProperTimeFrequency"->\[Tau]Tilde["ProperTimeFrequency"],
-		"BLFrequencies"->{\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi]}/\[CapitalUpsilon]t,
-		"TrajectoryDeltas"-><|
-			"\[CapitalDelta]tr"->\[CapitalDelta]tr,
-			"\[CapitalDelta]tz"->\[CapitalDelta]tz,
-			"\[CapitalDelta]\[Phi]r"->orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]r"],
-			"\[CapitalDelta]\[Phi]z"->orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Phi]\[Theta]"]
-		|>,
-		"Trajectoryg"->Trajectoryg,
-		"\[Delta]x"->\[Delta]x,
-		"FourVelocitiesg"->{Function[qr,UrTilde[qr]],Function[qz,UzTilde[qz]]},
-		"rootsTilde"->{r2+\[Delta]r2,r1+\[Delta]r1},
-		"\[CapitalUpsilon]tz"->\[CapitalUpsilon]tz,
-		"\[CapitalUpsilon]\[Phi]z"->\[CapitalUpsilon]\[Phi]z
-	|>
 ]
 
 
