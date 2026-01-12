@@ -14,23 +14,23 @@ BeginPackage["SpinningOrbit`",
 
 
 KerrSpinOrbit::usage = "KerrSpinOrbit[a, p, e, x, spar] calculates trajectory of a spinning particle"
-LinearParts::usage = "LinearParts[a, p, e, x] calculates linear parts of the constants, shifted constants, parameters, frequencies and actions in different gauges"
+KerrSpinLinearParts::usage = "KerrSpinLinearParts[a, p, e, x] calculates linear parts of the constants, shifted constants, parameters, frequencies and actions in different gauges"
 KerrSpinOrbitCorrection::usage = "KerrSpinOrbitCorrection[a, p, e, x, nmax, kmax] calculates linear correction to the trajectory";
-KerrSpinOrbitNum::usage = "KerrSpinOrbit[KerrSpinOrbitCorrection, spar] calculates trajectory of spinning particle"
+KerrSpinOrbitNum::usage = "KerrSpinOrbitNum[KerrSpinOrbitCorrection, spar] calculates trajectory of spinning particle"
 KerrSpinOrbitCorrectionSpherical::usage = "KerrSpinOrbitCorrectionSpherical[a, p, e, x, kmax] calculates linear correction to the spherical trajectory";
-KerrSpinOrbitSpherical::usage = "KerrSpinOrbit[KerrSpinOrbitCorrection, spar] calculates nearly spherical trajectory of spinning particle"
-TrajectoryEquatorial::usage = "TrajectoryEquatorial[orbit] returns eccentric equatorial orbit"
+KerrSpinOrbitSpherical::usage = "KerrSpinOrbitSpherical[KerrSpinOrbitCorrection, spar] calculates nearly spherical trajectory of spinning particle"
+KerrSpinOrbitEquatorial::usage = "KerrSpinOrbitEquatorial[orbit] returns eccentric equatorial orbit"
 
 
 Begin["`Private`"];
 
 
 (* ::Section::Closed:: *)
-(*Generic trajectory*)
+(*Spinning trajectory*)
 
 
 (* ::Subsection::Closed:: *)
-(*Analytical generic trajectory*)
+(*Analytical generic orbit*)
 
 
 (* ::Subsubsection::Closed:: *)
@@ -214,7 +214,7 @@ dpexdCFun[a_,p_,e_,x_]:=dpexdr12z1sqFun[a,p,e,x] . dr12z1sqdCFun[a,p,e,x]
 (*Master function for linear parts*)
 
 
-LinearParts[a_,p_,e_,x_]:=Module[{\[CapitalOmega]1CTilde,C1CTilde,pex1CTilde,J1C,d\[CapitalOmega]dC,dJdC,dpexdC,CTilde1C,CTilde1pex,CTilde1\[CapitalOmega],\[CapitalOmega]1C,\[CapitalOmega]1pex,C1pex,pex1C,C1\[CapitalOmega],pex1\[CapitalOmega],J1CTilde,J1pex,J1\[CapitalOmega],\[CapitalOmega]1J,C1J,CTilde1J,pex1J},
+KerrSpinLinearParts[a_,p_,e_,x_]:=Module[{\[CapitalOmega]1CTilde,C1CTilde,pex1CTilde,J1C,d\[CapitalOmega]dC,dJdC,dpexdC,CTilde1C,CTilde1pex,CTilde1\[CapitalOmega],\[CapitalOmega]1C,\[CapitalOmega]1pex,C1pex,pex1C,C1\[CapitalOmega],pex1\[CapitalOmega],J1CTilde,J1pex,J1\[CapitalOmega],\[CapitalOmega]1J,C1J,CTilde1J,pex1J},
 \[CapitalOmega]1CTilde=\[CapitalOmega]1CTildeFun[a,p,e,x];
 C1CTilde=C1CTildeFun[a,p,e,x];
 pex1CTilde=pex1CTildeFun[a,p,e,x];
@@ -275,7 +275,7 @@ pex1J=pex1CTilde-dpexdC . (C1CTilde+Inverse[dJdC] . J1C);
 \[Delta]\[Phi]3[r_, z_, Ur_, Uz_, K_, a_]:=(a (r (1-z^2) Ur - (a^2 + r (-2+r)) z Uz))/(Sqrt[K] (a^2 + r (-2+r)) (1-z^2) (r^2+a^2 z^2));
 
 
-ProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzsq,
+KerrGeoProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzsq,
 	Kkr,Kkz,\[CapitalUpsilon]r,\[CapitalUpsilon]z,rminus,rplus,hr,hplus,hminus,\[CapitalUpsilon]tr,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]r,\[CapitalUpsilon]\[Phi]z,\[CapitalUpsilon]\[Tau]r,\[CapitalUpsilon]\[Tau]z,\[CapitalUpsilon]\[Psi]r,\[CapitalUpsilon]\[Psi]z,\[CapitalUpsilon]t,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]\[Psi],rTilde,zTilde,tTilde,\[Phi]Tilde,\[Tau],\[Psi],thatr,thatz,\[Phi]hatr,\[Phi]hatz,\[Tau]hatr,\[Tau]hatz,\[Psi]hatr,\[Psi]hatz,\[CapitalDelta]trTilde,\[CapitalDelta]tzTilde,\[CapitalDelta]\[Phi]rTilde,\[CapitalDelta]\[Phi]zTilde,\[CapitalDelta]\[Tau]r,\[CapitalDelta]\[Tau]z,\[CapitalDelta]\[Psi]r,\[CapitalDelta]\[Psi]z,\[Delta]rpar,\[Delta]zpar,\[Delta]tpar,\[Delta]\[Phi]par,t,r,z,\[Phi]},
 	a = orbitGeo["a"];
 	En = orbitGeo["Energy"];
@@ -320,7 +320,7 @@ Options[KerrSpinOrbit] = {"Gauge"->"CTilde"};
 KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTilde,eTilde,xTilde,orbitTilde,EnTilde,JzTilde,KTilde,
 	sqrtKTilde,En,Jz,K,\[Tau]Tilde,frequencies,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalDelta]tr,\[CapitalDelta]tz,rTilde,zTilde,
 	UrTilde,UzTilde,trajectoryTilde,\[Delta]x,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z},
-	linearParts = LinearParts[a,p,e,x];
+	linearParts = KerrSpinLinearParts[a,p,e,x];
 	Switch[OptionValue["Gauge"],
 		"CTilde",
 		{pTilde,eTilde,xTilde} = {p,e,x};,
@@ -339,7 +339,7 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTil
 	En = EnTilde - spar*(1 - EnTilde^2)/(2*sqrtKTilde);
 	Jz = JzTilde - spar*(a - EnTilde*JzTilde/2)/(sqrtKTilde);
 	K  = KTilde  - spar*(3*a*(JzTilde - a*EnTilde) - EnTilde*KTilde)/(sqrtKTilde);
-	\[Tau]Tilde = ProperTime[orbitTilde];
+	\[Tau]Tilde = KerrGeoProperTime[orbitTilde];
 	frequencies = orbitTilde["Frequencies"];
 	\[CapitalUpsilon]r = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"];
 	\[CapitalUpsilon]z = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Theta]\)]\)"];
@@ -391,7 +391,7 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTil
 		|>,
 		"TrajectoryTilde"->trajectoryTilde,
 		"\[Delta]x"->\[Delta]x,
-		"FourVelocitiesg"->{Function[qr,UrTilde[qr]],Function[qz,UzTilde[qz]]},
+		"FourVelocitiesTilde"->{Function[qr,UrTilde[qr]],Function[qz,UzTilde[qz]]},
 		"\[CapitalUpsilon]tz"->\[CapitalUpsilon]tz,
 		"\[CapitalUpsilon]\[Phi]z"->\[CapitalUpsilon]\[Phi]z
 	|>
@@ -501,7 +501,7 @@ K=constants["\[ScriptCapitalQ]"]+(Lz-a*En)^2;
 
 
 (* ::Subsection::Closed:: *)
-(*Generic*)
+(*Numerical generic orbit*)
 
 
 (* ::Subsubsection::Closed:: *)
@@ -943,7 +943,7 @@ KerrSpinOrbitNum[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[CapitalUpsil
 
 
 (* ::Subsection::Closed:: *)
-(*Spherical*)
+(*Numerical spherical orbit*)
 
 
 CorrectionSpherical[orbitGeo_,kmax_?EvenQ]:=Module[{a,p,e,x,\[ScriptCapitalI],\[ScriptCapitalR]tfunc,\[ScriptCapitalR]\[Phi]func,\[ScriptCapitalG]\[Theta]func,\[ScriptCapitalH]\[GothicR]func,\[ScriptCapitalH]\[Theta]func,\[ScriptCapitalI]1\[Theta]func,\[ScriptCapitalI]2func,
@@ -1259,10 +1259,10 @@ KerrSpinOrbitSpherical[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[Capita
 
 
 (* ::Subsection::Closed:: *)
-(*Equatorial*)
+(*Analytical equatorial orbit*)
 
 
-TrajectoryEquatorial[orbit_]:=Module[{M=1,a,En,L,Q,r1,r2,r3,r4,kr,rp,rm,hr,hp,hm,traj},
+KerrSpinOrbitEquatorial[orbit_]:=Module[{M=1,a,En,L,Q,r1,r2,r3,r4,kr,rp,rm,hr,hp,hm,traj},
   If[Abs[orbit["Inclination"]]!=1&,Print["Cannot use offequatorial orbit as input"];Return[$Failed]];
   a = orbit["a"];
   {En,L,Q} = Values[orbit["ConstantsOfMotion"]];
