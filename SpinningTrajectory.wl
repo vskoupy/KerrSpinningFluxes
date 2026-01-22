@@ -222,7 +222,7 @@ J1C=J1CFun[a,p,e,x];
 {d\[CapitalOmega]dC,dJdC}=d\[CapitalOmega]JdCFun[a,p,e,x];
 dpexdC=dpexdCFun[a,p,e,x];
 CTilde1C=-C1CTilde;
-CTilde1pex=-dpexdC . pex1CTilde;
+CTilde1pex=-Inverse[dpexdC] . pex1CTilde;
 CTilde1\[CapitalOmega]=-Inverse[d\[CapitalOmega]dC] . \[CapitalOmega]1CTilde;
 \[CapitalOmega]1C=\[CapitalOmega]1CTilde-d\[CapitalOmega]dC . C1CTilde;
 \[CapitalOmega]1pex=\[CapitalOmega]1CTilde-d\[CapitalOmega]dC . Inverse[dpexdC] . pex1CTilde;
@@ -502,10 +502,6 @@ K=constants["\[ScriptCapitalQ]"]+(Lz-a*En)^2;
 
 (* ::Subsection::Closed:: *)
 (*Numerical generic orbit*)
-
-
-(* ::Subsubsection::Closed:: *)
-(*Numerical*)
 
 
 Correction[orbitGeo_,nmax_,kmax_?EvenQ]:=Module[{a,p,e,x,\[ScriptCapitalI],\[ScriptCapitalR]tfunc,\[ScriptCapitalR]\[Phi]func,\[ScriptCapitalF]rfunc,\[ScriptCapitalF]\[GothicR]func,\[ScriptCapitalG]rfunc,\[ScriptCapitalG]\[GothicR]func,\[ScriptCapitalG]\[Theta]func,\[ScriptCapitalG]\[GothicZ]func,\[ScriptCapitalH]rfunc,\[ScriptCapitalH]\[GothicR]func,\[ScriptCapitalH]\[Theta]func,\[ScriptCapitalH]\[GothicZ]func,
