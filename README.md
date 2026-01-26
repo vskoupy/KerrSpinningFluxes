@@ -1,6 +1,8 @@
 # KerrSpinningFluxes
 
-This is a Wolfram Mathematica package for gravitational-wave fluxes from spinning particles orbiting a Kerr black hole.
+This is a Wolfram Mathematica package for gravitational-wave fluxes from spinning particles orbiting a Kerr black hole. These codes are based on and used in the following papers:
+- Viktor Skoupý, Georgios Lukes-Gerakopoulos, Lisa V. Drummond, Scott A. Hughes, _Asymptotic gravitational-wave fluxes from a spinning test body on generic orbits around a Kerr black hole_, [arXiv:2303.16798](https://arxiv.org/abs/2303.16798)
+- Viktor Skoupý, Gabriel Andres Piovano, Vojtěch Witzany, _Spherical inspirals of spinning bodies into Kerr black holes_, [arXiv:2506.20726](https://arxiv.org/abs/2506.20726)
 
 ## Requirements
 
