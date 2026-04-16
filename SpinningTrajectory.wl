@@ -79,10 +79,10 @@ Q=KerrGeoCarterConstant[a,p,e,x,En,Lz];
 K=Q+(Lz-a En)^2;
 {r1,r2,r3,r4}=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q];
 krsq=((r1-r2) (r3-r4))/((r1-r3) (r2-r4));
-Jr1=-2/\[Pi] Sqrt[K/((1-En^2)(r1-r3)(r2-r4))]((a^2 En - a Lz+En r3^2)/(K+r3^2) EllipticK[krsq]+((r2-r3) (-a^2 En+a Lz+En K))/Sqrt[K] Im[1/((r2-I Sqrt[K]) ( r3-I Sqrt[K])) EllipticPi[((r1-r2) (Sqrt[K]+I r3))/((Sqrt[K]+I r2) (r1-r3)),krsq]]);
+Jr1=2/\[Pi] Sqrt[K/((1-En^2)(r1-r3)(r2-r4))]((a^2 En - a Lz+En r3^2)/(K+r3^2) EllipticK[krsq]+((r2-r3) (-a^2 En+a Lz+En K))/Sqrt[K] Im[1/((r2-I Sqrt[K]) ( r3-I Sqrt[K])) EllipticPi[((r1-r2) (Sqrt[K]+I r3))/((Sqrt[K]+I r2) (r1-r3)),krsq]]);
 z1=Sqrt[1-x^2];
 az2=Sqrt[a^2 (1-z1^2)+(Lz^2+Q)/(1-En^2)];
-Jz1=2/\[Pi] 1/(az2 Sqrt[K] Sqrt[1 - En^2]) (En K EllipticK[((a z1)/az2)^2] + (En(a^2 - K) - a Lz)EllipticPi[(a^2 z1^2)/K,((a z1)/az2)^2]);
+Jz1=-2/\[Pi] 1/(az2 Sqrt[K] Sqrt[1 - En^2]) (En K EllipticK[((a z1)/az2)^2] + (En(a^2 - K) - a Lz)EllipticPi[(a^2 z1^2)/K,((a z1)/az2)^2]);
 {Jr1,Jz1,0}
 ]
 
