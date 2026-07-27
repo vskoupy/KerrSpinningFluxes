@@ -20,7 +20,7 @@ Examples with the calculation of the analytical and numerical trajectory and the
 
 ### For linearized fluxes
 
-- modified KerrGeodesics
+- modified [KerrGeodesics](https://github.com/vskoupy/KerrGeodesics)
 - modified SpinWeightedSpheroidalHarmonics by Gabriel A. Piovano
 - LinearizedTeukolskyEquations by Gabriel A. Piovano
 - Functions_for_spherical_orbits_fixed_turning_point_on_average.nb by Gabriel A. Piovano
