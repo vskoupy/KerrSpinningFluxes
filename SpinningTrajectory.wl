@@ -43,20 +43,19 @@ Begin["`Private`"];
 K=KerrGeoCarterConstant[a,p,e,x]+(KerrGeoAngularMomentum[a,p,e,x]-a KerrGeoEnergy[a,p,e,x])^2;
 Values[KerrGeoFrequencies[a,p,e,x] 3 \[CapitalUpsilon]\[Tau]/(2 \[CapitalUpsilon]t Sqrt[K])]
 ]
-C1CTildeFun[a_,p_,e_,x_]:=Module[{CoM,En,Lz,Q,K},
-CoM=KerrGeoConstantsOfMotion[a,p,e,x];
+C1CTildeFun[a_,p_,e_,x_,CoM_]:=Module[{En,Lz,Q,K},
 En=CoM["\[ScriptCapitalE]"];
 Lz=CoM["\[ScriptCapitalL]"];
 Q=CoM["\[ScriptCapitalQ]"];
 K=Q+(Lz-a En)^2;
 -{(1-En^2)/2,(a-Lz En/2),(3a (Lz-a En)-K En)}/Sqrt[K]
 ]
-pex1CTildeFun[a_,p_,e_,x_]:=Module[{En,Lz,K,Q,r1,r2,r3,r4,z1,az2,kzsq,krsq,az1Int\[CapitalSigma],int\[CapitalSigma]r1,int\[CapitalSigma]r2,\[Delta]r1,\[Delta]r2,\[Delta]z1,\[Delta]p,\[Delta]e,\[Delta]x},
-En=KerrGeoEnergy[a,p,e,x];
-Lz=KerrGeoAngularMomentum[a,p,e,x,En];
-Q=KerrGeoCarterConstant[a,p,e,x,En,Lz];
+pex1CTildeFun[a_,p_,e_,x_,CoM_,radialRoots_]:=Module[{En,Lz,K,Q,r1,r2,r3,r4,z1,az2,kzsq,krsq,az1Int\[CapitalSigma],int\[CapitalSigma]r1,int\[CapitalSigma]r2,\[Delta]r1,\[Delta]r2,\[Delta]z1,\[Delta]p,\[Delta]e,\[Delta]x},
+En=CoM["\[ScriptCapitalE]"];
+Lz=CoM["\[ScriptCapitalL]"];
+Q=CoM["\[ScriptCapitalQ]"];
 K=Q+(Lz-a En)^2;
-{r1,r2,r3,r4}=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q];
+{r1,r2,r3,r4}=radialRoots(*KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q]*);
 z1=Sqrt[1-x^2];
 az2=Sqrt[a^2 (1-z1^2)+(Lz^2+Q)/(1-En^2)];
 kzsq=a^2 z1^2/az2^2;
@@ -72,12 +71,12 @@ az1Int\[CapitalSigma]=((a z1)/(r3^2+a^2 z1^2)+2 Re[((I (-r2+r3))/(2 (r2+I a z1) 
 \[Delta]x=-((z1 \[Delta]z1)/x);
 {\[Delta]p,\[Delta]e,\[Delta]x}
 ]
-J1CFun[a_,p_,e_,x_]:=Module[{En,Lz,Q,K,az2,z1,Jz1,r1,r2,r3,r4,krsq,Jr1},
-En=KerrGeoEnergy[a,p,e,x];
-Lz=KerrGeoAngularMomentum[a,p,e,x,En];
-Q=KerrGeoCarterConstant[a,p,e,x,En,Lz];
+J1CFun[a_,p_,e_,x_,CoM_,radialRoots_]:=Module[{En,Lz,Q,K,az2,z1,Jz1,r1,r2,r3,r4,krsq,Jr1},
+En=CoM["\[ScriptCapitalE]"];
+Lz=CoM["\[ScriptCapitalL]"];
+Q=CoM["\[ScriptCapitalQ]"];
 K=Q+(Lz-a En)^2;
-{r1,r2,r3,r4}=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q];
+{r1,r2,r3,r4}=radialRoots(*KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q]*);
 krsq=((r1-r2) (r3-r4))/((r1-r3) (r2-r4));
 Jr1=2/\[Pi] Sqrt[K/((1-En^2)(r1-r3)(r2-r4))]((a^2 En - a Lz+En r3^2)/(K+r3^2) EllipticK[krsq]+((r2-r3) (-a^2 En+a Lz+En K))/Sqrt[K] Im[1/((r2-I Sqrt[K]) ( r3-I Sqrt[K])) EllipticPi[((r1-r2) (Sqrt[K]+I r3))/((Sqrt[K]+I r2) (r1-r3)),krsq]]);
 z1=Sqrt[1-x^2];
@@ -91,13 +90,13 @@ Jz1=-2/\[Pi] 1/(az2 Sqrt[K] Sqrt[1 - En^2]) (En K EllipticK[((a z1)/az2)^2] + (E
 (*Jacobians*)
 
 
-d\[CapitalOmega]JdCFun[a_,p_,e_,x_]:=Module[{M=1,En,Lz,Q,K,r1,r2,r3,r4,krsq,Kkr,Ekr,Pi\[Alpha]rkr,rplus,rminus,Pi\[Rho]pluskr,Pi\[Rho]minuskr,\[ScriptCapitalC],dJrdK,dJrdEn,dJrdLz,int1,int2,int3,int4,d2JrdK2,d2JrdKdEn,d2JrdKdLz,intr,
+d\[CapitalOmega]JdCFun[a_,p_,e_,x_,CoM_,radialRoots_]:=Module[{M=1,En,Lz,Q,K,r1,r2,r3,r4,krsq,Kkr,Ekr,Pi\[Alpha]rkr,rplus,rminus,Pi\[Rho]pluskr,Pi\[Rho]minuskr,\[ScriptCapitalC],dJrdK,dJrdEn,dJrdLz,int1,int2,int3,int4,d2JrdK2,d2JrdKdEn,d2JrdKdLz,intr,
 intr2,d2JrdEn2,d2JrdEndLz,d2JrdLz2,\[CapitalUpsilon]r,d\[CapitalUpsilon]rdK,d\[CapitalUpsilon]rdEn,d\[CapitalUpsilon]rdLz,\[CapitalUpsilon]tr,\[CapitalUpsilon]\[Phi]r,d\[CapitalUpsilon]trdEn,d\[CapitalUpsilon]trdLz,d\[CapitalUpsilon]trdK,d\[CapitalUpsilon]\[Phi]rdEn,d\[CapitalUpsilon]\[Phi]rdLz,d\[CapitalUpsilon]\[Phi]rdK,az2,z1,kzsq,Kkz,Ekz,Dkz,Pikz,dJzdK,dJzdEn,dJzdLz,d2JzdKdEn,d2JzdKdLz,d2JzdK2,d2JzdEn2,d2JzdEndLz,d2JzdLz2,\[CapitalUpsilon]z,d\[CapitalUpsilon]zdK,d\[CapitalUpsilon]zdEn,d\[CapitalUpsilon]zdLz,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z,d\[CapitalUpsilon]tzdEn,d\[CapitalUpsilon]tzdLz,d\[CapitalUpsilon]tzdK,d\[CapitalUpsilon]\[Phi]zdEn,d\[CapitalUpsilon]\[Phi]zdLz,d\[CapitalUpsilon]\[Phi]zdK,\[CapitalUpsilon]t,\[CapitalUpsilon]\[Phi],d\[CapitalUpsilon]tdK,d\[CapitalUpsilon]tdEn,d\[CapitalUpsilon]tdLz,d\[CapitalUpsilon]\[Phi]dK,d\[CapitalUpsilon]\[Phi]dEn,d\[CapitalUpsilon]\[Phi]dLz,d\[CapitalOmega]rdK,d\[CapitalOmega]rdEn,d\[CapitalOmega]rdLz,d\[CapitalOmega]zdK,d\[CapitalOmega]zdEn,d\[CapitalOmega]zdLz,d\[CapitalOmega]\[Phi]dK,d\[CapitalOmega]\[Phi]dEn,d\[CapitalOmega]\[Phi]dLz,Iz2,Iz1},
-En=KerrGeoEnergy[a,p,e,x];
-Lz=KerrGeoAngularMomentum[a,p,e,x,En];
-Q=KerrGeoCarterConstant[a,p,e,x,En,Lz];
+En=CoM["\[ScriptCapitalE]"];
+Lz=CoM["\[ScriptCapitalL]"];
+Q=CoM["\[ScriptCapitalQ]"];
 K=Q+(Lz-a En)^2;
-{r1,r2,r3,r4}=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q];
+{r1,r2,r3,r4}=radialRoots(*KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, En,Q]*);
 krsq=((r1-r2) (r3-r4))/((r1-r3) (r2-r4));
 Kkr=EllipticK[krsq];
 Ekr=EllipticE[krsq];
@@ -186,7 +185,7 @@ d\[CapitalOmega]\[Phi]dLz=d\[CapitalUpsilon]\[Phi]dLz/\[CapitalUpsilon]t-d\[Capi
 {{{d\[CapitalOmega]rdEn,d\[CapitalOmega]rdLz,d\[CapitalOmega]rdK},{d\[CapitalOmega]zdEn,d\[CapitalOmega]zdLz,d\[CapitalOmega]zdK},{d\[CapitalOmega]\[Phi]dEn,d\[CapitalOmega]\[Phi]dLz,d\[CapitalOmega]\[Phi]dK}},
 {{dJrdEn,dJrdLz,dJrdK},{dJzdEn,dJzdLz,dJzdK},{0,1,0}}}
 ]
-dr12z1sqdCFun[a_,p_,e_,x_]:=Module[{dRdr,dRdEn,dRdLz,dRdK,dZdzsq,dZdEn,dZdLz,dZdK,CoM,En,Lz,Q,K,r1,r2,z1,\[CapitalDelta]},
+dr12z1sqdCFun[a_,p_,e_,x_,CoM_]:=Module[{dRdr,dRdEn,dRdLz,dRdK,dZdzsq,dZdEn,dZdLz,dZdK,En,Lz,Q,K,r1,r2,z1,\[CapitalDelta]},
 \[CapitalDelta][r_]:=r^2-2r+a^2;
 dRdr[r_]:=4 En r (-a Lz+En (a^2+r^2))-2 r \[CapitalDelta][r]-((-a En+Lz)^2+Q+r^2) Derivative[1][\[CapitalDelta]][r];
 dRdEn[r_]:=2 (a^2+r^2) (a^2 En-a Lz+En r^2);
@@ -199,7 +198,6 @@ dZdK[z_]:=1-z^2;
 r1=p/(1-e);
 r2=p/(1+e);
 z1=Sqrt[1-x^2];
-CoM=KerrGeoConstantsOfMotion[a,p,e,x];
 En=CoM["\[ScriptCapitalE]"];
 Lz=CoM["\[ScriptCapitalL]"];
 Q=CoM["\[ScriptCapitalQ]"];
@@ -207,20 +205,22 @@ K=Q+(Lz-a En)^2;
 -{{dRdEn[r1],dRdLz[r1],dRdK[r1]}/dRdr[r1],{dRdEn[r2],dRdLz[r2],dRdK[r2]}/dRdr[r2],{dZdEn[z1],dZdLz[z1],dZdK[z1]}/dZdzsq[z1]}
 ]
 dpexdr12z1sqFun[a_,p_,e_,x_]:={{1/2 (-1+e)^2,1/2 (1+e)^2,0},{((-1+e)^2 (1+e))/(2 p),((-1+e) (1+e)^2)/(2 p),0},{0,0,-(1/(2 x))}}
-dpexdCFun[a_,p_,e_,x_]:=dpexdr12z1sqFun[a,p,e,x] . dr12z1sqdCFun[a,p,e,x]
+dpexdCFun[a_,p_,e_,x_,CoM_]:=dpexdr12z1sqFun[a,p,e,x] . dr12z1sqdCFun[a,p,e,x,CoM]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Master function for linear parts*)
 
 
-KerrSpinLinearParts[a_,p_,e_,x_]:=Module[{\[CapitalOmega]1CTilde,C1CTilde,pex1CTilde,J1C,d\[CapitalOmega]dC,dJdC,dpexdC,CTilde1C,CTilde1pex,CTilde1\[CapitalOmega],\[CapitalOmega]1C,\[CapitalOmega]1pex,C1pex,pex1C,C1\[CapitalOmega],pex1\[CapitalOmega],J1CTilde,J1pex,J1\[CapitalOmega],\[CapitalOmega]1J,C1J,CTilde1J,pex1J},
+KerrSpinLinearParts[a_,p_,e_,x_]:=Module[{CoM,radialRoots,\[CapitalOmega]1CTilde,C1CTilde,pex1CTilde,J1C,d\[CapitalOmega]dC,dJdC,dpexdC,CTilde1C,CTilde1pex,CTilde1\[CapitalOmega],\[CapitalOmega]1C,\[CapitalOmega]1pex,C1pex,pex1C,C1\[CapitalOmega],pex1\[CapitalOmega],J1CTilde,J1pex,J1\[CapitalOmega],\[CapitalOmega]1J,C1J,CTilde1J,pex1J},
+CoM=KerrGeoConstantsOfMotion[a,p,e,x];
+radialRoots=KerrGeodesics`OrbitalFrequencies`Private`KerrGeoRadialRoots[a, p, e, x, CoM["\[ScriptCapitalE]"],CoM["\[ScriptCapitalQ]"]];
 \[CapitalOmega]1CTilde=\[CapitalOmega]1CTildeFun[a,p,e,x];
-C1CTilde=C1CTildeFun[a,p,e,x];
-pex1CTilde=pex1CTildeFun[a,p,e,x];
-J1C=J1CFun[a,p,e,x];
-{d\[CapitalOmega]dC,dJdC}=d\[CapitalOmega]JdCFun[a,p,e,x];
-dpexdC=dpexdCFun[a,p,e,x];
+C1CTilde=C1CTildeFun[a,p,e,x,CoM];
+pex1CTilde=pex1CTildeFun[a,p,e,x,CoM,radialRoots];
+J1C=J1CFun[a,p,e,x,CoM,radialRoots];
+{d\[CapitalOmega]dC,dJdC}=d\[CapitalOmega]JdCFun[a,p,e,x,CoM,radialRoots];
+dpexdC=dpexdCFun[a,p,e,x,CoM];
 CTilde1C=-C1CTilde;
 CTilde1pex=-Inverse[dpexdC] . pex1CTilde;
 CTilde1\[CapitalOmega]=-Inverse[d\[CapitalOmega]dC] . \[CapitalOmega]1CTilde;
@@ -328,6 +328,8 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTil
 		{pTilde,eTilde,xTilde} = {p,e,x} - spar*linearParts["pex1CTilde"];,
 		"C",
 		{pTilde,eTilde,xTilde} = {p,e,x} - spar*linearParts["dpexdC"] . linearParts["C1CTilde"];,
+		"WP",
+		{pTilde,eTilde,xTilde} = {p,e,x} - spar*linearParts["dpexdC"] . (linearParts["C1CTilde"] + {0, 0, 2*a*Sign[KerrGeoAngularMomentum[a,p,e,x]-a*KerrGeoEnergy[a,p,e,x]]});,
 		_,
 		Print["Unknown gauge"];Return[$Failed];
 	];

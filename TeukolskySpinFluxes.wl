@@ -30,7 +30,7 @@ TeukolskySpinModeSpherical::usage = "TeukolskySpinModeSpherical[l,m,k,orbitCorre
 TeukolskySpinModeSphericalCorrectionNum::usage = "TeukolskySpinModeSphericalCorrectionNum[l,m,k,orbitCorrection,\[Delta]\[Omega]] calculates linear correction to the fluxes for spherical orbit from numerical derivatives of R ans S with step \[Delta]\[Omega]";
 TeukolskySpinModeSphericalCorrection::usage = "TeukolskySpinModeSphericalCorrection[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";
 (*TeukolskySpinModeSphericalCorrectionNew::usage = "TeukolskySpinModeSphericalCorrectionNew[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";*)
-TeukolskySpinModeSphericalCorrectionAnalytical::usage = "TeukolskySpinModeSphericalCorrectionAnalytical[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";
+(*TeukolskySpinModeSphericalCorrectionAnalytical::usage = "TeukolskySpinModeSphericalCorrectionAnalytical[l,m,k,orbitCorrection,orbitDerivatives,{angparNew,TeukolskySolverHS1spin}] calculates linear correction to the fluxes and their r and x derivatives for spherical orbit using given function for the R and S derivatives";*)
 
 
 
@@ -3755,9 +3755,9 @@ TeukolskySpinModeSphericalCorrectionNum[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbi
 ]
 
 
-Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->30};
+Options[TeukolskySpinModeSphericalCorrectionDH] = {WorkingPrecision->30};
 
-TeukolskySpinModeSphericalCorrection[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCorrection_,orbitDerivatives_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{
+TeukolskySpinModeSphericalCorrectionDH[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCorrection_,orbitDerivatives_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{
     h1,h2,a,p,e,x,En,Lz,Kc,En1,Lz1,dEndr,dLzdr,dEndx,dLzdx,\[CapitalOmega]\[Theta],\[CapitalOmega]\[Phi],\[CapitalOmega]\[Theta]1,\[CapitalOmega]\[Phi]1,d\[CapitalOmega]\[Theta]dr,d\[CapitalOmega]\[Phi]dr,d\[CapitalOmega]\[Theta]dx,d\[CapitalOmega]\[Phi]dx,correction,derivatives,z,\[CapitalGamma],\[CapitalGamma]1,d\[CapitalGamma]dr,d\[CapitalGamma]dx,
     \[Omega],\[Omega]prec,\[Omega]1,d\[Omega]dr,d\[Omega]dx,\[Lambda],d\[Lambda]d\[Omega],SWSH,dSWSHd\[Omega],R,\[ScriptCapitalC]2,d\[ScriptCapitalC]2d\[Omega],rplus,P,\[Epsilon],\[Alpha],d\[Alpha]d\[Omega],
     steps\[Theta],correctionp,derivativesp,sumPlus0,sumMinus0,sumPlus1,sumMinus1,dsumPlusdr,dsumMinusdr,dsumPlusdx,dsumMinusdx,i\[Theta],w\[Theta],
@@ -4670,6 +4670,21 @@ TeukolskySpinModeSphericalCorrectionAnalytical[l_?IntegerQ,m_?IntegerQ,k_?Intege
     |>,
     "steps\[Theta]"->stepsz
   |> (* l, m, k, n, \[Omega], C^+, C^-, \[Alpha], S(\[Pi]/2), dE^\[Infinity]/dt, dE^H/dt, Subscript[dJ, z]^\[Infinity]/dt, Subscript[dJ, z]^H/dt *)
+]
+
+
+Options[TeukolskySpinModeSphericalCorrection] = {WorkingPrecision->32, Method->"Analytic", "orbitDerivatives"->Automatic};
+TeukolskySpinModeSphericalCorrection[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCorrection_,{angparNew_,TeukolskySolverHS1spin_},OptionsPattern[]]:=Module[{},
+	Switch[OptionValue[Method],
+		"Analytic",
+		TeukolskySpinModeSphericalCorrectionAnalytical[l,m,k,orbitCorrection,{angparNew,TeukolskySolverHS1spin},WorkingPrecision->OptionValue[WorkingPrecision]],
+		"Fourier",
+		If[OptionValue["orbitDerivatives"]===Automatic,Return[$Failed]];
+		TeukolskySpinModeSphericalCorrectionDH[l,m,k,orbitCorrection,OptionValue["orbitDerivatives"],{angparNew,TeukolskySolverHS1spin},WorkingPrecision->OptionValue[WorkingPrecision]],
+		True,
+		Print["Unrecognized method"];
+		Return[$Failed]
+		]
 ]
 
 
