@@ -4681,7 +4681,7 @@ TeukolskySpinModeSphericalCorrection[l_?IntegerQ,m_?IntegerQ,k_?IntegerQ,orbitCo
 		"Fourier",
 		If[OptionValue["orbitDerivatives"]===Automatic,Return[$Failed]];
 		TeukolskySpinModeSphericalCorrectionDH[l,m,k,orbitCorrection,OptionValue["orbitDerivatives"],{angparNew,TeukolskySolverHS1spin},WorkingPrecision->OptionValue[WorkingPrecision]],
-		True,
+		_,
 		Print["Unrecognized method"];
 		Return[$Failed]
 		]
