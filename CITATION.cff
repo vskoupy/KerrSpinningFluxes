@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it using the metadata below,
+  and please also cite the accompanying paper listed under
+  "preferred-citation".
+type: software
+title: "KerrSpinningFluxes"
+version: "1.0.1"
+date-released: "2026-04-16"
+authors:
+  - family-names: "Skoupý"
+    given-names: "Viktor"
+    orcid: "https://orcid.org/0000-0001-7475-5324"
+doi: "10.5281/zenodo.19609875"
+url: "https://doi.org/10.5281/zenodo.19609875"
+repository-code: "https://github.com/vskoupy/KerrSpinningFluxes"
+# NOTE: The Zenodo record itself is deposited under CC-BY-4.0 (per
+# zenodo.org/records/19609875). If the source code in the GitHub
+# repository carries a different license (e.g. MIT), update this
+# field to match the LICENSE file in the repository.
+license: MIT
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.19609875"
+    description: "Zenodo archive of KerrSpinningFluxes v1.0.1"
+  - type: swh
+    value: "swh:1:dir:fb9afa4a59b77b086e89f190f13f113304bf623a"
+    description: "Software Heritage identifier for v1.0.1"
+preferred-citation:
+  type: article
+  title: "A new approach to the calculation of extreme-mass-ratio inspirals with a spinning secondary"
+  authors:
+    - family-names: "Skoupý"
+      given-names: "Viktor"
+      orcid: "https://orcid.org/0000-0001-7475-5324"
+  year: 2026
+  month: 3
+  identifiers:
+    - type: other
+      value: "arXiv:2603.13482"
+      description: "arXiv preprint (gr-qc)"
+  url: "https://arxiv.org/abs/2603.13482"
