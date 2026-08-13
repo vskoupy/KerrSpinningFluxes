@@ -15,10 +15,11 @@ BeginPackage["SpinningOrbit`",
 
 KerrSpinOrbit::usage = "KerrSpinOrbit[a, p, e, x, spar] calculates trajectory of a spinning particle"
 KerrSpinLinearParts::usage = "KerrSpinLinearParts[a, p, e, x] calculates linear parts of the constants, shifted constants, parameters, frequencies and actions in different gauges"
-KerrSpinOrbitCorrection::usage = "KerrSpinOrbitCorrection[a, p, e, x, nmax, kmax] calculates linear correction to the trajectory";
+KerrSpinOrbitCorrection::usage = "KerrSpinOrbitCorrection[a, p, e, x, nmax, kmax] calculates linear correction to the trajectory"
 KerrSpinOrbitNum::usage = "KerrSpinOrbitNum[KerrSpinOrbitCorrection, spar] calculates trajectory of spinning particle"
-KerrSpinOrbitCorrectionSpherical::usage = "KerrSpinOrbitCorrectionSpherical[a, p, e, x, kmax] calculates linear correction to the spherical trajectory";
+KerrSpinOrbitCorrectionSpherical::usage = "KerrSpinOrbitCorrectionSpherical[a, p, e, x, kmax] calculates linear correction to the spherical trajectory"
 KerrSpinOrbitSpherical::usage = "KerrSpinOrbitSpherical[KerrSpinOrbitCorrection, spar] calculates nearly spherical trajectory of spinning particle"
+derivativesSph::usage = "derivativesSph[a,r,x] calculates r and x derivatives of spherical orbit"
 KerrSpinOrbitEquatorial::usage = "KerrSpinOrbitEquatorial[orbit] returns eccentric equatorial orbit"
 
 
@@ -1252,6 +1253,127 @@ KerrSpinOrbitSpherical[orbitCorrection_,spar_]:=Module[{\[CapitalGamma],\[Capita
     "\[Delta]En"->orbitCorrection["\[Delta]En"],
     "LS"->orbitCorrection["\[Delta]Lz"],
     "OrbitCorrection"->orbitCorrection["OrbitCorrection"]
+  |>
+]
+
+
+(* ::Subsection::Closed:: *)
+(*Derivatives of spherical orbit*)
+
+
+dCOMdrxSph[a_,r_,x_]:=Module[{COM,En,Lz,Q,dEndr,dEndx,dLzdr,dLzdx,dLzdEn,dQdx,dQdEn,dQdLz},
+  COM=KerrGeoConstantsOfMotion[a,r,0,x];
+  En=COM["\[ScriptCapitalE]"];
+  Lz=COM["\[ScriptCapitalL]"];
+  Q=COM["\[ScriptCapitalQ]"];
+  dEndr=((5 (-3+r) (-2+r)^2 r^4+2 (-3+r) (-2+r) r^5+(-2+r)^2 r^5+a^4 r^2 (-5+6 r) (-1+x^2)^2-a^6 (-1+x^2)^2 (-1-2 x^2+2 r (-1+x^2))-(a^5 x (-1+x^2) (3 r^2+a^2 (-1+x^2)))/Sqrt[r^3+a^2 r (-1+x^2)]+2 a^4 r (-1+x^2) (4-5 r (-1+x^2)+3 r^2 (-1+x^2))+3 a^2 r^2 (4-4 x^2+r (12-7 x^2)-3 r^3 (-1+x^2)+r^2 (-13+10 x^2))+a^2 r^3 (12-7 x^2-9 r^2 (-1+x^2)+r (-26+20 x^2))+a (-((2 r^(11/2) x)/Sqrt[r^2+a^2 (-1+x^2)])-9 r^(7/2) x Sqrt[r^2+a^2 (-1+x^2)]+(2 r^3 x (3 r^2+a^2 (-1+x^2)))/Sqrt[r^3+a^2 r (-1+x^2)]+12 r^2 x Sqrt[r^3+a^2 r (-1+x^2)])+2 a^3 ((r x (-1+x^2) (3 r^2+a^2 (-1+x^2)))/Sqrt[r^3+a^2 r (-1+x^2)]+2 x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]-(x^3 (7 r^6+5 a^2 r^4 (-1+x^2)))/(2 Sqrt[r^7+a^2 r^5 (-1+x^2)])))/((r^2-a^2 (-1+x^2)) ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2))))-(2 r ((-3+r) (-2+r)^2 r^5-2 a^5 x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]+a^4 r^2 (-1+x^2) (4-5 r (-1+x^2)+3 r^2 (-1+x^2))-a^6 (-1+x^2)^2 (x^2+r^2 (-1+x^2)-r (1+2 x^2))+a^2 r^3 (4-4 x^2+r (12-7 x^2)-3 r^3 (-1+x^2)+r^2 (-13+10 x^2))+a (-2 r^(9/2) x Sqrt[r^2+a^2 (-1+x^2)]+4 r^3 x Sqrt[r^3+a^2 r (-1+x^2)])+2 a^3 (2 r x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]-x^3 Sqrt[r^7+a^2 r^5 (-1+x^2)])))/((r^2-a^2 (-1+x^2))^2 ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2))))+(2 (3 r^3 (6-5 r+r^2)-2 a^2 r (3+3 r-3 x^2+2 r^2 (-1+x^2))+a^4 (1-x^4+r (-1+x^2)^2)) (-((-3+r) (-2+r)^2 r^5)+2 a^5 x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]-a^4 r^2 (-1+x^2) (4-5 r (-1+x^2)+3 r^2 (-1+x^2))+a^6 (-1+x^2)^2 (x^2+r^2 (-1+x^2)-r (1+2 x^2))+a^2 r^3 (r^2 (13-10 x^2)+4 (-1+x^2)+3 r^3 (-1+x^2)+r (-12+7 x^2))+a (2 r^(9/2) x Sqrt[r^2+a^2 (-1+x^2)]-4 r^3 x Sqrt[r^3+a^2 r (-1+x^2)])+a^3 (-4 r x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]+2 x^3 Sqrt[r^7+a^2 r^5 (-1+x^2)])))/((r^2-a^2 (-1+x^2)) ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2)))^2))/(2 \[Sqrt](((-3+r) (-2+r)^2 r^5-2 a^5 x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]+a^4 r^2 (-1+x^2) (4-5 r (-1+x^2)+3 r^2 (-1+x^2))-a^6 (-1+x^2)^2 (x^2+r^2 (-1+x^2)-r (1+2 x^2))+a^2 r^3 (4-4 x^2+r (12-7 x^2)-3 r^3 (-1+x^2)+r^2 (-13+10 x^2))+a (-2 r^(9/2) x Sqrt[r^2+a^2 (-1+x^2)]+4 r^3 x Sqrt[r^3+a^2 r (-1+x^2)])+2 a^3 (2 r x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]-x^3 Sqrt[r^7+a^2 r^5 (-1+x^2)]))/((r^2-a^2 (-1+x^2)) ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2))))));
+  dEndx=((4 a^2 x (r^2 (-3+r^2)+a^2 (1-x^2+2 r x^2-r^2 (-1+x^2))) ((-3+r) (-2+r)^2 r^5-2 a^5 x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]+a^4 r^2 (-1+x^2) (4-5 r (-1+x^2)+3 r^2 (-1+x^2))-a^6 (-1+x^2)^2 (x^2+r^2 (-1+x^2)-r (1+2 x^2))+a^2 r^3 (4-4 x^2+r (12-7 x^2)-3 r^3 (-1+x^2)+r^2 (-13+10 x^2))+a (-2 r^(9/2) x Sqrt[r^2+a^2 (-1+x^2)]+4 r^3 x Sqrt[r^3+a^2 r (-1+x^2)])+2 a^3 (2 r x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]-x^3 Sqrt[r^7+a^2 r^5 (-1+x^2)])))/((r^2-a^2 (-1+x^2)) ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2)))^2)+(2 a^2 x ((-3+r) (-2+r)^2 r^5-2 a^5 x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]+a^4 r^2 (-1+x^2) (4-5 r (-1+x^2)+3 r^2 (-1+x^2))-a^6 (-1+x^2)^2 (x^2+r^2 (-1+x^2)-r (1+2 x^2))+a^2 r^3 (4-4 x^2+r (12-7 x^2)-3 r^3 (-1+x^2)+r^2 (-13+10 x^2))+a (-2 r^(9/2) x Sqrt[r^2+a^2 (-1+x^2)]+4 r^3 x Sqrt[r^3+a^2 r (-1+x^2)])+2 a^3 (2 r x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]-x^3 Sqrt[r^7+a^2 r^5 (-1+x^2)])))/((r^2-a^2 (-1+x^2))^2 ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2))))+(-2 a^2 r^3 (4+7 r-10 r^2+3 r^3) x+2 a^4 r^3 (-5+3 r) x (-1+x^2)-2 a^6 (-1+r)^2 x (-1+x^2)^2-(2 a^7 r x^2 (-1+x^2))/Sqrt[r^3+a^2 r (-1+x^2)]-4 a^5 x^2 Sqrt[r^3+a^2 r (-1+x^2)]-2 a^5 (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]+2 a^4 r^2 x (4-5 r (-1+x^2)+3 r^2 (-1+x^2))-4 a^6 x (-1+x^2) (x^2+r^2 (-1+x^2)-r (1+2 x^2))+a (-((2 a^2 r^(9/2) x^2)/Sqrt[r^2+a^2 (-1+x^2)])-2 r^(9/2) Sqrt[r^2+a^2 (-1+x^2)]+(4 a^2 r^4 x^2)/Sqrt[r^3+a^2 r (-1+x^2)]+4 r^3 Sqrt[r^3+a^2 r (-1+x^2)])+(2 a^3 (x^2 (-3 r^2+a^2 (3-4 x^2)) Sqrt[r^7+a^2 r^5 (-1+x^2)]+2 r Sqrt[r^3+a^2 r (-1+x^2)] (r^2 (-1+3 x^2)+a^2 (1-5 x^2+4 x^4))))/(r^2+a^2 (-1+x^2)))/((r^2-a^2 (-1+x^2)) ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2)))))/(2 \[Sqrt](((-3+r) (-2+r)^2 r^5-2 a^5 x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]+a^4 r^2 (-1+x^2) (4-5 r (-1+x^2)+3 r^2 (-1+x^2))-a^6 (-1+x^2)^2 (x^2+r^2 (-1+x^2)-r (1+2 x^2))+a^2 r^3 (4-4 x^2+r (12-7 x^2)-3 r^3 (-1+x^2)+r^2 (-13+10 x^2))+a (-2 r^(9/2) x Sqrt[r^2+a^2 (-1+x^2)]+4 r^3 x Sqrt[r^3+a^2 r (-1+x^2)])+2 a^3 (2 r x (-1+x^2) Sqrt[r^3+a^2 r (-1+x^2)]-x^3 Sqrt[r^7+a^2 r^5 (-1+x^2)]))/((r^2-a^2 (-1+x^2)) ((-3+r)^2 r^4-2 a^2 r^2 (3+2 r-3 x^2+r^2 (-1+x^2))+a^4 (-1+x^2) (-1+x^2+r^2 (-1+x^2)-2 r (1+x^2))))));
+  dLzdr=((-2+r) r^4 (-4+(4-3 En^2) r+(-1+En^2) r^2)+2 a En r^2 x^3 Sqrt[((a^2+(-2+r) r) (-r^2+a^2 (-1+x^2)) (r (-2+r-En^2 r)+a^2 (-1+En^2) (-1+x^2)))/x^4]+2 a^3 En x^3 (-1+x^2) Sqrt[((a^2+(-2+r) r) (-r^2+a^2 (-1+x^2)) (r (-2+r-En^2 r)+a^2 (-1+En^2) (-1+x^2)))/x^4]+a^4 r (-1+x^2) (-2 x^2+6 r (-1+x^2)-3 r^2 (-1+x^2)+En^2 (-2-3 r+3 r^2) (-1+x^2))-a^6 (-1+x^2)^2 (r+x^2-r x^2+En^2 (-1-x^2+r (-1+x^2)))+a^2 r^3 ((-2+r) (6-5 x^2+3 r (-1+x^2))+En^2 (4-4 x^2-3 r^2 (-1+x^2)+r (-9+7 x^2))))/(x ((-2+r) r-a^2 (-1+x^2))^2 Sqrt[((a^2+(-2+r) r) (-r^2+a^2 (-1+x^2)) (r (-2+r-En^2 r)+a^2 (-1+En^2) (-1+x^2)))/x^4]);
+  dLzdx=-(((a^2+(-2+r) r) (-((-2+r) r^4 (2+(-1+En^2) r))+a^6 (-1+En^2) (-1+x^2)^3+4 a En r x^3 Sqrt[((a^2+(-2+r) r) (-r^2+a^2 (-1+x^2)) (r (-2+r-En^2 r)+a^2 (-1+En^2) (-1+x^2)))/x^4]+a^2 r^2 (4-8 x^2+3 (-1+En^2) r^2 (-1+x^2)+r (-8+10 x^2+En^2 (4-8 x^2)))-a^4 r (-1+x^2) (-4+6 x^2-3 r (-1+x^2)+En^2 (2-6 x^2+3 r (-1+x^2)))))/(x^2 ((-2+r) r-a^2 (-1+x^2))^2 Sqrt[((a^2+(-2+r) r) (-r^2+a^2 (-1+x^2)) (r (-2+r-En^2 r)+a^2 (-1+En^2) (-1+x^2)))/x^4]));
+  dLzdEn=(x^2 (-2 a r+(En (a^2+(-2+r) r) (r^2-a^2 (-1+x^2))^2)/(x^3 Sqrt[((a^2+(-2+r) r) (-r^2+a^2 (-1+x^2)) (r (-2+r-En^2 r)+a^2 (-1+En^2) (-1+x^2)))/x^4])))/((-2+r) r-a^2 (-1+x^2));
+  dQdx=-2 (a^2 (1-En^2)+Lz^2/x^2) x-(2 Lz^2 (1-x^2))/x^3;
+  dQdEn=-2 a^2 En (1-x^2);
+  dQdLz=(2 Lz (1-x^2))/x^2;
+  {{dEndr,dEndx},{dLzdr+dLzdEn*dEndr,dLzdx+dLzdEn*dEndx},{dQdEn*dEndr+dQdLz*(dLzdr+dLzdEn*dEndr),dQdx+dQdEn*dEndx+dQdLz*(dLzdx+dLzdEn*dEndx)}}
+]
+
+
+derivativesSph[a_,r_,x_]:=Module[{\[CapitalDelta],d\[CapitalDelta]dr,z1,z2,En,Lz,Q,COM,kz,\[CapitalUpsilon]z,Kkz,dEndr,dEndx,dLzdr,dLzdx,dQdr,dQdx,dz1sqdx,dz2sqdx,dz2sqdr,dkzdx,dkzdr,Kprimekz,Eprimekz,Piprime1z1sqkz,Piprime2z1sqkz,d\[CapitalUpsilon]zdx,d\[CapitalUpsilon]zdr,Ekz,Piz1sqkz,\[CapitalUpsilon]tr,\[CapitalUpsilon]tz,\[CapitalUpsilon]t,\[CapitalUpsilon]\[Phi]r,\[CapitalUpsilon]\[Phi]z,\[CapitalUpsilon]\[Phi],d\[CapitalUpsilon]trdx,d\[CapitalUpsilon]trdr,d\[CapitalUpsilon]tzdx,d\[CapitalUpsilon]tzdr,d\[CapitalUpsilon]\[Phi]rdx,d\[CapitalUpsilon]\[Phi]rdr,d\[CapitalUpsilon]\[Phi]zdx,d\[CapitalUpsilon]\[Phi]zdr,ttilde,dttildedr,dttildedx,damdkz,d\[CapitalDelta]tzdr,d\[CapitalDelta]tzdx,\[Phi]tilde,d\[Phi]tildedr,d\[Phi]tildedx,d\[CapitalDelta]\[Phi]zdr,d\[CapitalDelta]\[Phi]zdx,sn,cn,dn,epsilon,cd,am,sc,dsndkz,dzdr,dzdx,dUzdr,dUzdx},
+  COM=KerrGeoConstantsOfMotion[a,r,0,x];
+  En=COM["\[ScriptCapitalE]"];
+  Lz=COM["\[ScriptCapitalL]"];
+  Q=COM["\[ScriptCapitalQ]"];
+  z1=Sqrt[1-x^2];
+  z2=Sqrt[a^2*(1-En^2)+Lz^2/x^2];
+  kz=a^2*(1-En^2)*z1^2/z2^2;
+  Kkz=EllipticK[kz];
+  Piz1sqkz=EllipticPi[z1^2,kz];
+  Ekz=EllipticE[kz];
+  \[CapitalUpsilon]z=Pi*z2/(2*Kkz);
+  \[CapitalDelta]=r^2-2*r+a^2;
+  d\[CapitalDelta]dr=2*(r-1);
+  \[CapitalUpsilon]tr=(r^2+a^2)/\[CapitalDelta]*((r^2+a^2)*En-a*Lz)+a*Lz;
+  \[CapitalUpsilon]tz=-a^2*En+En*Q/((1-En^2)*z1^2)*(1-Ekz/Kkz);
+  \[CapitalUpsilon]\[Phi]r=a/\[CapitalDelta]*((r^2+a^2)*En-a*Lz)-a*En;
+  \[CapitalUpsilon]\[Phi]z=Lz*Piz1sqkz/Kkz;
+  \[CapitalUpsilon]t=\[CapitalUpsilon]tr+\[CapitalUpsilon]tz;
+  \[CapitalUpsilon]\[Phi]=\[CapitalUpsilon]\[Phi]r+\[CapitalUpsilon]\[Phi]z;
+  {{dEndr,dEndx},{dLzdr,dLzdx},{dQdr,dQdx}}=dCOMdrxSph[a,r,x];
+  dz2sqdx=-2*a^2*En*dEndx+2*Lz*dLzdx/x^2-2*Lz^2/x^3;
+  dz2sqdr=-2*a^2*En*dEndr+2*Lz*dLzdr/x^2;
+  dz1sqdx=-2*x;
+  dkzdx=-2*a^2*En*dEndx*z1^2/z2^2-a^2*(1-En^2)*z1^2/(z2^2)^2*dz2sqdx+a^2*(1-En^2)*dz1sqdx/z2^2;
+  dkzdr=-2*a^2*En*dEndr*z1^2/z2^2-a^2*(1-En^2)*z1^2/(z2^2)^2*dz2sqdr;
+  Kprimekz=(Ekz-(1-kz) Kkz)/(2 (1-kz) kz);
+  Eprimekz=(Ekz-Kkz)/(2 kz);
+  Piprime1z1sqkz=(Ekz+((-z1^2+kz) Kkz)/z1^2+((z1^4-kz) Piz1sqkz)/z1^2)/(2 (-1+z1^2) (-z1^2+kz));
+  Piprime2z1sqkz=(Ekz/(-1+kz)+Piz1sqkz)/(2 (z1^2-kz));
+  d\[CapitalUpsilon]zdx=Pi/(2*Kkz)*(dz2sqdx/(2*z2)-z2/Kkz*Kprimekz*dkzdx);
+  d\[CapitalUpsilon]zdr=Pi/(2*Kkz)*(dz2sqdr/(2*z2)-z2/Kkz*Kprimekz*dkzdr);
+  d\[CapitalUpsilon]trdx=(r^2+a^2)/\[CapitalDelta]*((r^2+a^2)*dEndx-a*dLzdx)+a*dLzdx;
+  d\[CapitalUpsilon]trdr=(r^2+a^2)/\[CapitalDelta]*((r^2+a^2)*dEndr-a*dLzdr)+a*dLzdr+(2 (-a^3 Lz+a Lz r^2+2 a^2 En (-1+r) r^2+En (-3+r) r^4+a^4 En (1+r)))/(a^2+(-2+r) r)^2;
+  d\[CapitalUpsilon]tzdx=-a^2*dEndx+(dEndx*Q+En*dQdx)/((1-En^2)*z1^2)*(1-Ekz/Kkz)-En*Q/((1-En^2)*z1^2)^2*(-2*En*dEndx*z1^2+(1-En^2)*dz1sqdx)*(1-Ekz/Kkz)+En*Q/((1-En^2)*z1^2)*(-Eprimekz*dkzdx/Kkz+Ekz/Kkz^2*Kprimekz*dkzdx);
+  d\[CapitalUpsilon]tzdr=-a^2*dEndr+(dEndr*Q+En*dQdr)/((1-En^2)*z1^2)*(1-Ekz/Kkz)-En*Q/((1-En^2)^2*z1^2)*(-2*En*dEndr)*(1-Ekz/Kkz)+En*Q/((1-En^2)*z1^2)*(-Eprimekz*dkzdr/Kkz+Ekz/Kkz^2*Kprimekz*dkzdr);
+  d\[CapitalUpsilon]\[Phi]rdx=a/\[CapitalDelta]*((r^2+a^2)*dEndx-a*dLzdx)-a*dEndx;
+  d\[CapitalUpsilon]\[Phi]rdr=a/\[CapitalDelta]*((r^2+a^2)*dEndr-a*dLzdr)-a*dEndr+(2 a (a^2 En+a Lz (-1+r)-En r^2))/(a^2+(-2+r) r)^2;
+  d\[CapitalUpsilon]\[Phi]zdx=dLzdx*Piz1sqkz/Kkz+Lz*(Piprime1z1sqkz*dz1sqdx+Piprime2z1sqkz*dkzdx)/Kkz-Lz*Piz1sqkz/Kkz^2*Kprimekz*dkzdx;
+  d\[CapitalUpsilon]\[Phi]zdr=dLzdr*Piz1sqkz/Kkz+Lz*(Piprime2z1sqkz*dkzdr)/Kkz-Lz*Piz1sqkz/Kkz^2*Kprimekz*dkzdr;
+  dz1sqdx=-2*x;
+  ttilde[\[Xi]z_]:=-En/(1-En^2)*z2*EllipticE[\[Xi]z,kz];
+  (*\[CapitalDelta]tz=ttilde[JacobiAmplitude[Kkz*2qz/Pi,kz]]-ttilde[Pi]/Pi*qz;*)
+  dttildedr[\[Xi]z_]:=(dz2sqdr En (-1+En^2) kz+(dkzdr En (-1+En^2)-2 dEndr (1+En^2) kz) z2^2)/(2 (-1+En^2)^2 kz z2)*EllipticE[\[Xi]z,kz];
+  dttildedx[\[Xi]z_]:=(dz2sqdx En (-1+En^2) kz+(dkzdx En (-1+En^2)-2 dEndx (1+En^2) kz) z2^2)/(2 (-1+En^2)^2 kz z2)*EllipticE[\[Xi]z,kz];
+  \[Phi]tilde[\[Xi]z_]:=-Lz/z2*EllipticPi[z1^2,\[Xi]z,kz];
+  d\[Phi]tildedr[\[Xi]z_]:=(dz2sqdr Lz+(-2 dLzdr+(dkzdr Lz)/(kz-z1^2)) z2^2)/(2 z2^3)*EllipticPi[z1^2,\[Xi]z,kz]-Lz/z2*((EllipticE[\[Xi]z,kz]/(-1+kz)+(kz Cos[\[Xi]z] Sin[\[Xi]z])/((1-kz) Sqrt[1-kz Sin[\[Xi]z]^2]))/(2 (-kz+z1^2)))*dkzdr;
+  d\[Phi]tildedx[\[Xi]z_]:=(-2 dLzdx z2^2+Lz (dz2sqdx+((-dz1sqdx kz+dkzdx z1^2+(-dkzdx+dz1sqdx) z1^4) z2^2)/(z1^2 (kz-(1+kz) z1^2+z1^4))))/(2 z2^3)*EllipticPi[z1^2,\[Xi]z,kz]+(Lz (dz1sqdx-dz1sqdx kz+dkzdx (-1+z1^2)))/(2 (-1+kz) (kz-z1^2) (-1+z1^2) z2)*EllipticE[\[Xi]z,kz]+(Lz Cos[\[Xi]z] Sin[\[Xi]z] (-dkzdx kz+(dz1sqdx+dkzdx kz-dz1sqdx kz) z1^2+kz z1^2 (dkzdx+dz1sqdx (-1+kz)-dkzdx z1^2) Sin[\[Xi]z]^2))/(2 (-1+kz) (kz-z1^2) (-1+z1^2) z2 Sqrt[1-kz Sin[\[Xi]z]^2] (-1+z1^2 Sin[\[Xi]z]^2));
+  <|
+    "\[CapitalUpsilon]z"->Pi*z2/(2*Kkz),
+    "\[CapitalUpsilon]t"->\[CapitalUpsilon]t,
+    "\[CapitalUpsilon]\[Phi]"->\[CapitalUpsilon]\[Phi],
+    "d\[CapitalUpsilon]zdx"->d\[CapitalUpsilon]zdx,
+    "d\[CapitalUpsilon]zdr"->d\[CapitalUpsilon]zdr,
+    "d\[CapitalUpsilon]tdx"->d\[CapitalUpsilon]trdx+d\[CapitalUpsilon]tzdx,
+    "d\[CapitalUpsilon]tdr"->d\[CapitalUpsilon]trdr+d\[CapitalUpsilon]tzdr,
+    "d\[CapitalUpsilon]\[Phi]dx"->d\[CapitalUpsilon]\[Phi]rdx+d\[CapitalUpsilon]\[Phi]zdx,
+    "d\[CapitalUpsilon]\[Phi]dr"->d\[CapitalUpsilon]\[Phi]rdr+d\[CapitalUpsilon]\[Phi]zdr,
+    "dBLFrequenciesdr"->{d\[CapitalUpsilon]zdr/\[CapitalUpsilon]t-\[CapitalUpsilon]z*(d\[CapitalUpsilon]trdr+d\[CapitalUpsilon]tzdr)/\[CapitalUpsilon]t^2,(d\[CapitalUpsilon]\[Phi]rdr+d\[CapitalUpsilon]\[Phi]zdr)/\[CapitalUpsilon]t-\[CapitalUpsilon]\[Phi]*(d\[CapitalUpsilon]trdr+d\[CapitalUpsilon]tzdr)/\[CapitalUpsilon]t^2},
+    "dMinoFrequenciesdr"->{d\[CapitalUpsilon]trdr+d\[CapitalUpsilon]tzdr,d\[CapitalUpsilon]zdr,d\[CapitalUpsilon]\[Phi]rdr+d\[CapitalUpsilon]\[Phi]zdr},
+    "dBLFrequenciesdx"->{d\[CapitalUpsilon]zdx/\[CapitalUpsilon]t-\[CapitalUpsilon]z*(d\[CapitalUpsilon]trdx+d\[CapitalUpsilon]tzdx)/\[CapitalUpsilon]t^2,(d\[CapitalUpsilon]\[Phi]rdx+d\[CapitalUpsilon]\[Phi]zdx)/\[CapitalUpsilon]t-\[CapitalUpsilon]\[Phi]*(d\[CapitalUpsilon]trdx+d\[CapitalUpsilon]tzdx)/\[CapitalUpsilon]t^2},
+    "dMinoFrequenciesdx"->{d\[CapitalUpsilon]trdx+d\[CapitalUpsilon]tzdx,d\[CapitalUpsilon]zdx,d\[CapitalUpsilon]\[Phi]rdx+d\[CapitalUpsilon]\[Phi]zdx},
+    "dEndr"->dEndr,
+    "dLzdr"->dLzdr,
+    "dEndx"->dEndx,
+    "dLzdx"->dLzdx,
+    "OrbitDerivatives"->
+      Function[{qz},
+        sn=JacobiSN[Kkz*2*(qz+Pi/2)/Pi,kz];
+        cn=JacobiCN[(2 (qz+Pi/2) Kkz)/\[Pi],kz];
+        dn=JacobiDN[(2 (qz+Pi/2) Kkz)/\[Pi],kz];
+        epsilon=JacobiEpsilon[(2 (qz+Pi/2) Kkz)/\[Pi],kz];
+        cd=JacobiCD[(2 (qz+Pi/2) Kkz)/\[Pi],kz];
+        sc=JacobiSC[((\[Pi]+2 qz) Kkz)/\[Pi],kz];
+        dsndkz=-(1/(2 (-1+kz) kz \[Pi]))cn dn (2 (qz+Pi/2) Ekz-\[Pi] epsilon+kz \[Pi] cd sn);
+        dzdr=z1*dsndkz*dkzdr;
+        dzdx=z1*dsndkz*dkzdx-sn*x/Sqrt[1-x^2];
+        dUzdr=1/2/Sqrt[Q]*dQdr*cn*dn+1/(2 (-1+kz) kz) Sqrt[Q] sn ((kz cn^2+dn^2) ((\[Pi]+2 qz) Ekz/\[Pi]-epsilon)+kz dn (cn^2 sc+dn cd sn))*dkzdr;
+        dUzdx=1/2/Sqrt[Q]*dQdx*cn*dn+1/(2 (-1+kz) kz) Sqrt[Q] sn ((kz cn^2+dn^2) ((\[Pi]+2 qz) Ekz/\[Pi]-epsilon)+kz dn (cn^2 sc+dn cd sn))*dkzdx;
+        am=JacobiAmplitude[Kkz*2(qz+Pi/2)/Pi,kz];
+        damdkz=1/(2 (-1+kz) kz \[Pi]) (dn (-2 (qz+Pi/2) Ekz+\[Pi] epsilon)-kz \[Pi] cn sn);
+        d\[CapitalDelta]tzdr=dttildedr[am]-dttildedr[Pi]/Pi*(qz+Pi/2)+(En z2 dn)/(-1+En^2)*damdkz*dkzdr;
+        d\[CapitalDelta]tzdx=dttildedx[am]-dttildedx[Pi]/Pi*(qz+Pi/2)+(En z2 dn)/(-1+En^2)*damdkz*dkzdx;
+        d\[CapitalDelta]\[Phi]zdr=-(d\[Phi]tildedr[am]-d\[Phi]tildedr[Pi]/Pi*(qz+Pi/2)+Lz/(dn (-z2+z1^2 z2 sn^2))*damdkz*dkzdr);
+        d\[CapitalDelta]\[Phi]zdx=-(d\[Phi]tildedx[am]-d\[Phi]tildedx[Pi]/Pi*(qz+Pi/2)+Lz/(dn (-z2+z1^2 z2 sn^2))*damdkz*dkzdx);
+        <|
+          "dzdr"->dzdr,
+          "dzdx"->dzdx,
+          "dUzdr"->dUzdr,
+          "dUzdx"->dUzdx,
+          "d\[CapitalDelta]tdr"->d\[CapitalDelta]tzdr,
+          "d\[CapitalDelta]tdx"->d\[CapitalDelta]tzdx,
+          "d\[CapitalDelta]\[Phi]dr"->d\[CapitalDelta]\[Phi]zdr,
+          "d\[CapitalDelta]\[Phi]dx"->d\[CapitalDelta]\[Phi]zdx
+        |>
+      ]
   |>
 ]
 
