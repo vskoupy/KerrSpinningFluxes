@@ -14,9 +14,9 @@ Examples with the calculation of the analytical and numerical trajectory and the
 
 ### For nonlinearized fluxes
 
-- [KerrGeodesics](https://bhptoolkit.org/KerrGeodesics/)
-- [Teukolsky](https://bhptoolkit.org/Teukolsky/)
-- [SpinWeightedSpheroidalHarmonics](https://bhptoolkit.org/SpinWeightedSpheroidalHarmonics/)
+- modified [KerrGeodesics](https://github.com/vskoupy/KerrGeodesics)
+- [Teukolsky](https://bhptoolkit.org/modules/teukolsky/)
+- [SpinWeightedSpheroidalHarmonics](https://bhptoolkit.org/modules/spinweightedspheroidalharmonics/)
 
 ### For linearized fluxes
 

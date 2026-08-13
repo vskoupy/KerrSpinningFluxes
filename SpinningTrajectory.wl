@@ -276,7 +276,7 @@ pex1J=pex1CTilde-dpexdC . (C1CTilde+Inverse[dJdC] . J1C);
 \[Delta]\[Phi]3[r_, z_, Ur_, Uz_, K_, a_]:=(a (r (1-z^2) Ur - (a^2 + r (-2+r)) z Uz))/(Sqrt[K] (a^2 + r (-2+r)) (1-z^2) (r^2+a^2 z^2));
 
 
-KerrGeoProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzsq,
+(*KerrGeoProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzsq,
 	Kkr,Kkz,\[CapitalUpsilon]r,\[CapitalUpsilon]z,rminus,rplus,hr,hplus,hminus,\[CapitalUpsilon]tr,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]r,\[CapitalUpsilon]\[Phi]z,\[CapitalUpsilon]\[Tau]r,\[CapitalUpsilon]\[Tau]z,\[CapitalUpsilon]\[Psi]r,\[CapitalUpsilon]\[Psi]z,\[CapitalUpsilon]t,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]\[Tau],\[CapitalUpsilon]\[Psi],rTilde,zTilde,tTilde,\[Phi]Tilde,\[Tau],\[Psi],thatr,thatz,\[Phi]hatr,\[Phi]hatz,\[Tau]hatr,\[Tau]hatz,\[Psi]hatr,\[Psi]hatz,\[CapitalDelta]trTilde,\[CapitalDelta]tzTilde,\[CapitalDelta]\[Phi]rTilde,\[CapitalDelta]\[Phi]zTilde,\[CapitalDelta]\[Tau]r,\[CapitalDelta]\[Tau]z,\[CapitalDelta]\[Psi]r,\[CapitalDelta]\[Psi]z,\[Delta]rpar,\[Delta]zpar,\[Delta]tpar,\[Delta]\[Phi]par,t,r,z,\[Phi]},
 	a = orbitGeo["a"];
 	En = orbitGeo["Energy"];
@@ -310,7 +310,7 @@ KerrGeoProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzs
 		"ProperTime"->Function[{q\[Tau],qr,qz},\[Tau][q\[Tau],qr,qz]],
 		"\[CapitalUpsilon]\[Tau]z" -> \[CapitalUpsilon]\[Tau]z
 	|>
-]
+]*)
 
 
 (* ::Subsubsection::Closed:: *)
@@ -319,7 +319,7 @@ KerrGeoProperTime[orbitGeo_]:=Module[{M=1,a,En,Lz,K,r1,r2,r3,r4,x,z1,z2,krsq,kzs
 
 Options[KerrSpinOrbit] = {"Gauge"->"CTilde"};
 KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTilde,eTilde,xTilde,orbitTilde,EnTilde,JzTilde,KTilde,
-	sqrtKTilde,En,Jz,K,\[Tau]Tilde,frequencies,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalDelta]tr,\[CapitalDelta]tz,rTilde,zTilde,
+	sqrtKTilde,En,Jz,K,(*\[Tau]Tilde,*)frequencies,\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi],\[CapitalUpsilon]t,\[CapitalDelta]tr,\[CapitalDelta]tz,rTilde,zTilde,
 	UrTilde,UzTilde,trajectoryTilde,\[Delta]x,\[CapitalUpsilon]tz,\[CapitalUpsilon]\[Phi]z},
 	linearParts = KerrSpinLinearParts[a,p,e,x];
 	Switch[OptionValue["Gauge"],
@@ -342,21 +342,21 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTil
 	En = EnTilde - spar*(1 - EnTilde^2)/(2*sqrtKTilde);
 	Jz = JzTilde - spar*(a - EnTilde*JzTilde/2)/(sqrtKTilde);
 	K  = KTilde  - spar*(3*a*(JzTilde - a*EnTilde) - EnTilde*KTilde)/(sqrtKTilde);
-	\[Tau]Tilde = KerrGeoProperTime[orbitTilde];
+	(*\[Tau]Tilde = KerrGeoProperTime[orbitTilde];*)
 	frequencies = orbitTilde["Frequencies"];
 	\[CapitalUpsilon]r = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(r\)]\)"];
 	\[CapitalUpsilon]z = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Theta]\)]\)"];
 	\[CapitalUpsilon]\[Phi] = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"];
-	\[CapitalUpsilon]t = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTimeFrequency"];
-	\[CapitalUpsilon]tz = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequencyt\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] + a*JzTilde - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["\[CapitalUpsilon]\[Tau]z"];
+	\[CapitalUpsilon]t = frequencies["\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"] - 3*spar/(2*sqrtKTilde)*orbitTilde["ProperTimeFrequency"];
+	\[CapitalUpsilon]tz = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequencyt\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] + a*JzTilde - 3*spar/(2*sqrtKTilde)*KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequency\[Tau]z[a,pTilde,eTilde,xTilde];
 	\[CapitalUpsilon]\[Phi]z = KerrGeodesics`OrbitalFrequencies`Private`KerrGeoMinoFrequency\[Phi]\[Theta][a,pTilde,eTilde,xTilde,{EnTilde,JzTilde,KTilde-(JzTilde-a*EnTilde)^2},KerrGeodesics`OrbitalFrequencies`Private`KerrGeoPolarRoots[a,pTilde,eTilde,xTilde]] - a*EnTilde;
-	\[CapitalDelta]tr = Function[qr, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]tr"][qr] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTime"][0,qr,0]];
-	\[CapitalDelta]tz = Function[qz, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][qz] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTime"][0,0,qz]];
+	\[CapitalDelta]tr = Function[qr, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]tr"][qr] - 3*spar/(2*sqrtKTilde)*orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Tau]r"][qr]];
+	\[CapitalDelta]tz = Function[qz, orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]t\[Theta]"][qz] - 3*spar/(2*sqrtKTilde)*orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Tau]\[Theta]"][qz]];
 	rTilde = orbitTilde["Trajectory"][[2]];
 	zTilde[qz_] := Cos[orbitTilde["Trajectory"][[3]][qz]];
 	UrTilde[qr_]:=If[Mod[qr,2Pi]<Pi,1,-1]*Sqrt[((rTilde[qr]^2+a^2)*EnTilde - a*JzTilde)^2 - (rTilde[qr]^2 - 2*rTilde[qr] + a^2)*(KTilde + rTilde[qr]^2)];
 	UzTilde[qz_]:=If[Mod[qz,2Pi]<Pi,-1,1]*Sqrt[-((1-zTilde[qz]^2)*a*EnTilde - JzTilde)^2 + (1-zTilde[qz]^2)*(KTilde - a^2*zTilde[qz]^2)];
-	trajectoryTilde = {Function[{qt,qr,qz},orbitTilde["Trajectory"][[1]][qt,qr,qz] - 3*spar/(2*sqrtKTilde)*\[Tau]Tilde["ProperTime"][0,qr,qz]],
+	trajectoryTilde = {Function[{qt,qr,qz},orbitTilde["Trajectory"][[1]][qt,qr,qz] - 3*spar/(2*sqrtKTilde)*(orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Tau]r"][qr]+orbitTilde["TrajectoryDeltas"]["\[CapitalDelta]\[Tau]\[Theta]"][qz])],
 	rTilde,zTilde,orbitTilde["Trajectory"][[4]]};
 	\[Delta]x = Function[{qr,qz},{
 		\[Delta]t3[rTilde[qr], zTilde[qz], UrTilde[qr], UzTilde[qz], KTilde, a],
@@ -384,7 +384,7 @@ KerrSpinOrbit[a_, p_, e_, x_, spar_, OptionsPattern[]]:=Module[{linearParts,pTil
 			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(\[Phi]\)]\)"->\[CapitalUpsilon]\[Phi],
 			"\!\(\*SubscriptBox[\(\[CapitalUpsilon]\), \(t\)]\)"->\[CapitalUpsilon]t
 		|>,
-		"ProperTimeFrequency"->\[Tau]Tilde["ProperTimeFrequency"],
+		"ProperTimeFrequency"->orbitTilde["ProperTimeFrequency"],
 		"BLFrequencies"->{\[CapitalUpsilon]r,\[CapitalUpsilon]z,\[CapitalUpsilon]\[Phi]}/\[CapitalUpsilon]t,
 		"TrajectoryDeltas"-><|
 			"\[CapitalDelta]tr"->\[CapitalDelta]tr,
