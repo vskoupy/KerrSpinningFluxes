@@ -1,6 +1,6 @@
 # KerrSpinningFluxes
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19609875.svg)](https://doi.org/10.5281/zenodo.19609875)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18377281.svg)](https://doi.org/10.5281/zenodo.18377281)
 
 This is a Wolfram Mathematica package for gravitational-wave fluxes from spinning particles orbiting a Kerr black hole. These codes are based on and used in the following papers:
 - Viktor Skoupý, _New approach to the calculation of extreme-mass-ratio inspirals with a spinning secondary_, [arXiv:2603.13482](https://arxiv.org/abs/2603.13482)
@@ -29,12 +29,12 @@ Examples with the calculation of the analytical and numerical trajectory and the
 
 When using this package, please add the following citations:
 
-- Skoupý, V. (2026). vskoupy/KerrSpinningFluxes: KerrSpinningFluxes 1.0.1 (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.19609875
-- Skoupý, V., “A new approach to the calculation of extreme-mass-ratio inspirals with a spinning secondary”, _ArXiv e-prints_, Art. no. arXiv:2603.13482, 2026. [doi:10.48550/arXiv.2603.13482](https://doi.org/10.48550/arXiv.2603.13482).
+- Skoupý, V. (2026). KerrSpinningFluxes, [Zenodo (2026)](https://doi.org/10.5281/zenodo.18377281).
+- Skoupý, V., “New approach to the calculation of extreme-mass-ratio inspirals with a spinning secondary”, [Phys. Rev. D **114**, 084030 (2026)](https://doi.org/10.1103/kpj2-bftm), [arXiv:2603.13482 [gr-qc]](https://arxiv.org/abs/2603.13482).
 
 ```
 @software{skoupy_2026_21920899,
-  author       = {Skoupý, Viktor},
+  author       = {Skoup{\'y}, Viktor},
   title        = {KerrSpinningFluxes},
   month        = aug,
   year         = 2026,
